@@ -1,17 +1,185 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Residency Reviewers</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 640px; margin: 4rem auto; padding: 0 1.5rem; color: #222; }
-  h1 { font-size: 1.4rem; }
-  p { color: #555; line-height: 1.5; }
-</style>
-</head>
-<body>
-<h1>Residency Reviewers</h1>
-<p>Site is set up. Reviewers will be linked here as they're published.</p>
-</body>
-</html>
+<title>Leber's Learning</title><style>
+:root{--bg:#0e1726;--panel:#16213a;--panel2:#1d2b48;--ink:#e8eef7;--muted:#9fb0c8;--line:#283a5c;
+--accent:#4f9cff;--green:#1f7a44;--greenbg:#0f3b22;--greenln:#39c07a;--red:#7a2330;--redbg:#3a0f16;--redln:#ff6b7d;--gold:#f2c14e;
+--bodybg:linear-gradient(180deg,#0b1320,#0e1726 240px);--headerbg:rgba(11,19,32,.95);--goldink:#06101f;--accentink:#06101f;--ratbg:#1a233a}
+:root[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--panel2:#f1f4fa;--ink:#1a2333;--muted:#5b6b85;--line:#dde4f0;
+--accent:#2f6fed;--green:#1f8a4c;--greenbg:#e5f7ec;--greenln:#1f9d52;--red:#c23a4d;--redbg:#fdeced;--redln:#e0495d;--gold:#b5790a;
+--bodybg:linear-gradient(180deg,#eef2fa,#f4f6fb 240px);--headerbg:rgba(255,255,255,.92);--goldink:#fff8e8;--accentink:#ffffff;--ratbg:#fbf3e2}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bodybg);color:var(--ink);line-height:1.5}
+header{padding:18px 22px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;
+background:var(--headerbg);backdrop-filter:blur(8px)}
+h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.themebtn:hover{border-color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 80px}
+.scorebar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:11px;font-size:13px}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}.pill b{color:var(--gold)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tbtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+.tbtn:hover{color:var(--ink);border-color:var(--accent)}
+.note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:14px 0}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:7px}
+.qnum{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.tag{font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+.stem{font-size:15.5px;margin:2px 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;cursor:pointer;font-size:14.5px}
+.opt:hover{border-color:var(--accent)}.opt .ltr{font-weight:700;color:var(--muted);min-width:18px}
+.opt.correct{background:var(--greenbg);border-color:var(--greenln)}.opt.correct .ltr{color:var(--greenln)}
+.opt.wrongpick{background:var(--redbg);border-color:var(--redln)}.opt.wrongpick .ltr{color:var(--redln)}
+.opt.disabled{cursor:default}.opt .body{flex:1}
+.badge{font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px}
+.badge.ok{background:var(--green);color:#dffbe9}.badge.no{background:var(--red);color:#ffe1e6}
+.rat{display:none;margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+.rat.show{display:block}.rat h4{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+.rat .ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+.revealbtn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+.hidden{display:none!important}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
+a{color:var(--accent)}
+.inline-fig{max-width:220px;max-height:160px;border-radius:6px;vertical-align:middle;margin-left:6px;display:inline-block}
+.fig{margin:8px 0 12px}.fig img{max-width:100%;border-radius:8px;display:block;margin:0 0 8px}
+.fcbtn{margin-top:10px;background:var(--accent);border:1px solid var(--accent);color:var(--accentink);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+
+#staticApp{max-width:900px;margin:0 auto;padding:16px 16px 60px;background:var(--bg)}
+#staticApp .sq-h1{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+#staticApp .sq-sub{color:var(--muted);font-size:13px;margin:6px 0 14px}
+#staticApp .sq-back{color:var(--accent);text-decoration:none;font-size:12.5px;display:inline-block;margin-bottom:12px}
+#staticApp .sq-note{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5}
+#staticApp .sq-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:0 0 14px}
+#staticApp .sq-qmeta{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+#staticApp .sq-tags{font-size:11px;margin-bottom:6px}
+#staticApp .sq-tag{display:inline-block;font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+#staticApp .sq-stem{font-size:15.5px;margin:2px 0 10px}
+#staticApp .sq-r{position:absolute;opacity:0;pointer-events:none}
+#staticApp .sq-opt{display:flex;gap:10px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;margin:0 0 8px;cursor:pointer;font-size:14.5px}
+#staticApp .sq-ltr{font-weight:700;color:var(--muted);min-width:18px}
+#staticApp .sq-r:checked + .sq-opt{border-color:var(--redln);background:var(--redbg)}
+#staticApp .sq-r.ok:checked + .sq-opt{border-color:var(--greenln);background:var(--greenbg)}
+#staticApp .sq-q:has(.sq-r:checked) .sq-r.ok + .sq-opt{border-color:var(--greenln);background:var(--greenbg)}
+#staticApp .sq-q:has(.sq-r:checked) .sq-r.ok + .sq-opt .sq-ltr::after{content:" \2713";color:var(--greenln)}
+#staticApp .sq-r.no:checked + .sq-opt .sq-ltr::after{content:" \2717";color:var(--redln)}
+#staticApp .sq-r:checked ~ .sq-explain{display:block}
+#staticApp .sq-explain{display:none;margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+#staticApp .sq-ansline{font-weight:700;margin-bottom:6px}
+#staticApp .sq-lab{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+#staticApp .sq-ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+#staticApp .sq-resetbtn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px}
+#staticApp .sq-flip{position:absolute;opacity:0;pointer-events:none}
+#staticApp .sq-revealbtn-static{display:inline-block;margin-top:6px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+#staticApp .sq-answer{display:none;margin-top:10px}
+#staticApp .sq-flip:checked ~ .sq-answer{display:block}
+
+@media (max-width:640px){
+
+body{font-size:16px}
+.wrap{max-width:520px;padding:14px 12px 90px}
+h1{font-size:17px}
+.opt{padding:13px 12px;font-size:15px}
+.tbtn{padding:9px 12px}
+.card{padding:15px 14px 12px}
+
+}
+
+.secgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:14px}
+.seccard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:var(--ink)}
+.seccard:hover{border-color:var(--accent)}
+.secname{font-size:15px;font-weight:600;margin-bottom:6px}
+.seccount{font-size:13px;color:var(--muted)}
+.group{border:1px solid var(--line);border-radius:16px;padding:16px 18px 18px;margin:18px 0;background:var(--panel2)}
+.grouphead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.groupname{font-size:16px;font-weight:700}
+.groupmeta{font-size:12.5px;color:var(--muted)}
+.groupnote{font-size:12.5px;color:var(--muted);margin-top:4px}
+.gatebox{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.gatebox input{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:13.5px}
+.gatebox input:focus{outline:none;border-color:var(--accent)}
+.gatebtn{background:var(--accent);border:1px solid var(--accent);color:var(--accentink);border-radius:8px;padding:8px 16px;font-size:13.5px;font-weight:600;cursor:pointer}
+.gateerr{flex-basis:100%;font-size:12px;color:var(--redln);min-height:1em}
+</style><script>(function(){
+try{
+var q=new URLSearchParams(location.search).get('theme');
+var t=(q==='light'||q==='dark')?q:(localStorage.getItem('bcscTheme')||'dark');
+document.documentElement.setAttribute('data-theme',t);
+if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
+}catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div></header><div class="wrap"><div class="group"><div class="grouphead"><div class="groupname">BCSC Question Bank</div><div class="groupmeta">4,052 questions &middot; 13 sections</div></div><div class="groupnote">Split into subspecialty sections so each page loads quickly. Works on desktop and phone.</div><div class="secgrid"><a class="seccard" href="bcsc-qbank/General.html"><div class="secname">Update on General Medicine</div><div class="seccount">213 questions</div></a><a class="seccard" href="bcsc-qbank/Fundamentals.html"><div class="secname">Fundamentals &amp; Principles of Ophthalmology</div><div class="seccount">208 questions</div></a><a class="seccard" href="bcsc-qbank/Optics.html"><div class="secname">Clinical Optics &amp; Vision Rehabilitation</div><div class="seccount">185 questions</div></a><a class="seccard" href="bcsc-qbank/Pathology.html"><div class="secname">Ophthalmic Pathology &amp; Intraocular Tumors</div><div class="seccount">286 questions</div></a><a class="seccard" href="bcsc-qbank/Neuro.html"><div class="secname">Neuro-Ophthalmology</div><div class="seccount">400 questions</div></a><a class="seccard" href="bcsc-qbank/Peds.html"><div class="secname">Pediatric Ophthalmology &amp; Strabismus</div><div class="seccount">438 questions</div></a><a class="seccard" href="bcsc-qbank/Plastics.html"><div class="secname">Oculofacial Plastic &amp; Orbital Surgery</div><div class="seccount">431 questions</div></a><a class="seccard" href="bcsc-qbank/Cornea.html"><div class="secname">External Disease &amp; Cornea</div><div class="seccount">422 questions</div></a><a class="seccard" href="bcsc-qbank/Uveitis.html"><div class="secname">Uveitis &amp; Ocular Inflammation</div><div class="seccount">338 questions</div></a><a class="seccard" href="bcsc-qbank/Glaucoma.html"><div class="secname">Glaucoma</div><div class="seccount">293 questions</div></a><a class="seccard" href="bcsc-qbank/Cataract.html"><div class="secname">Lens &amp; Cataract</div><div class="seccount">265 questions</div></a><a class="seccard" href="bcsc-qbank/Retina.html"><div class="secname">Retina &amp; Vitreous</div><div class="seccount">365 questions</div></a><a class="seccard" href="bcsc-qbank/Refractive.html"><div class="secname">Refractive Surgery</div><div class="seccount">208 questions</div></a></div></div><div class="group" id="ouGroup"><div class="grouphead"><div class="groupname">Oculus Uterque Reviewer</div><div class="groupmeta" id="ouMeta">&#128274; Password required</div></div><div class="groupnote" id="ouNote">Enter the password to view this reviewer.</div><div class="gatebox" id="ouGate"><input type="password" id="ouPassInput" placeholder="Password" autocomplete="off"><button class="gatebtn" type="button" id="ouUnlockBtn">Unlock</button><div class="gateerr" id="ouGateErr"></div></div><div class="secgrid hidden" id="ouGrid"></div></div></div><footer>From the Ophthalmology BCSC Question Bank.Rationales are BCSC excerpts as written on the source cards &mdash; verify against the current BCSC edition before relying on them for boards or mock orals.</footer></div><script>
+(function(){
+var btns=document.querySelectorAll('.themebtn');
+function syncLinks(t){
+document.querySelectorAll('a[href]').forEach(function(a){
+var href=a.getAttribute('href');
+if(!href||href.charAt(0)==='#')return;
+try{
+var url=new URL(href,location.href);
+url.searchParams.set('theme',t);
+a.setAttribute('href',url.href);
+}catch(e){}
+});
+}
+function label(){var t=document.documentElement.getAttribute('data-theme')||'dark';var txt=t==='light'?'Dark mode':'Light mode';btns.forEach(function(b){b.textContent=txt;});syncLinks(t);}
+label();
+window.__resyncThemeLinks = function(){ syncLinks(document.documentElement.getAttribute('data-theme')||'dark'); };
+btns.forEach(function(btn){btn.addEventListener('click',function(){
+var cur=document.documentElement.getAttribute('data-theme');
+var next=cur==='light'?'dark':'light';
+document.documentElement.setAttribute('data-theme',next);
+try{localStorage.setItem('bcscTheme',next);}catch(e){}
+label();
+});});
+})();
+(function(){
+var HASH = "7db281db8552d8a16756e25b61d114dec16b7b71b2613872d882d8abd1cb2785";
+var STORE_KEY = "ouUnlocked_lebers";
+var LINKS = [
+["https://claude.ai/code/artifact/7b689a7d-d43b-4146-9f8d-e3bbb5befd78","Midterms 2024","91 questions"],
+["https://claude.ai/code/artifact/890bd46c-c877-4b53-95ba-e89d8902c892","Midterms 2025","100 questions"],
+["https://claude.ai/code/artifact/a175216b-67e1-443d-ac78-34bfc33d065d","Salamander 2025 (Module 1-4)","360 questions"],
+["https://claude.ai/code/artifact/45b6e3ca-8e2e-49ec-93ce-3c6e9e9962e3","Salamander 2026 (Module 1-4)","395 questions"],
+["https://claude.ai/code/artifact/bc5c9738-63de-4552-ad9f-83b5e1b44101","Brain Diarrhea Masterfile","1,317 questions"]
+];
+var gate=document.getElementById('ouGate'), grid=document.getElementById('ouGrid'),
+    meta=document.getElementById('ouMeta'), note=document.getElementById('ouNote'),
+    input=document.getElementById('ouPassInput'), err=document.getElementById('ouGateErr'),
+    btn=document.getElementById('ouUnlockBtn');
+function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function reveal(){
+  grid.innerHTML = LINKS.map(function(l){
+    return '<a class="seccard" href="'+esc(l[0])+'"><div class="secname">'+esc(l[1])+'</div><div class="seccount">'+esc(l[2])+'</div></a>';
+  }).join('');
+  grid.classList.remove('hidden');
+  gate.classList.add('hidden');
+  meta.textContent = '2,263 questions · 5 sections';
+  note.textContent = 'Split by source exam so each page loads quickly. Works on desktop and phone.';
+  if(window.__resyncThemeLinks) window.__resyncThemeLinks();
+}
+function sha256hex(str){
+  var enc = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', enc).then(function(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){return b.toString(16).padStart(2,'0');}).join('');
+  });
+}
+function tryUnlock(){
+  var val = input.value;
+  if(!val) return;
+  sha256hex(val).then(function(hex){
+    if(hex===HASH){
+      try{localStorage.setItem(STORE_KEY,'1');}catch(e){}
+      reveal();
+    } else {
+      err.textContent = 'Incorrect password.';
+      input.value = '';
+    }
+  }).catch(function(){ err.textContent = 'Unlock unavailable in this browser.'; });
+}
+btn.addEventListener('click', tryUnlock);
+input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+try{
+  if(localStorage.getItem(STORE_KEY)==='1') reveal();
+}catch(e){}
+})();
+</script>
