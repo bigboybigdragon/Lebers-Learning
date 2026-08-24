@@ -142,19 +142,18 @@ if(q)try{localStorage.setItem('ouTheme',q);}catch(e){}
 <body>
 <header>
   <h1><span>Oculus Uterque — Brain Diarrhea Masterfile</span><button class="themebtn" type="button">Light mode</button></h1>
-  <div class="sub">1,317 questions across the full subspecialty masterfile.</div>
-  <div class="modeToggle">
-    <button class="modeBtn active" id="modeQuiz">MCQ Quiz mode</button>
-    <button class="modeBtn" id="modeFlash">Flashcard mode</button>
-  </div>
   <div class="scorebar" id="scorebar">
+    <a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
     <span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
     <span class="pill">Correct <b id="corN">0</b></span>
     <span class="pill">Score <b id="pct">&mdash;</b></span>
   </div>
+  <div class="modeToggle">
+    <button class="modeBtn active" id="modeQuiz">MCQ Quiz mode</button>
+    <button class="modeBtn" id="modeFlash">Flashcard mode</button>
+  </div>
 </header>
 <div class="wrap">
-  <a class="backlink" href="../index.html">&larr; Home</a>
   <div class="filters" id="filters"></div>
   <div class="toolbar" id="quizToolbar">
     <button class="tbtn" id="revealAll">Reveal all answers</button>
