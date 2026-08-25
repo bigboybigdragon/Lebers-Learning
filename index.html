@@ -218,8 +218,8 @@ function bcscOuReadStats(key){
   return null;
 }
 function bcscOuScoreTier(pct){
-  if(pct < 60) return 'low';
-  if(pct < 80) return 'mid';
+  if(pct < 50) return 'low';
+  if(pct < 70) return 'mid';
   return 'high';
 }
 function bcscOuScoreBadge(pct){
