@@ -133,6 +133,7 @@ c.querySelector(".rat").classList.add("show");}
 function updateScore(){let ans=0,cor=0;DATA.forEach(q=>{const s=state[q.id];if(s){ans++;if(q.type==="mcq"&&s===q.answer)cor++;}});
 document.getElementById("ansN").textContent=ans;document.getElementById("totN").textContent=DATA.length;
 document.getElementById("pct").textContent=ans?Math.round(cor/ans*100)+"%":"—";
+try{localStorage.setItem("bcscanki_plastics-orbit_stats",JSON.stringify({ans:ans,cor:cor}))}catch(e){}
 updateHomeLinks(ans);}
 function updateHomeLinks(ans){
 document.querySelectorAll("a.sq-back, #jsApp a.tbtn").forEach(a=>{

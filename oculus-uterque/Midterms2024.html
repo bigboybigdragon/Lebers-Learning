@@ -437,6 +437,11 @@ function updateScore(){
   document.getElementById("totN").textContent = list.length;
   document.getElementById("corN").textContent = cor;
   document.getElementById("pct").textContent = ans? Math.round(cor/ans*100)+"%" : "—";
+  try{
+    let allAns=0, allCor=0;
+    DATA.forEach(q=>{ const s=state[q.id]; if(s){ allAns++; if(s===q.answer) allCor++; } });
+    localStorage.setItem("oculus_uterque_midterms2024_v1_stats", JSON.stringify({ans:allAns,cor:allCor}));
+  }catch(e){}
 }
 
 // ---- Flashcard mode ----

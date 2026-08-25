@@ -203,9 +203,18 @@ function bcscOuCountAnswered(raw){
     return Object.keys(parsed).length;
   }catch(e){ return 0; }
 }
+function bcscOuReadStats(key){
+  try{
+    var raw = localStorage.getItem(key + '_stats');
+    if(!raw) return null;
+    var parsed = JSON.parse(raw);
+    if(parsed && typeof parsed.ans === 'number' && typeof parsed.cor === 'number') return parsed;
+  }catch(e){}
+  return null;
+}
 function bcscOuUpdateGroup(groupEl, overallId){
   if(!groupEl) return;
-  var totalAll = 0, answeredAll = 0;
+  var totalAll = 0, answeredAll = 0, corAll = 0, scoredAll = 0;
   groupEl.querySelectorAll('.seccard[data-key]').forEach(function(card){
     var key = card.getAttribute('data-key');
     var total = parseInt(card.getAttribute('data-total'), 10) || 0;
@@ -216,14 +225,23 @@ function bcscOuUpdateGroup(groupEl, overallId){
     var pct = total ? Math.round(answered/total*100) : 0;
     var fill = card.querySelector('.secprogress-fill');
     var label = card.querySelector('.secprogress-label');
+    var stats = bcscOuReadStats(key);
+    var scoreText = '';
+    if(stats && stats.ans > 0){
+      var scorePct = Math.round(stats.cor/stats.ans*100);
+      scoreText = ' \u00b7 Score ' + scorePct + '%';
+      corAll += stats.cor;
+      scoredAll += stats.ans;
+    }
     if(fill) fill.style.width = pct + '%';
-    if(label) label.textContent = answered === 0 ? 'Not started' : (answered + ' / ' + total + ' answered (' + pct + '%)');
+    if(label) label.textContent = answered === 0 ? 'Not started' : (answered + ' / ' + total + ' answered (' + pct + '%)' + scoreText);
     if(answered >= total && total > 0){ card.classList.add('done'); } else { card.classList.remove('done'); }
   });
   var overall = overallId ? document.getElementById(overallId) : null;
   if(overall && totalAll){
     var overallPct = Math.round(answeredAll/totalAll*100);
-    overall.textContent = answeredAll.toLocaleString() + ' / ' + totalAll.toLocaleString() + ' answered overall (' + overallPct + '%)';
+    var overallScoreText = scoredAll > 0 ? ' \u00b7 Score ' + Math.round(corAll/scoredAll*100) + '%' : '';
+    overall.textContent = answeredAll.toLocaleString() + ' / ' + totalAll.toLocaleString() + ' answered overall (' + overallPct + '%)' + overallScoreText;
   }
 }
 bcscOuUpdateGroup(document.getElementById('bcscGroup'), 'bcscOverall');
