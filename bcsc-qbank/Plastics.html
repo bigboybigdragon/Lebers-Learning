@@ -208,7 +208,11 @@ else{alert("Every question in this section is answered.");}
 };
 load();render();
 try{document.getElementById("jsApp").style.display="block";document.getElementById("staticApp").style.display="none";}catch(e){}
-(function(){try{var ansCount=Object.keys(state).length;if(ansCount>0&&ansCount<DATA.length){var jb=document.getElementById("jumpUnanswered");if(jb)jb.click();}}catch(e){}})();
+(function(){
+function doAutoJump(){try{var ansCount=Object.keys(state).length;if(ansCount>0&&ansCount<DATA.length){var jb=document.getElementById("jumpUnanswered");if(jb)jb.click();}}catch(e){}}
+function schedule(){setTimeout(doAutoJump,250);}
+if(document.readyState==="complete"){schedule();}else{window.addEventListener("load",schedule);}
+})();
 </script></div><script>
 (function(){
 var btns=document.querySelectorAll('.themebtn');
