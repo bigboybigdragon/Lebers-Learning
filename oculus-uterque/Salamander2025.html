@@ -564,6 +564,7 @@ try{ render(); }catch(e){ console.error("render failed", e); }
 try{ load(); }catch(e){ console.error("load failed", e); }
 try{ buildFilters(); }catch(e){ console.error("buildFilters failed", e); }
 try{ render(); }catch(e){ console.error("render failed", e); }
+(function(){try{if(mode==="quiz"){var ansCount=Object.keys(state).length;var total=DATA.length;if(ansCount>0&&ansCount<total){var card=Array.from(document.querySelectorAll("#quiz .card")).find(function(c){return !state[c.dataset.id];});if(card)card.scrollIntoView({block:"center"});}}}catch(e){}})();
 </script>
 <script>(function(){
 var btns=document.querySelectorAll('.themebtn');
