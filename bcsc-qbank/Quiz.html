@@ -57,6 +57,12 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .stattable td{padding:8px;border-bottom:1px solid var(--line)}
 .stattable tr:last-child td{border-bottom:none}
 .statnote{font-size:12px;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5}
+.opt.chosen{border-color:var(--accent);background:var(--panel);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt.chosen .ltr{color:var(--accent)}
+.submitbtn{background:var(--panel);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.submitbtn:hover{background:var(--accent);color:var(--accentink)}
+.submitbtn.ready{background:var(--accent);color:var(--accentink)}
+.submitbottom{display:block;width:100%;margin:18px 0 0;padding:13px;font-size:15px;border-radius:10px}
 .examtotal{margin-top:16px;font-size:13.5px;color:var(--muted)}
 .examtotal b{color:var(--gold);font-size:15px}
 .savebox{background:var(--panel2);border:1px solid var(--gold);border-radius:12px;padding:14px;margin:12px 0}
@@ -79,10 +85,11 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <header><h1><span>BCSC Exam Mode</span><button class="themebtn" type="button">Light mode</button></h1>
 <div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
 <span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
-<span class="pill">Correct <b id="corN">0</b></span></div></header>
+<span class="pill hidden" id="corPill">Correct <b id="corN">0</b></span>
+<button class="submitbtn hidden" id="submitBtn">Submit exam</button></div></header>
 <div class="wrap">
 <div id="setup">
-  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Your answers can be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Image-based questions stay on the section pages.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Image-based questions stay on the section pages.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Questions per subspecialty</div>
@@ -104,6 +111,9 @@ let MANIFEST=null, chosen=new Set(), quizCount=10, quizQs=[], answeredN=0, corre
 const secData={}; // key -> fetched section json
 const results=[];  // {section, correct, seconds} in answer order
 const pending=[];  // answers awaiting the save confirmation at the end
+const picks={};    // qid -> letter, changeable until submit
+const itemSecs={}; // qid -> seconds taken to first answer that item
+let submitted=false;
 let lastAnswerAt=0; // timestamp the current question became "active"
 
 fetch('data/manifest.json').then(r=>r.json()).then(m=>{
@@ -173,7 +183,8 @@ function commitPending(){
 }
 
 window.addEventListener('beforeunload', function(e){
-  if(pending.length && saveMode){ e.preventDefault(); e.returnValue=''; }
+  const unsubmitted = !submitted && Object.keys(picks).length>0;
+  if(unsubmitted || (pending.length && saveMode)){ e.preventDefault(); e.returnValue=''; }
 });
 
 document.getElementById('startBtn').onclick=function(){
@@ -210,6 +221,11 @@ document.getElementById('startBtn').onclick=function(){
     }
     document.getElementById('totN').textContent=quizQs.length;
     quizQs.forEach((item,i)=>quiz.appendChild(card(item.q,item.sec,i+1)));
+    const bb=document.createElement('button');
+    bb.className='submitbtn submitbottom'; bb.id='submitBottom'; bb.textContent='Submit exam (0/'+quizQs.length+')';
+    bb.onclick=submitExam; quiz.appendChild(bb);
+    document.getElementById('submitBtn').onclick=submitExam;
+    updateSubmitBtn();
     lastAnswerAt=Date.now();
     window.scrollTo({top:0});
   }).catch(e=>{
@@ -237,26 +253,63 @@ function card(q,sec,dn){
 }
 
 function pick(q,sec,c,L){
-  if(c.dataset.locked)return;
-  c.dataset.locked='1';
-  const now=Date.now();
-  const secs=Math.max(0,(now-lastAnswerAt)/1000);
-  lastAnswerAt=now;
-  pending.push({sec:sec, qid:q.id, letter:L});
-  answeredN++;
-  if(L===q.answer)correctN++;
-  results.push({section:sec.section, correct:L===q.answer, seconds:secs});
+  if(submitted)return;                      // locked once the exam is submitted
+  if(picks[q.id]===undefined){              // first answer for this item: record its timing
+    const now=Date.now();
+    itemSecs[q.id]=Math.max(0,(now-lastAnswerAt)/1000);
+    lastAnswerAt=now;
+    answeredN++;
+    document.getElementById('ansN').textContent=answeredN;
+  }
+  picks[q.id]=L;                            // changeable until submit
+  c.querySelectorAll('.opt').forEach(o=>o.classList.toggle('chosen', o.dataset.l===L));
+  updateSubmitBtn();
+}
+
+function updateSubmitBtn(){
+  const b=document.getElementById('submitBtn');
+  const bottom=document.getElementById('submitBottom');
+  const left=quizQs.length-answeredN;
+  const label=left? 'Submit exam ('+answeredN+'/'+quizQs.length+')' : 'Submit exam';
+  b.textContent=label; b.classList.remove('hidden');
+  b.classList.toggle('ready', left===0);
+  if(bottom){ bottom.textContent=label; bottom.classList.toggle('ready', left===0); }
+}
+
+function revealCard(item,c){
+  const q=item.q, L=picks[q.id];
   c.querySelectorAll('.opt').forEach(o=>{
-    const OL=o.dataset.l; o.classList.add('disabled');
+    const OL=o.dataset.l; o.classList.add('disabled'); o.classList.remove('chosen');
     const tx=o.querySelector('.otext');
     if(OL===q.answer){o.classList.add('correct');tx.insertAdjacentHTML('afterend','<span class="badge ok">Correct</span>');}
     if(OL===L&&L!==q.answer){o.classList.add('wrongpick');tx.insertAdjacentHTML('afterend','<span class="badge no">Your pick</span>');}
   });
-  if(L!==q.answer) c.dataset.missed='1';
+  if(L===undefined){ c.dataset.unanswered='1'; c.querySelector('.qhead').insertAdjacentHTML('beforeend','<span class="badge no">Not answered</span>'); }
+  else if(L!==q.answer) c.dataset.missed='1';
   c.querySelector('.rat').classList.add('show');
-  document.getElementById('ansN').textContent=answeredN;
+}
+
+function submitExam(){
+  if(submitted)return;
+  const left=quizQs.length-answeredN;
+  if(left>0 && !confirm(left+' question'+(left===1?'':'s')+' still unanswered. Unanswered items are not scored and not saved. Submit anyway?')) return;
+  submitted=true;
+  document.getElementById('submitBtn').classList.add('hidden');
+  const bottom=document.getElementById('submitBottom');
+  if(bottom) bottom.classList.add('hidden');
+  const cards=document.querySelectorAll('#quiz .card');
+  quizQs.forEach(function(item,i){
+    revealCard(item,cards[i]);
+    const L=picks[item.q.id];
+    if(L===undefined) return;
+    const correct = L===item.q.answer;
+    if(correct) correctN++;
+    results.push({section:item.sec.section, correct:correct, seconds:itemSecs[item.q.id]||0});
+    pending.push({sec:item.sec, qid:item.q.id, letter:L});
+  });
+  document.getElementById('corPill').classList.remove('hidden');
   document.getElementById('corN').textContent=correctN;
-  if(answeredN===quizQs.length)finish();
+  finish();
 }
 
 function fmtTime(s){
@@ -268,7 +321,14 @@ function tierOf(pct){ return pct<50?'low':(pct<70?'mid':'high'); }
 
 function finish(){
   const d=document.getElementById('done');
-  const pct=Math.round(correctN/quizQs.length*100);
+  if(!results.length){
+    d.innerHTML='<h2>Exam submitted</h2><div class="sub">No questions were answered, so there is nothing to score or save.</div>'
+      +'<div class="doneactions"><button class="startbtn" onclick="location.reload()">New exam</button></div>';
+    d.classList.remove('hidden'); d.scrollIntoView({block:'center'}); return;
+  }
+  const scored=results.length;
+  const pct=scored?Math.round(correctN/scored*100):0;
+  const unanswered=quizQs.length-scored;
 
   const totalSecs=results.reduce((a,r)=>a+r.seconds,0);
   const avgSecs=totalSecs/results.length;
@@ -298,8 +358,9 @@ function finish(){
 
   const missedN = results.filter(r=>!r.correct).length;
 
-  d.innerHTML='<h2>Exam complete — '+correctN+' / '+quizQs.length+' ('+pct+'%) '
+  d.innerHTML='<h2>Exam complete — '+correctN+' / '+scored+' ('+pct+'%) '
       +'<span class="scorebadge '+tierOf(pct)+'">'+pct+'%</span></h2>'
+    +(unanswered?'<div class="sub">'+unanswered+' question'+(unanswered===1?' was':'s were')+' left unanswered \u2014 not scored, not saved.</div>':'')
     +'<div class="savebox" id="saveBox"></div>'
     +'<div class="statgrid">'
       +'<div class="statbox"><div class="statnum">'+fmtTime(totalSecs)+'</div><div class="statlbl">Total time</div></div>'
@@ -313,7 +374,7 @@ function finish(){
     +'<div class="statnote">'
       + (mean(corrTimes)!==null ? 'Correct answers averaged '+fmtTime(mean(corrTimes))+'. ' : '')
       + (mean(wrongTimes)!==null ? 'Missed ones averaged '+fmtTime(mean(wrongTimes))+'. ' : '')
-      + 'Subspecialties are listed weakest first. Timing counts from the previous answer, so pauses mid-quiz inflate an item.'
+      + 'Subspecialties are listed weakest first. Timing runs from your previous answer to your first answer on each item (changing an answer later does not change its time), so a pause mid-exam inflates whichever item you were on.'
     +'</div>'
     +'<div class="doneactions">'
       +(missedN ? '<button class="tbtn" id="reviewMissedBtn">Review '+missedN+' missed</button>' : '')
