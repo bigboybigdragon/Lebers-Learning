@@ -119,7 +119,11 @@ var t=(q==='light'||q==='dark')?q:(localStorage.getItem('bcscTheme')||'dark');
 document.documentElement.setAttribute('data-theme',t);
 if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 }catch(e){document.documentElement.setAttribute('data-theme','dark');}
-})();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div></header><div class="wrap"><div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div><div class="group" id="bcscGroup"><div class="grouphead"><div class="groupname">BCSC Question Bank</div><div class="groupmeta">4,052 questions &middot; 13 sections<span id="bcscOverall" class="overallprog"></span></div></div><div class="groupnote">Split into subspecialty sections so each page loads quickly. Works on desktop and phone.</div><div class="secgrid"><a class="seccard" href="bcsc-qbank/General.html" data-key="bcscanki_general-medicine" data-total="213"><div class="secname">Update on General Medicine</div><div class="seccount">213 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Fundamentals.html" data-key="bcscanki_fundamentals" data-total="208"><div class="secname">Fundamentals &amp; Principles of Ophthalmology</div><div class="seccount">208 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Optics.html" data-key="bcscanki_optics" data-total="185"><div class="secname">Clinical Optics &amp; Vision Rehabilitation</div><div class="seccount">185 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Pathology.html" data-key="bcscanki_pathology" data-total="286"><div class="secname">Ophthalmic Pathology &amp; Intraocular Tumors</div><div class="seccount">286 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Neuro.html" data-key="bcscanki_neuro" data-total="400"><div class="secname">Neuro-Ophthalmology</div><div class="seccount">400 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Peds.html" data-key="bcscanki_peds-strabismus" data-total="438"><div class="secname">Pediatric Ophthalmology &amp; Strabismus</div><div class="seccount">438 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Plastics.html" data-key="bcscanki_plastics-orbit" data-total="431"><div class="secname">Oculofacial Plastic &amp; Orbital Surgery</div><div class="seccount">431 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Cornea.html" data-key="bcscanki_cornea" data-total="422"><div class="secname">External Disease &amp; Cornea</div><div class="seccount">422 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Uveitis.html" data-key="bcscanki_uveitis" data-total="338"><div class="secname">Uveitis &amp; Ocular Inflammation</div><div class="seccount">338 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Glaucoma.html" data-key="bcscanki_glaucoma" data-total="293"><div class="secname">Glaucoma</div><div class="seccount">293 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Cataract.html" data-key="bcscanki_cataract" data-total="265"><div class="secname">Lens &amp; Cataract</div><div class="seccount">265 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Retina.html" data-key="bcscanki_retina" data-total="365"><div class="secname">Retina &amp; Vitreous</div><div class="seccount">365 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a><a class="seccard" href="bcsc-qbank/Refractive.html" data-key="bcscanki_refractive" data-total="208"><div class="secname">Refractive Surgery</div><div class="seccount">208 questions</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a></div></div><div class="group" id="ouGroup"><div class="grouphead"><div class="groupname">Oculus Uterque Reviewer</div><div class="groupmeta" id="ouMeta">&#128274; Password required</div></div><div class="groupnote" id="ouNote">Enter the password to view this reviewer.</div><div class="gatebox" id="ouGate"><input type="password" id="ouPassInput" placeholder="Password" autocomplete="off"><button class="gatebtn" type="button" id="ouUnlockBtn">Unlock</button><div class="gateerr" id="ouGateErr"></div></div><div class="secgrid hidden" id="ouGrid"></div></div></div><footer>From the Ophthalmology BCSC Question Bank.Rationales are BCSC excerpts as written on the source cards &mdash; verify against the current BCSC edition before relying on them for boards or mock orals.</footer></div><script>
+})();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div></header><div class="wrap"><div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div>
+<div id="groups"></div>
+<footer>Rationales are excerpts as written on the source cards &mdash; verify against the current references before relying on them for boards or mock orals.</footer>
+</div>
+<script>
 (function(){
 var btns=document.querySelectorAll('.themebtn');
 function syncLinks(t){
@@ -144,61 +148,146 @@ try{localStorage.setItem('bcscTheme',next);}catch(e){}
 label();
 });});
 })();
-(function(){
-var HASH = "7db281db8552d8a16756e25b61d114dec16b7b71b2613872d882d8abd1cb2785";
-var STORE_KEY = "ouUnlocked_lebers";
-var LINKS = [
-["oculus-uterque/Midterms2024.html","Midterms 2024","91 questions","oculus_uterque_midterms2024_v1",91],
-["oculus-uterque/Midterms2025.html","Midterms 2025","100 questions","oculus_uterque_midterms2025_v1",100],
-["oculus-uterque/Salamander2025.html","Salamander 2025 (Module 1-4)","360 questions","oculus_uterque_salamander2025_v1",360],
-["oculus-uterque/Salamander2026.html","Salamander 2026 (Module 1-4)","395 questions","oculus_uterque_salamander2026_v1",395],
-["oculus-uterque/BrainDiarrheaMasterfile.html","Brain Diarrhea Masterfile","1,317 questions","oculus_uterque_masterfile_v1",1317]
+</script>
+<script>
+/* ============================================================
+   REVIEWER CONFIG — this is the ONLY part to edit when adding
+   a new reviewer. See SITE_GUIDE.md in the repo root for the
+   full step-by-step instructions and rules.
+
+   Each group: { id, name, meta, note, password, sections }
+     - id:       short unique slug, used for element ids only
+     - password: null for open groups, or
+                 { hash: "<sha256 hex of password>", storeKey: "<localStorage key remembering unlock>" }
+     - sections: one entry per page:
+         { file, label, count, key }
+         - file:  path relative to this index.html
+         - label: display name
+         - count: number of questions (shown + used for progress %)
+         - key:   the page's localStorage progress key — MUST match
+                  the key inside that page's own save()/load() code.
+                  NEVER change an existing key.
+   ============================================================ */
+var REVIEWERS = [
+  {
+    id: "bcsc",
+    name: "BCSC Question Bank",
+    meta: "4,052 questions \u00b7 13 sections",
+    note: "Split into subspecialty sections so each page loads quickly. Works on desktop and phone.",
+    password: null,
+    sections: [
+      {file:"bcsc-qbank/General.html",      label:"Update on General Medicine",                    count:213, key:"bcscanki_general-medicine"},
+      {file:"bcsc-qbank/Fundamentals.html", label:"Fundamentals & Principles of Ophthalmology",    count:208, key:"bcscanki_fundamentals"},
+      {file:"bcsc-qbank/Optics.html",       label:"Clinical Optics & Vision Rehabilitation",       count:185, key:"bcscanki_optics"},
+      {file:"bcsc-qbank/Pathology.html",    label:"Ophthalmic Pathology & Intraocular Tumors",     count:286, key:"bcscanki_pathology"},
+      {file:"bcsc-qbank/Neuro.html",        label:"Neuro-Ophthalmology",                           count:400, key:"bcscanki_neuro"},
+      {file:"bcsc-qbank/Peds.html",         label:"Pediatric Ophthalmology & Strabismus",          count:438, key:"bcscanki_peds-strabismus"},
+      {file:"bcsc-qbank/Plastics.html",     label:"Oculofacial Plastic & Orbital Surgery",         count:431, key:"bcscanki_plastics-orbit"},
+      {file:"bcsc-qbank/Cornea.html",       label:"External Disease & Cornea",                     count:422, key:"bcscanki_cornea"},
+      {file:"bcsc-qbank/Uveitis.html",      label:"Uveitis & Ocular Inflammation",                 count:338, key:"bcscanki_uveitis"},
+      {file:"bcsc-qbank/Glaucoma.html",     label:"Glaucoma",                                      count:293, key:"bcscanki_glaucoma"},
+      {file:"bcsc-qbank/Cataract.html",     label:"Lens & Cataract",                               count:265, key:"bcscanki_cataract"},
+      {file:"bcsc-qbank/Retina.html",       label:"Retina & Vitreous",                             count:365, key:"bcscanki_retina"},
+      {file:"bcsc-qbank/Refractive.html",   label:"Refractive Surgery",                            count:208, key:"bcscanki_refractive"}
+    ]
+  },
+  {
+    id: "ou",
+    name: "Oculus Uterque Reviewer",
+    meta: "2,263 questions \u00b7 5 sections",
+    note: "Split by source exam so each page loads quickly. Works on desktop and phone.",
+    password: { hash: "7db281db8552d8a16756e25b61d114dec16b7b71b2613872d882d8abd1cb2785", storeKey: "ouUnlocked_lebers" },
+    sections: [
+      {file:"oculus-uterque/Midterms2024.html",            label:"Midterms 2024",                count:91,   key:"oculus_uterque_midterms2024_v1"},
+      {file:"oculus-uterque/Midterms2025.html",            label:"Midterms 2025",                count:100,  key:"oculus_uterque_midterms2025_v1"},
+      {file:"oculus-uterque/Salamander2025.html",          label:"Salamander 2025 (Module 1-4)", count:360,  key:"oculus_uterque_salamander2025_v1"},
+      {file:"oculus-uterque/Salamander2026.html",          label:"Salamander 2026 (Module 1-4)", count:395,  key:"oculus_uterque_salamander2026_v1"},
+      {file:"oculus-uterque/BrainDiarrheaMasterfile.html", label:"Brain Diarrhea Masterfile",    count:1317, key:"oculus_uterque_masterfile_v1"}
+    ]
+  }
 ];
-var gate=document.getElementById('ouGate'), grid=document.getElementById('ouGrid'),
-    meta=document.getElementById('ouMeta'), note=document.getElementById('ouNote'),
-    input=document.getElementById('ouPassInput'), err=document.getElementById('ouGateErr'),
-    btn=document.getElementById('ouUnlockBtn');
-function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function reveal(){
-  grid.innerHTML = LINKS.map(function(l){
-    return '<a class="seccard" href="'+esc(l[0])+'" data-key="'+esc(l[3])+'" data-total="'+l[4]+'"><div class="secname">'+esc(l[1])+'</div><div class="seccount">'+esc(l[2])+'</div><div class="secprogress"><div class="secprogress-fill"></div></div><div class="secprogress-label">Not started</div></a>';
-  }).join('');
-  grid.classList.remove('hidden');
-  gate.classList.add('hidden');
-  meta.innerHTML = '2,263 questions · 5 sections<span id="ouOverall" class="overallprog"></span>';
-  note.textContent = 'Split by source exam so each page loads quickly. Works on desktop and phone.';
-  if(window.__resyncThemeLinks) window.__resyncThemeLinks();
-  if(window.__updateOuProgress) window.__updateOuProgress();
+
+/* ---- rendering + gate + progress (no need to edit below) ---- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function sectionCardHtml(sec){
+  return '<a class="seccard" href="'+esc(sec.file)+'" data-key="'+esc(sec.key)+'" data-total="'+sec.count+'">'
+    +'<div class="secname">'+esc(sec.label)+'</div>'
+    +'<div class="seccount">'+sec.count.toLocaleString()+' questions</div>'
+    +'<div class="secprogress"><div class="secprogress-fill"></div></div>'
+    +'<div class="secprogress-label">Not started</div></a>';
 }
+
+function renderGroups(){
+  var root = document.getElementById('groups');
+  root.innerHTML = '';
+  REVIEWERS.forEach(function(g){
+    var div = document.createElement('div');
+    div.className = 'group';
+    div.id = 'group-' + g.id;
+    var locked = false;
+    if(g.password){
+      try{ locked = localStorage.getItem(g.password.storeKey) !== '1'; }catch(e){ locked = true; }
+    }
+    var metaHtml = locked ? '&#128274; Password required'
+                         : esc(g.meta) + '<span class="overallprog" id="overall-'+g.id+'"></span>';
+    var noteHtml = locked ? 'Enter the password to view this reviewer.' : esc(g.note);
+    var inner = '<div class="grouphead"><div class="groupname">'+esc(g.name)+'</div>'
+      +'<div class="groupmeta" id="meta-'+g.id+'">'+metaHtml+'</div></div>'
+      +'<div class="groupnote" id="note-'+g.id+'">'+noteHtml+'</div>';
+    if(locked){
+      inner += '<div class="gatebox" id="gate-'+g.id+'">'
+        +'<input type="password" id="pass-'+g.id+'" placeholder="Password" autocomplete="off">'
+        +'<button class="gatebtn" type="button" id="unlock-'+g.id+'">Unlock</button>'
+        +'<div class="gateerr" id="gateerr-'+g.id+'"></div></div>'
+        +'<div class="secgrid hidden" id="grid-'+g.id+'"></div>';
+    } else {
+      inner += '<div class="secgrid" id="grid-'+g.id+'">'+g.sections.map(sectionCardHtml).join('')+'</div>';
+    }
+    div.innerHTML = inner;
+    root.appendChild(div);
+    if(locked) wireGate(g);
+  });
+  if(window.__resyncThemeLinks) window.__resyncThemeLinks();
+  refreshProgress();
+}
+
 function sha256hex(str){
   var enc = new TextEncoder().encode(str);
   return crypto.subtle.digest('SHA-256', enc).then(function(buf){
     return Array.prototype.map.call(new Uint8Array(buf), function(b){return b.toString(16).padStart(2,'0');}).join('');
   });
 }
-function tryUnlock(){
-  var val = input.value;
-  if(!val) return;
-  sha256hex(val).then(function(hex){
-    if(hex===HASH){
-      try{localStorage.setItem(STORE_KEY,'1');}catch(e){}
-      reveal();
-    } else {
-      err.textContent = 'Incorrect password.';
-      input.value = '';
-    }
-  }).catch(function(){ err.textContent = 'Unlock unavailable in this browser.'; });
-}
-btn.addEventListener('click', tryUnlock);
-input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
-try{
-  if(localStorage.getItem(STORE_KEY)==='1') reveal();
-}catch(e){}
-})();
-</script>
 
-<script>
-function bcscOuCountAnswered(raw){
+function wireGate(g){
+  var input = document.getElementById('pass-'+g.id),
+      btn = document.getElementById('unlock-'+g.id),
+      err = document.getElementById('gateerr-'+g.id);
+  function tryUnlock(){
+    var val = input.value;
+    if(!val) return;
+    sha256hex(val).then(function(hex){
+      if(hex === g.password.hash){
+        try{ localStorage.setItem(g.password.storeKey,'1'); }catch(e){}
+        document.getElementById('gate-'+g.id).classList.add('hidden');
+        var grid = document.getElementById('grid-'+g.id);
+        grid.innerHTML = g.sections.map(sectionCardHtml).join('');
+        grid.classList.remove('hidden');
+        document.getElementById('meta-'+g.id).innerHTML = esc(g.meta)+'<span class="overallprog" id="overall-'+g.id+'"></span>';
+        document.getElementById('note-'+g.id).textContent = g.note;
+        if(window.__resyncThemeLinks) window.__resyncThemeLinks();
+        refreshProgress();
+      } else {
+        err.textContent = 'Incorrect password.';
+        input.value = '';
+      }
+    }).catch(function(){ err.textContent = 'Unlock unavailable in this browser.'; });
+  }
+  btn.addEventListener('click', tryUnlock);
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+}
+
+function countAnswered(raw){
   if(!raw) return 0;
   try{
     var parsed = JSON.parse(raw);
@@ -208,7 +297,7 @@ function bcscOuCountAnswered(raw){
     return Object.keys(parsed).length;
   }catch(e){ return 0; }
 }
-function bcscOuReadStats(key){
+function readStats(key){
   try{
     var raw = localStorage.getItem(key + '_stats');
     if(!raw) return null;
@@ -217,61 +306,52 @@ function bcscOuReadStats(key){
   }catch(e){}
   return null;
 }
-function bcscOuScoreTier(pct){
+function scoreTier(pct){
   if(pct < 50) return 'low';
   if(pct < 70) return 'mid';
   return 'high';
 }
-function bcscOuScoreBadge(pct){
-  return '<span class="scorebadge ' + bcscOuScoreTier(pct) + '">' + pct + '%</span>';
+function scoreBadge(pct){
+  return '<span class="scorebadge ' + scoreTier(pct) + '">' + pct + '%</span>';
 }
-function bcscOuUpdateGroup(groupEl, overallId){
-  if(!groupEl) return;
-  var totalAll = 0, answeredAll = 0, corAll = 0, scoredAll = 0;
-  groupEl.querySelectorAll('.seccard[data-key]').forEach(function(card){
-    var key = card.getAttribute('data-key');
-    var total = parseInt(card.getAttribute('data-total'), 10) || 0;
-    var answered = bcscOuCountAnswered(localStorage.getItem(key));
-    if(answered > total) answered = total;
-    totalAll += total;
-    answeredAll += answered;
-    var pct = total ? Math.round(answered/total*100) : 0;
-    var fill = card.querySelector('.secprogress-fill');
-    var label = card.querySelector('.secprogress-label');
-    var stats = bcscOuReadStats(key);
-    var badgeHtml = '';
-    if(stats && stats.ans > 0){
-      var scorePct = Math.round(stats.cor/stats.ans*100);
-      badgeHtml = bcscOuScoreBadge(scorePct);
-      corAll += stats.cor;
-      scoredAll += stats.ans;
+function refreshProgress(){
+  REVIEWERS.forEach(function(g){
+    var groupEl = document.getElementById('group-'+g.id);
+    if(!groupEl) return;
+    var totalAll = 0, answeredAll = 0, corAll = 0, scoredAll = 0;
+    groupEl.querySelectorAll('.seccard[data-key]').forEach(function(card){
+      var key = card.getAttribute('data-key');
+      var total = parseInt(card.getAttribute('data-total'), 10) || 0;
+      var answered = countAnswered(localStorage.getItem(key));
+      if(answered > total) answered = total;
+      totalAll += total;
+      answeredAll += answered;
+      var pct = total ? Math.round(answered/total*100) : 0;
+      var fill = card.querySelector('.secprogress-fill');
+      var label = card.querySelector('.secprogress-label');
+      var stats = readStats(key);
+      var badgeHtml = '';
+      if(stats && stats.ans > 0){
+        var scorePct = Math.round(stats.cor/stats.ans*100);
+        badgeHtml = scoreBadge(scorePct);
+        corAll += stats.cor;
+        scoredAll += stats.ans;
+      }
+      if(fill) fill.style.width = pct + '%';
+      if(label) label.innerHTML = answered === 0 ? 'Not started' : (answered + ' / ' + total + ' answered (' + pct + '%)' + badgeHtml);
+      if(answered >= total && total > 0){ card.classList.add('done'); } else { card.classList.remove('done'); }
+    });
+    var overall = document.getElementById('overall-'+g.id);
+    if(overall && totalAll){
+      var overallPct = Math.round(answeredAll/totalAll*100);
+      var overallBadge = scoredAll > 0 ? scoreBadge(Math.round(corAll/scoredAll*100)) : '';
+      overall.innerHTML = answeredAll.toLocaleString() + ' / ' + totalAll.toLocaleString() + ' answered overall (' + overallPct + '%)' + overallBadge;
     }
-    if(fill) fill.style.width = pct + '%';
-    if(label) label.innerHTML = answered === 0 ? 'Not started' : (answered + ' / ' + total + ' answered (' + pct + '%)' + badgeHtml);
-    if(answered >= total && total > 0){ card.classList.add('done'); } else { card.classList.remove('done'); }
   });
-  var overall = overallId ? document.getElementById(overallId) : null;
-  if(overall && totalAll){
-    var overallPct = Math.round(answeredAll/totalAll*100);
-    var overallBadge = scoredAll > 0 ? bcscOuScoreBadge(Math.round(corAll/scoredAll*100)) : '';
-    overall.innerHTML = answeredAll.toLocaleString() + ' / ' + totalAll.toLocaleString() + ' answered overall (' + overallPct + '%)' + overallBadge;
-  }
 }
-bcscOuUpdateGroup(document.getElementById('bcscGroup'), 'bcscOverall');
-window.__updateOuProgress = function(){
-  bcscOuUpdateGroup(document.getElementById('ouGroup'), 'ouOverall');
-};
-window.__updateOuProgress();
-</script>
-<script data-goatcounter="https://lebers-learning.goatcounter.com/count" data-goatcounter-settings='{"no_onload": true}' async src="//gc.zgo.at/count.js"></script>
-<script>
-window.addEventListener('load', function(){
-  if(window.goatcounter && window.goatcounter.count){
-    window.goatcounter.count({path: location.pathname});
-  }
-});
-</script>
 
+renderGroups();
+</script>
 <script>
 (function(){
 var msg = document.getElementById('backupMsg');
@@ -328,4 +408,12 @@ document.getElementById('importAllFile').addEventListener('change', function(ev)
   ev.target.value = '';
 });
 })();
+</script>
+<script data-goatcounter="https://lebers-learning.goatcounter.com/count" data-goatcounter-settings='{"no_onload": true}' async src="//gc.zgo.at/count.js"></script>
+<script>
+window.addEventListener('load', function(){
+  if(window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({path: location.pathname});
+  }
+});
 </script>
