@@ -129,6 +129,10 @@ a{color:var(--accent)}
 .lb.open{display:flex}
 .lb img{max-width:100%;max-height:100%;border-radius:8px}
 @media (max-width:560px){.stem{font-size:15px}.opt{font-size:14px}}
+
+.flagbtn{background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;opacity:.55}
+.flagbtn.flagged{color:var(--gold);opacity:1}
+.tbtn.activeview{color:var(--goldink);background:var(--gold);border-color:var(--gold)}
 </style>
 <script>(function(){
 try{
@@ -159,6 +163,8 @@ if(q)try{localStorage.setItem('ouTheme',q);}catch(e){}
     <button class="tbtn" id="revealAll">Reveal all answers</button>
     <button class="tbtn" id="shuffleBtn">Shuffle order</button>
     <button class="tbtn" id="resetAll">Reset / clear</button>
+    <button class="tbtn" id="viewMisses">Review misses</button>
+    <button class="tbtn" id="viewFlagged">Flagged</button>
   </div>
   <div class="note">Quiz mode: click an option to lock your answer — correct turns green, your wrong pick turns red, and every option explains itself (including why the distractors are wrong). Flashcard mode: tap the card to reveal the answer + rationale, then rate yourself and move to the next. Items tagged "confirm vs source" are best-reasoned answers where the source book coverage was thin or the question itself was ambiguous — double-check these against BCSC/Becker-Shaffer. Progress is saved automatically until reset.</div>
   <div id="quiz"></div>
@@ -180,6 +186,17 @@ let mode = "quiz"; // quiz | flash
 let shuffleOn = false;
 let shuffledOrder = null;
 const state = {}; // id -> picked letter (quiz mode)
+let viewFilter = "all"; // all | misses | flagged
+const FLAGS = {};
+function saveFlags(){try{localStorage.setItem("oculus_uterque_salamander2025_v1_flags",JSON.stringify(FLAGS))}catch(e){}}
+function loadFlags(){try{const v=localStorage.getItem("oculus_uterque_salamander2025_v1_flags");if(v)Object.assign(FLAGS,JSON.parse(v))}catch(e){}}
+function isMiss(q){const s=state[q.id];return !!(s&&s!=="__shown__"&&q.options&&Object.keys(q.options).length&&s!==q.answer);}
+function missCount(){return DATA.filter(isMiss).length;}
+function updateViewCounts(){
+const m=document.getElementById("viewMisses"),f=document.getElementById("viewFlagged");
+if(m){m.textContent=(viewFilter==="misses"?"Show all questions":"Review misses ("+missCount()+")");m.classList.toggle("activeview",viewFilter==="misses");}
+if(f){f.textContent=(viewFilter==="flagged"?"Show all questions":"Flagged ("+Object.keys(FLAGS).length+")");f.classList.toggle("activeview",viewFilter==="flagged");}}
+function syncFlagBtns(){document.querySelectorAll(".flagbtn").forEach(b=>{b.classList.toggle("flagged",!!FLAGS[b.dataset.fid]);});}
 const ratings = {}; // id -> got_it/review/missed (flash mode)
 let fcIndex = 0;
 
@@ -200,6 +217,8 @@ function topicOf(section){
 
 function currentList(){
   let list = DATA.filter(q => (sourceFilter==="all"||q.source===sourceFilter) && (topicFilter===null||topicOf(q.section)===topicFilter) && (sectionFilter==="all"||q.section===sectionFilter));
+  if(viewFilter==="misses") list = list.filter(isMiss);
+  else if(viewFilter==="flagged") list = list.filter(q=>FLAGS[q.id]);
   if(shuffleOn){
     if(!shuffledOrder || shuffledOrder.length!==list.length){
       shuffledOrder = list.map((_,i)=>i);
@@ -346,6 +365,8 @@ function buildFilters(){
 function render(){
   if(mode==="quiz") renderQuiz(); else renderFlash();
   updateScore();
+  syncFlagBtns();
+  updateViewCounts();
 }
 
 function renderQuiz(){
@@ -354,6 +375,7 @@ function renderQuiz(){
   const quiz = document.getElementById("quiz");
   quiz.innerHTML = "";
   const list = currentList();
+  if(!list.length){const d=document.createElement("div");d.className="note";d.textContent=(viewFilter==="misses"?"No missed questions in this view \u2014 every answered question here is correct so far.":(viewFilter==="flagged"?"No flagged questions yet. Tap the \u2605 on any question to flag it.":"No questions match the current filters."));quiz.appendChild(d);}
   list.forEach((q, idx) => quiz.appendChild(card(q, idx+1)));
 }
 
@@ -367,7 +389,7 @@ function card(q, displayNum){
   c.innerHTML = `
     <div class="qhead">
       <span class="qnum">Q${q.id}${hasOptions?"":" · Flashcard item"}</span>
-      <span class="tags">${tagsHtml}</span>
+      <span class="tags">${tagsHtml}<button class="flagbtn" data-fid="${q.id}" title="Flag for review">&#9733;</button></span>
     </div>
     <div class="stem">${esc(q.q)}</div>
     ${figHtml}
@@ -569,6 +591,11 @@ try{ render(); }catch(e){ console.error("render failed", e); }
 try{ load(); }catch(e){ console.error("load failed", e); }
 try{ buildFilters(); }catch(e){ console.error("buildFilters failed", e); }
 try{ render(); }catch(e){ console.error("render failed", e); }
+loadFlags();
+document.getElementById("viewMisses").onclick=()=>{viewFilter=(viewFilter==="misses"?"all":"misses");shuffledOrder=null;fcIndex=0;render();window.scrollTo({top:0});};
+document.getElementById("viewFlagged").onclick=()=>{viewFilter=(viewFilter==="flagged"?"all":"flagged");shuffledOrder=null;fcIndex=0;render();window.scrollTo({top:0});};
+document.getElementById("quiz").addEventListener("click",e=>{const b=e.target.closest(".flagbtn");if(!b)return;e.preventDefault();e.stopPropagation();const id=b.dataset.fid;if(FLAGS[id])delete FLAGS[id];else FLAGS[id]=1;saveFlags();syncFlagBtns();updateViewCounts();if(viewFilter==="flagged")render();});
+syncFlagBtns();updateViewCounts();
 (function(){
 function doAutoJump(){try{if(mode==="quiz"){var ansCount=Object.keys(state).length;var total=DATA.length;if(ansCount>0&&ansCount<total){var card=Array.from(document.querySelectorAll("#quiz .card")).find(function(c){return !state[c.dataset.id];});if(card)card.scrollIntoView({block:"center"});}}}catch(e){}}
 function schedule(){setTimeout(doAutoJump,250);}
