@@ -1,5 +1,5 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BCSC Random Quiz</title><style>
+<title>BCSC Exam Mode</title><style>
 :root{--bg:#0e1726;--panel:#16213a;--panel2:#1d2b48;--ink:#e8eef7;--muted:#9fb0c8;--line:#283a5c;
 --accent:#4f9cff;--green:#1f7a44;--greenbg:#0f3b22;--greenln:#39c07a;--red:#7a2330;--redbg:#3a0f16;--redln:#ff6b7d;--gold:#f2c14e;
 --bodybg:linear-gradient(180deg,#0b1320,#0e1726 240px);--headerbg:rgba(11,19,32,.95);--goldink:#06101f;--accentink:#06101f;--ratbg:#1a233a}
@@ -57,6 +57,14 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .stattable td{padding:8px;border-bottom:1px solid var(--line)}
 .stattable tr:last-child td{border-bottom:none}
 .statnote{font-size:12px;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5}
+.examtotal{margin-top:16px;font-size:13.5px;color:var(--muted)}
+.examtotal b{color:var(--gold);font-size:15px}
+.savebox{background:var(--panel2);border:1px solid var(--gold);border-radius:12px;padding:14px;margin:12px 0}
+.savequestion{font-size:14.5px;font-weight:600;margin-bottom:4px}
+.savebtn{margin-top:0;padding:9px 18px;font-size:14px}
+.savedline{color:var(--greenln);font-weight:600;font-size:14px}
+.doneactions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:14px}
+.tbtn.activeview{color:var(--goldink);background:var(--gold);border-color:var(--gold)}
 .hidden{display:none!important}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
 @media (max-width:640px){body{font-size:16px}.wrap{max-width:520px;padding:14px 12px 90px}h1{font-size:17px}.opt{padding:13px 12px;font-size:15px}.tbtn{padding:9px 12px}.card{padding:15px 14px 12px}}
@@ -68,32 +76,34 @@ document.documentElement.setAttribute('data-theme',t);
 if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 }catch(e){document.documentElement.setAttribute('data-theme','dark');}
 })();</script>
-<header><h1><span>BCSC Random Quiz</span><button class="themebtn" type="button">Light mode</button></h1>
+<header><h1><span>BCSC Exam Mode</span><button class="themebtn" type="button">Light mode</button></h1>
 <div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
 <span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
 <span class="pill">Correct <b id="corN">0</b></span></div></header>
 <div class="wrap">
 <div id="setup">
-  <div class="note">Pick subspecialties and a question count, then Start. With <b>Save progress</b> on, every answer you lock in here is saved to that section page exactly as if you had answered it there (progress bars, scores, and misses all update) — but an answer already recorded on a section page is never overwritten. <b>Practice only</b> saves nothing anywhere. Image-based questions stay on the section pages.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Your answers can be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Image-based questions stay on the section pages.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
-  <div class="setuplabel">Number of questions</div>
+  <div class="setuplabel">Questions per subspecialty</div>
   <div class="chips" id="countChips"></div>
   <div class="setuplabel">Question pool</div>
   <div class="chips" id="poolChips"></div>
   <div class="setuplabel">Save answers to section pages?</div>
   <div class="chips" id="saveChips"></div>
-  <button class="startbtn" id="startBtn" disabled>Start quiz</button>
+  <div class="examtotal" id="examTotal">Select subspecialties to begin.</div>
+  <button class="startbtn" id="startBtn" disabled>Start exam</button>
   <div class="note hidden" id="setupMsg"></div>
 </div>
 <div id="quiz" class="hidden"></div>
 <div id="done" class="doneBox hidden"></div>
 </div>
-<footer>Answers lock into the matching section page's saved progress. Rationales are BCSC excerpts as written on the source cards.</footer>
+<footer>Answers can be saved into the matching section page's progress at the end. Rationales are BCSC excerpts as written on the source cards.</footer>
 <script>
 let MANIFEST=null, chosen=new Set(), quizCount=10, quizQs=[], answeredN=0, correctN=0;
 const secData={}; // key -> fetched section json
 const results=[];  // {section, correct, seconds} in answer order
+const pending=[];  // answers awaiting the save confirmation at the end
 let lastAnswerAt=0; // timestamp the current question became "active"
 
 fetch('data/manifest.json').then(r=>r.json()).then(m=>{
@@ -102,15 +112,21 @@ fetch('data/manifest.json').then(r=>r.json()).then(m=>{
   MANIFEST.forEach(s=>{
     const b=document.createElement('button');
     b.className='chip'; b.textContent=s.name+' ('+s.poolCount+')';
-    b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; };
+    b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); };
     box.appendChild(b);
   });
 }).catch(e=>{ document.getElementById('setup').innerHTML='<div class="note">Could not load question data ('+e.message+'). Check your connection and reload.</div>'; });
 
-[5,10,15,20].forEach(n=>{
+function updateTotal(){
+  const el=document.getElementById('examTotal');
+  if(!chosen.size){ el.textContent='Select subspecialties to begin.'; return; }
+  el.innerHTML='Exam length: up to <b>'+(chosen.size*quizCount)+'</b> questions &mdash; '
+    +chosen.size+' subspecialt'+(chosen.size===1?'y':'ies')+' \u00d7 '+quizCount+' each.';
+}
+[5,10,20,30].forEach(n=>{
   const b=document.createElement('button');
   b.className='chip'+(n===10?' on':''); b.textContent=n;
-  b.onclick=()=>{quizCount=n;document.querySelectorAll('#countChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  b.onclick=()=>{quizCount=n;document.querySelectorAll('#countChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');updateTotal();};
   document.getElementById('countChips').appendChild(b);
 });
 
@@ -144,31 +160,52 @@ function persist(sec, qid, letter){
   }catch(e){}
 }
 
+function commitPending(){
+  let written=0, skipped=0;
+  pending.forEach(function(p){
+    const cur=readState(p.sec.key);
+    if(cur[p.qid]!==undefined){ skipped++; return; }
+    persist(p.sec, p.qid, p.letter);
+    written++;
+  });
+  pending.length=0;
+  return {written:written, skipped:skipped};
+}
+
+window.addEventListener('beforeunload', function(e){
+  if(pending.length && saveMode){ e.preventDefault(); e.returnValue=''; }
+});
+
 document.getElementById('startBtn').onclick=function(){
   this.disabled=true; this.textContent='Loading…';
   const files=MANIFEST.filter(s=>chosen.has(s.file));
   Promise.all(files.map(s=>fetch(s.json).then(r=>r.json()))).then(datas=>{
-    let pool=[];
+    let picked=[]; const shortfalls=[];
     datas.forEach(d=>{
       secData[d.key]=d;
       const st=readState(d.key);
-      d.pool.forEach(q=>{ if(poolMode==='all' || st[q.id]===undefined) pool.push({q:q, sec:d}); });
+      const avail=d.pool.filter(q=> poolMode==='all' || st[q.id]===undefined);
+      for(let i=avail.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[avail[i],avail[j]]=[avail[j],avail[i]];}
+      const take=avail.slice(0,quizCount);
+      if(take.length<quizCount) shortfalls.push(d.section+' ('+take.length+' of '+quizCount+')');
+      take.forEach(q=>picked.push({q:q, sec:d}));
     });
-    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-    quizQs=pool.slice(0,quizCount);
+    // interleave subspecialties so the exam doesn't run section by section
+    for(let i=picked.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[picked[i],picked[j]]=[picked[j],picked[i]];}
+    quizQs=picked;
     if(!quizQs.length){
       const m=document.getElementById('setupMsg');
-      m.textContent='No unanswered questions left in the selected subspecialties — pick others, or reset a section.';
+      m.textContent='No unanswered questions left in the selected subspecialties — pick others, switch to "Include answered", or reset a section.';
       m.classList.remove('hidden');
-      this.disabled=false; this.textContent='Start quiz';
+      this.disabled=false; this.textContent='Start exam';
       return;
     }
     document.getElementById('setup').classList.add('hidden');
     const quiz=document.getElementById('quiz');
     quiz.classList.remove('hidden');
-    if(quizQs.length<quizCount){
+    if(shortfalls.length){
       const n=document.createElement('div'); n.className='note';
-      n.textContent='Only '+quizQs.length+' unanswered questions were available in your selection.';
+      n.textContent='Fewer questions than requested were available in: '+shortfalls.join(', ')+'. Total this exam: '+quizQs.length+'.';
       quiz.appendChild(n);
     }
     document.getElementById('totN').textContent=quizQs.length;
@@ -179,7 +216,7 @@ document.getElementById('startBtn').onclick=function(){
     const m=document.getElementById('setupMsg');
     m.textContent='Failed to load question data: '+e.message;
     m.classList.remove('hidden');
-    this.disabled=false; this.textContent='Start quiz';
+    this.disabled=false; this.textContent='Start exam';
   });
 };
 
@@ -205,7 +242,7 @@ function pick(q,sec,c,L){
   const now=Date.now();
   const secs=Math.max(0,(now-lastAnswerAt)/1000);
   lastAnswerAt=now;
-  if(saveMode)persist(sec,q.id,L);
+  pending.push({sec:sec, qid:q.id, letter:L});
   answeredN++;
   if(L===q.answer)correctN++;
   results.push({section:sec.section, correct:L===q.answer, seconds:secs});
@@ -215,6 +252,7 @@ function pick(q,sec,c,L){
     if(OL===q.answer){o.classList.add('correct');tx.insertAdjacentHTML('afterend','<span class="badge ok">Correct</span>');}
     if(OL===L&&L!==q.answer){o.classList.add('wrongpick');tx.insertAdjacentHTML('afterend','<span class="badge no">Your pick</span>');}
   });
+  if(L!==q.answer) c.dataset.missed='1';
   c.querySelector('.rat').classList.add('show');
   document.getElementById('ansN').textContent=answeredN;
   document.getElementById('corN').textContent=correctN;
@@ -258,13 +296,11 @@ function finish(){
       +'<td style="text-align:right">'+fmtTime(s.secs/s.n)+'</td></tr>';
   }).join('');
 
-  const saveLine = saveMode
-    ? 'Saved to the section pages — questions you had already answered there were left untouched.'
-    : 'Practice mode — nothing was saved.';
+  const missedN = results.filter(r=>!r.correct).length;
 
-  d.innerHTML='<h2>Quiz complete — '+correctN+' / '+quizQs.length+' ('+pct+'%) '
+  d.innerHTML='<h2>Exam complete — '+correctN+' / '+quizQs.length+' ('+pct+'%) '
       +'<span class="scorebadge '+tierOf(pct)+'">'+pct+'%</span></h2>'
-    +'<div class="sub">'+saveLine+'</div>'
+    +'<div class="savebox" id="saveBox"></div>'
     +'<div class="statgrid">'
       +'<div class="statbox"><div class="statnum">'+fmtTime(totalSecs)+'</div><div class="statlbl">Total time</div></div>'
       +'<div class="statbox"><div class="statnum">'+fmtTime(avgSecs)+'</div><div class="statlbl">Avg / item</div></div>'
@@ -279,9 +315,53 @@ function finish(){
       + (mean(wrongTimes)!==null ? 'Missed ones averaged '+fmtTime(mean(wrongTimes))+'. ' : '')
       + 'Subspecialties are listed weakest first. Timing counts from the previous answer, so pauses mid-quiz inflate an item.'
     +'</div>'
-    +'<button class="startbtn" onclick="location.reload()">New quiz</button>';
+    +'<div class="doneactions">'
+      +(missedN ? '<button class="tbtn" id="reviewMissedBtn">Review '+missedN+' missed</button>' : '')
+      +'<button class="startbtn" onclick="location.reload()">New exam</button>'
+    +'</div>';
+  renderSaveBox();
+  if(missedN) document.getElementById('reviewMissedBtn').onclick=toggleReviewMissed;
   d.classList.remove('hidden');
   d.scrollIntoView({block:'center'});
+}
+
+function renderSaveBox(){
+  const box=document.getElementById('saveBox');
+  if(!pending.length){ box.innerHTML='<div class="sub">Nothing left to save.</div>'; return; }
+  box.innerHTML='<div class="savequestion">Save these '+pending.length+' answers to the section pages?</div>'
+    +'<div class="sub">Progress bars, scores and misses on those pages will update. Questions you had already answered there are left untouched.</div>'
+    +'<div class="doneactions">'
+      +'<button class="startbtn savebtn" id="confirmSaveBtn">Save to section pages</button>'
+      +'<button class="tbtn" id="discardSaveBtn">Don\u2019t save</button>'
+    +'</div>';
+  document.getElementById('confirmSaveBtn').onclick=function(){
+    const r=commitPending();
+    box.innerHTML='<div class="savedline">\u2713 Saved '+r.written+' answer'+(r.written===1?'':'s')+' to the section pages.'
+      +(r.skipped?' '+r.skipped+' were already answered there and left untouched.':'')+'</div>';
+  };
+  document.getElementById('discardSaveBtn').onclick=function(){
+    pending.length=0;
+    box.innerHTML='<div class="sub">Not saved &mdash; this exam was practice only.</div>';
+  };
+}
+
+let reviewingMissed=false;
+function toggleReviewMissed(){
+  reviewingMissed=!reviewingMissed;
+  const btn=document.getElementById('reviewMissedBtn');
+  const cards=document.querySelectorAll('#quiz .card');
+  cards.forEach(function(c){
+    if(reviewingMissed && c.dataset.missed!=='1') c.classList.add('hidden');
+    else c.classList.remove('hidden');
+  });
+  btn.textContent=reviewingMissed?'Show all questions':'Review '+results.filter(r=>!r.correct).length+' missed';
+  btn.classList.toggle('activeview',reviewingMissed);
+  if(reviewingMissed){
+    const first=document.querySelector('#quiz .card:not(.hidden)');
+    if(first) first.scrollIntoView({block:'start'});
+  } else {
+    document.getElementById('done').scrollIntoView({block:'center'});
+  }
 }
 </script>
 <script>

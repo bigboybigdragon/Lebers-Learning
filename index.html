@@ -112,7 +112,11 @@ h1{font-size:17px}
 .scorebadge.low{background:var(--red);color:#ffe1e6}
 .scorebadge.mid{background:var(--gold);color:var(--goldink)}
 .scorebadge.high{background:var(--green);color:#dffbe9}
-.toolcard{border-style:dashed}.toolcard .secname{color:var(--accent)}
+.toolcard{grid-column:1/-1;position:relative;background:linear-gradient(135deg,var(--ratbg),var(--panel));border:1.5px solid var(--gold)}
+.toolcard:hover{border-color:var(--gold);filter:brightness(1.08)}
+.toolcard .secname{color:var(--gold);font-size:16.5px}
+.toolcard .seccount{color:var(--ink);opacity:.8}
+.toolflag{position:absolute;top:10px;right:12px;background:var(--gold);color:var(--goldink);font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:2px 8px;border-radius:5px}
 </style><script>(function(){
 try{
 var q=new URLSearchParams(location.search).get('theme');
@@ -179,7 +183,7 @@ var REVIEWERS = [
     note: "Split into subspecialty sections so each page loads quickly. Works on desktop and phone.",
     password: null,
     tools: [
-      {file:"bcsc-qbank/Quiz.html", label:"\ud83c\udfb2 Random Quiz", desc:"Random questions from subspecialties you pick \u2014 answers save to the section pages"}
+      {file:"bcsc-qbank/Quiz.html", label:"\ud83d\udcdd Exam Mode", desc:"Set a number of random questions from each subspecialty you choose \u2014 timed stats at the end, answers can save back to the section pages"}
     ],
     sections: [
       {file:"bcsc-qbank/General.html",      label:"Update on General Medicine",                    count:213, key:"bcscanki_general-medicine"},
@@ -225,7 +229,10 @@ function sectionCardHtml(sec){
 }
 
 function toolCardHtml(t){
-  return '<a class="seccard toolcard" href="'+esc(t.file)+'"><div class="secname">'+esc(t.label)+'</div><div class="seccount">'+esc(t.desc||'')+'</div></a>';
+  return '<a class="seccard toolcard" href="'+esc(t.file)+'">'
+    +'<div class="toolflag">Exam</div>'
+    +'<div class="secname">'+esc(t.label)+'</div>'
+    +'<div class="seccount">'+esc(t.desc||'')+'</div></a>';
 }
 function gridHtml(g){
   return (g.tools||[]).map(toolCardHtml).join('') + g.sections.map(sectionCardHtml).join('');
