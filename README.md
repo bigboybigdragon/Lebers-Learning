@@ -1,8 +1,6 @@
-# Residency Reviewers
+# Leber's Learning
 
-Static site for hosted study reviewers (BCSC Qbank, Oculus Uterque, Mania, etc.), published via GitHub Pages.
-
-No patient data lives in this repo. Only self-contained review/study HTML files belong here.
+#RoadtoDPBO
 
 ## Workflow
 - Files are pushed here from `Reviewers/` (or wherever the current version lives) when a reviewer is ready to publish.
