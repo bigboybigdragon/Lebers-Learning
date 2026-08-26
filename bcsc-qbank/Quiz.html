@@ -44,6 +44,19 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .doneBox{background:var(--panel);border:1px solid var(--greenln);border-radius:14px;padding:18px;margin:18px 0;text-align:center}
 .doneBox h2{margin:0 0 6px;font-size:17px}
 .doneBox .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.scorebadge{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:2px 6px;border-radius:6px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
+.scorebadge.low{background:var(--red);color:#ffe1e6}
+.scorebadge.mid{background:var(--gold);color:var(--goldink)}
+.scorebadge.high{background:var(--green);color:#dffbe9}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:14px 0}
+.statbox{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 8px}
+.statnum{font-size:17px;font-weight:700;color:var(--gold)}
+.statlbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.stattable{width:100%;border-collapse:collapse;margin:12px 0 4px;font-size:13.5px;text-align:left}
+.stattable th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+.stattable td{padding:8px;border-bottom:1px solid var(--line)}
+.stattable tr:last-child td{border-bottom:none}
+.statnote{font-size:12px;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5}
 .hidden{display:none!important}
 footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
 @media (max-width:640px){body{font-size:16px}.wrap{max-width:520px;padding:14px 12px 90px}h1{font-size:17px}.opt{padding:13px 12px;font-size:15px}.tbtn{padding:9px 12px}.card{padding:15px 14px 12px}}
@@ -80,6 +93,8 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <script>
 let MANIFEST=null, chosen=new Set(), quizCount=10, quizQs=[], answeredN=0, correctN=0;
 const secData={}; // key -> fetched section json
+const results=[];  // {section, correct, seconds} in answer order
+let lastAnswerAt=0; // timestamp the current question became "active"
 
 fetch('data/manifest.json').then(r=>r.json()).then(m=>{
   MANIFEST=m.sections;
@@ -158,6 +173,7 @@ document.getElementById('startBtn').onclick=function(){
     }
     document.getElementById('totN').textContent=quizQs.length;
     quizQs.forEach((item,i)=>quiz.appendChild(card(item.q,item.sec,i+1)));
+    lastAnswerAt=Date.now();
     window.scrollTo({top:0});
   }).catch(e=>{
     const m=document.getElementById('setupMsg');
@@ -186,9 +202,13 @@ function card(q,sec,dn){
 function pick(q,sec,c,L){
   if(c.dataset.locked)return;
   c.dataset.locked='1';
+  const now=Date.now();
+  const secs=Math.max(0,(now-lastAnswerAt)/1000);
+  lastAnswerAt=now;
   if(saveMode)persist(sec,q.id,L);
   answeredN++;
   if(L===q.answer)correctN++;
+  results.push({section:sec.section, correct:L===q.answer, seconds:secs});
   c.querySelectorAll('.opt').forEach(o=>{
     const OL=o.dataset.l; o.classList.add('disabled');
     const tx=o.querySelector('.otext');
@@ -201,16 +221,64 @@ function pick(q,sec,c,L){
   if(answeredN===quizQs.length)finish();
 }
 
+function fmtTime(s){
+  if(s<60) return s.toFixed(1)+'s';
+  const m=Math.floor(s/60), r=Math.round(s%60);
+  return m+'m '+(r<10?'0':'')+r+'s';
+}
+function tierOf(pct){ return pct<50?'low':(pct<70?'mid':'high'); }
+
 function finish(){
   const d=document.getElementById('done');
   const pct=Math.round(correctN/quizQs.length*100);
+
+  const totalSecs=results.reduce((a,r)=>a+r.seconds,0);
+  const avgSecs=totalSecs/results.length;
+  const times=results.map(r=>r.seconds).slice().sort((a,b)=>a-b);
+  const medSecs=times.length%2 ? times[(times.length-1)/2] : (times[times.length/2-1]+times[times.length/2])/2;
+  const corrTimes=results.filter(r=>r.correct).map(r=>r.seconds);
+  const wrongTimes=results.filter(r=>!r.correct).map(r=>r.seconds);
+  const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+  const slowest=results.reduce((a,b)=>b.seconds>a.seconds?b:a, results[0]);
+
+  // per-subspecialty aggregation
   const bySec={};
-  quizQs.forEach(it=>{ bySec[it.sec.section]=bySec[it.sec.section]||0; bySec[it.sec.section]++; });
+  results.forEach(r=>{
+    const s=bySec[r.section]||(bySec[r.section]={n:0,cor:0,secs:0});
+    s.n++; if(r.correct)s.cor++; s.secs+=r.seconds;
+  });
+  const rows=Object.keys(bySec).sort((a,b)=>{
+    const pa=bySec[a].cor/bySec[a].n, pb=bySec[b].cor/bySec[b].n;
+    return pa-pb; // weakest first — that's what to study
+  }).map(name=>{
+    const s=bySec[name], sp=Math.round(s.cor/s.n*100);
+    return '<tr><td>'+name+'</td>'
+      +'<td style="text-align:center">'+s.cor+' / '+s.n+'</td>'
+      +'<td style="text-align:center"><span class="scorebadge '+tierOf(sp)+'">'+sp+'%</span></td>'
+      +'<td style="text-align:right">'+fmtTime(s.secs/s.n)+'</td></tr>';
+  }).join('');
+
   const saveLine = saveMode
-    ? 'Answers are saved to: '+Object.keys(bySec).map(s=>s+' ('+bySec[s]+')').join(', ')+' (already-answered questions were left untouched)'
+    ? 'Saved to the section pages — questions you had already answered there were left untouched.'
     : 'Practice mode — nothing was saved.';
-  d.innerHTML='<h2>Quiz complete — '+correctN+' / '+quizQs.length+' ('+pct+'%)</h2>'
+
+  d.innerHTML='<h2>Quiz complete — '+correctN+' / '+quizQs.length+' ('+pct+'%) '
+      +'<span class="scorebadge '+tierOf(pct)+'">'+pct+'%</span></h2>'
     +'<div class="sub">'+saveLine+'</div>'
+    +'<div class="statgrid">'
+      +'<div class="statbox"><div class="statnum">'+fmtTime(totalSecs)+'</div><div class="statlbl">Total time</div></div>'
+      +'<div class="statbox"><div class="statnum">'+fmtTime(avgSecs)+'</div><div class="statlbl">Avg / item</div></div>'
+      +'<div class="statbox"><div class="statnum">'+fmtTime(medSecs)+'</div><div class="statlbl">Median / item</div></div>'
+      +'<div class="statbox"><div class="statnum">'+fmtTime(slowest.seconds)+'</div><div class="statlbl">Slowest item</div></div>'
+    +'</div>'
+    +'<table class="stattable"><thead><tr><th>Subspecialty</th><th style="text-align:center">Score</th>'
+      +'<th style="text-align:center">%</th><th style="text-align:right">Avg / item</th></tr></thead>'
+      +'<tbody>'+rows+'</tbody></table>'
+    +'<div class="statnote">'
+      + (mean(corrTimes)!==null ? 'Correct answers averaged '+fmtTime(mean(corrTimes))+'. ' : '')
+      + (mean(wrongTimes)!==null ? 'Missed ones averaged '+fmtTime(mean(wrongTimes))+'. ' : '')
+      + 'Subspecialties are listed weakest first. Timing counts from the previous answer, so pauses mid-quiz inflate an item.'
+    +'</div>'
     +'<button class="startbtn" onclick="location.reload()">New quiz</button>';
   d.classList.remove('hidden');
   d.scrollIntoView({block:'center'});
