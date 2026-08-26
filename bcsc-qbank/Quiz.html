@@ -61,11 +61,15 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <span class="pill">Correct <b id="corN">0</b></span></div></header>
 <div class="wrap">
 <div id="setup">
-  <div class="note">Pick subspecialties and a question count, then Start. Questions are drawn at random from ones you have <b>not yet answered</b> on the section pages, and every answer you lock in here is <b>saved to that section page</b> exactly as if you had answered it there (progress bars, scores, and misses all update). Image-based questions stay on the section pages.</div>
+  <div class="note">Pick subspecialties and a question count, then Start. With <b>Save progress</b> on, every answer you lock in here is saved to that section page exactly as if you had answered it there (progress bars, scores, and misses all update) — but an answer already recorded on a section page is never overwritten. <b>Practice only</b> saves nothing anywhere. Image-based questions stay on the section pages.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Number of questions</div>
   <div class="chips" id="countChips"></div>
+  <div class="setuplabel">Question pool</div>
+  <div class="chips" id="poolChips"></div>
+  <div class="setuplabel">Save answers to section pages?</div>
+  <div class="chips" id="saveChips"></div>
   <button class="startbtn" id="startBtn" disabled>Start quiz</button>
   <div class="note hidden" id="setupMsg"></div>
 </div>
@@ -95,6 +99,20 @@ fetch('data/manifest.json').then(r=>r.json()).then(m=>{
   document.getElementById('countChips').appendChild(b);
 });
 
+let poolMode='unanswered', saveMode=true;
+[['unanswered','Unanswered only'],['all','Include answered']].forEach(([val,lbl])=>{
+  const b=document.createElement('button');
+  b.className='chip'+(val===poolMode?' on':''); b.textContent=lbl;
+  b.onclick=()=>{poolMode=val;document.querySelectorAll('#poolChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  document.getElementById('poolChips').appendChild(b);
+});
+[[true,'Save progress'],[false,'Practice only (nothing saved)']].forEach(([val,lbl])=>{
+  const b=document.createElement('button');
+  b.className='chip'+(val===saveMode?' on':''); b.textContent=lbl;
+  b.onclick=()=>{saveMode=val;document.querySelectorAll('#saveChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  document.getElementById('saveChips').appendChild(b);
+});
+
 function esc(s){return String(s);} // pool content is trusted site data (already HTML)
 
 function readState(key){ try{return JSON.parse(localStorage.getItem(key))||{};}catch(e){return {};} }
@@ -119,7 +137,7 @@ document.getElementById('startBtn').onclick=function(){
     datas.forEach(d=>{
       secData[d.key]=d;
       const st=readState(d.key);
-      d.pool.forEach(q=>{ if(st[q.id]===undefined) pool.push({q:q, sec:d}); });
+      d.pool.forEach(q=>{ if(poolMode==='all' || st[q.id]===undefined) pool.push({q:q, sec:d}); });
     });
     for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
     quizQs=pool.slice(0,quizCount);
@@ -168,7 +186,7 @@ function card(q,sec,dn){
 function pick(q,sec,c,L){
   if(c.dataset.locked)return;
   c.dataset.locked='1';
-  persist(sec,q.id,L);
+  if(saveMode)persist(sec,q.id,L);
   answeredN++;
   if(L===q.answer)correctN++;
   c.querySelectorAll('.opt').forEach(o=>{
@@ -188,8 +206,11 @@ function finish(){
   const pct=Math.round(correctN/quizQs.length*100);
   const bySec={};
   quizQs.forEach(it=>{ bySec[it.sec.section]=bySec[it.sec.section]||0; bySec[it.sec.section]++; });
+  const saveLine = saveMode
+    ? 'Answers are saved to: '+Object.keys(bySec).map(s=>s+' ('+bySec[s]+')').join(', ')+' (already-answered questions were left untouched)'
+    : 'Practice mode — nothing was saved.';
   d.innerHTML='<h2>Quiz complete — '+correctN+' / '+quizQs.length+' ('+pct+'%)</h2>'
-    +'<div class="sub">Answers are saved to: '+Object.keys(bySec).map(s=>s+' ('+bySec[s]+')').join(', ')+'</div>'
+    +'<div class="sub">'+saveLine+'</div>'
     +'<button class="startbtn" onclick="location.reload()">New quiz</button>';
   d.classList.remove('hidden');
   d.scrollIntoView({block:'center'});
