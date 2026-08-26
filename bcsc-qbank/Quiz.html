@@ -1,0 +1,230 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BCSC Random Quiz</title><style>
+:root{--bg:#0e1726;--panel:#16213a;--panel2:#1d2b48;--ink:#e8eef7;--muted:#9fb0c8;--line:#283a5c;
+--accent:#4f9cff;--green:#1f7a44;--greenbg:#0f3b22;--greenln:#39c07a;--red:#7a2330;--redbg:#3a0f16;--redln:#ff6b7d;--gold:#f2c14e;
+--bodybg:linear-gradient(180deg,#0b1320,#0e1726 240px);--headerbg:rgba(11,19,32,.95);--goldink:#06101f;--accentink:#06101f;--ratbg:#1a233a}
+:root[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--panel2:#f1f4fa;--ink:#1a2333;--muted:#5b6b85;--line:#dde4f0;
+--accent:#2f6fed;--green:#1f8a4c;--greenbg:#e5f7ec;--greenln:#1f9d52;--red:#c23a4d;--redbg:#fdeced;--redln:#e0495d;--gold:#b5790a;
+--bodybg:linear-gradient(180deg,#eef2fa,#f4f6fb 240px);--headerbg:rgba(255,255,255,.92);--goldink:#fff8e8;--accentink:#ffffff;--ratbg:#fbf3e2}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bodybg);color:var(--ink);line-height:1.5}
+header{padding:16px 18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;background:var(--headerbg);backdrop-filter:blur(8px)}
+h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.themebtn:hover{border-color:var(--accent)}
+.scorebar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:11px;font-size:13px}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}.pill b{color:var(--gold)}
+.tbtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 11px;font-size:12.5px;cursor:pointer;text-decoration:none}
+.tbtn:hover{color:var(--ink);border-color:var(--accent)}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 90px}
+.note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.setuplabel{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:16px 0 8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accentink);font-weight:600}
+.startbtn{margin-top:18px;background:var(--accent);border:1px solid var(--accent);color:var(--accentink);border-radius:10px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer}
+.startbtn:disabled{opacity:.45;cursor:default}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:14px 0}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:7px}
+.qnum{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.tag{font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+.stem{font-size:15.5px;margin:2px 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;cursor:pointer;font-size:14.5px}
+.opt:hover{border-color:var(--accent)}.opt .ltr{font-weight:700;color:var(--muted);min-width:18px}
+.opt.correct{background:var(--greenbg);border-color:var(--greenln)}.opt.correct .ltr{color:var(--greenln)}
+.opt.wrongpick{background:var(--redbg);border-color:var(--redln)}.opt.wrongpick .ltr{color:var(--redln)}
+.opt.disabled{cursor:default}.opt .body{flex:1}
+.badge{font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px}
+.badge.ok{background:var(--green);color:#dffbe9}.badge.no{background:var(--red);color:#ffe1e6}
+.rat{display:none;margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+.rat.show{display:block}.rat h4{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+.rat .ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+.doneBox{background:var(--panel);border:1px solid var(--greenln);border-radius:14px;padding:18px;margin:18px 0;text-align:center}
+.doneBox h2{margin:0 0 6px;font-size:17px}
+.doneBox .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.hidden{display:none!important}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
+@media (max-width:640px){body{font-size:16px}.wrap{max-width:520px;padding:14px 12px 90px}h1{font-size:17px}.opt{padding:13px 12px;font-size:15px}.tbtn{padding:9px 12px}.card{padding:15px 14px 12px}}
+</style><script>(function(){
+try{
+var q=new URLSearchParams(location.search).get('theme');
+var t=(q==='light'||q==='dark')?q:(localStorage.getItem('bcscTheme')||'dark');
+document.documentElement.setAttribute('data-theme',t);
+if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
+}catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();</script>
+<header><h1><span>BCSC Random Quiz</span><button class="themebtn" type="button">Light mode</button></h1>
+<div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
+<span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
+<span class="pill">Correct <b id="corN">0</b></span></div></header>
+<div class="wrap">
+<div id="setup">
+  <div class="note">Pick subspecialties and a question count, then Start. Questions are drawn at random from ones you have <b>not yet answered</b> on the section pages, and every answer you lock in here is <b>saved to that section page</b> exactly as if you had answered it there (progress bars, scores, and misses all update). Image-based questions stay on the section pages.</div>
+  <div class="setuplabel">Subspecialties</div>
+  <div class="chips" id="secChips"></div>
+  <div class="setuplabel">Number of questions</div>
+  <div class="chips" id="countChips"></div>
+  <button class="startbtn" id="startBtn" disabled>Start quiz</button>
+  <div class="note hidden" id="setupMsg"></div>
+</div>
+<div id="quiz" class="hidden"></div>
+<div id="done" class="doneBox hidden"></div>
+</div>
+<footer>Answers lock into the matching section page's saved progress. Rationales are BCSC excerpts as written on the source cards.</footer>
+<script>
+let MANIFEST=null, chosen=new Set(), quizCount=10, quizQs=[], answeredN=0, correctN=0;
+const secData={}; // key -> fetched section json
+
+fetch('data/manifest.json').then(r=>r.json()).then(m=>{
+  MANIFEST=m.sections;
+  const box=document.getElementById('secChips');
+  MANIFEST.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.textContent=s.name+' ('+s.poolCount+')';
+    b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; };
+    box.appendChild(b);
+  });
+}).catch(e=>{ document.getElementById('setup').innerHTML='<div class="note">Could not load question data ('+e.message+'). Check your connection and reload.</div>'; });
+
+[5,10,15,20].forEach(n=>{
+  const b=document.createElement('button');
+  b.className='chip'+(n===10?' on':''); b.textContent=n;
+  b.onclick=()=>{quizCount=n;document.querySelectorAll('#countChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  document.getElementById('countChips').appendChild(b);
+});
+
+function esc(s){return String(s);} // pool content is trusted site data (already HTML)
+
+function readState(key){ try{return JSON.parse(localStorage.getItem(key))||{};}catch(e){return {};} }
+
+function persist(sec, qid, letter){
+  let cur=readState(sec.key);
+  if(cur[qid]!==undefined) return; // never overwrite an existing answer
+  cur[qid]=letter;
+  try{
+    localStorage.setItem(sec.key, JSON.stringify(cur));
+    let ans=0,cor=0;
+    for(const k in cur){ ans++; if(sec.answers[k] && cur[k]===sec.answers[k]) cor++; }
+    localStorage.setItem(sec.key+'_stats', JSON.stringify({ans:ans,cor:cor}));
+  }catch(e){}
+}
+
+document.getElementById('startBtn').onclick=function(){
+  this.disabled=true; this.textContent='Loading…';
+  const files=MANIFEST.filter(s=>chosen.has(s.file));
+  Promise.all(files.map(s=>fetch(s.json).then(r=>r.json()))).then(datas=>{
+    let pool=[];
+    datas.forEach(d=>{
+      secData[d.key]=d;
+      const st=readState(d.key);
+      d.pool.forEach(q=>{ if(st[q.id]===undefined) pool.push({q:q, sec:d}); });
+    });
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    quizQs=pool.slice(0,quizCount);
+    if(!quizQs.length){
+      const m=document.getElementById('setupMsg');
+      m.textContent='No unanswered questions left in the selected subspecialties — pick others, or reset a section.';
+      m.classList.remove('hidden');
+      this.disabled=false; this.textContent='Start quiz';
+      return;
+    }
+    document.getElementById('setup').classList.add('hidden');
+    const quiz=document.getElementById('quiz');
+    quiz.classList.remove('hidden');
+    if(quizQs.length<quizCount){
+      const n=document.createElement('div'); n.className='note';
+      n.textContent='Only '+quizQs.length+' unanswered questions were available in your selection.';
+      quiz.appendChild(n);
+    }
+    document.getElementById('totN').textContent=quizQs.length;
+    quizQs.forEach((item,i)=>quiz.appendChild(card(item.q,item.sec,i+1)));
+    window.scrollTo({top:0});
+  }).catch(e=>{
+    const m=document.getElementById('setupMsg');
+    m.textContent='Failed to load question data: '+e.message;
+    m.classList.remove('hidden');
+    this.disabled=false; this.textContent='Start quiz';
+  });
+};
+
+function card(q,sec,dn){
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+' · #'+dn+'</span><span class="tag">'+esc(sec.section)+'</span></div>'
+    +'<div class="stem">'+q.q+'</div><div class="opts"></div>'
+    +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div><div class="ref">'+(q.ref||'')+'</div></div>';
+  const opts=c.querySelector('.opts');
+  ['a','b','c','d','e'].forEach(L=>{
+    if(!q.options[L])return;
+    const o=document.createElement('div'); o.className='opt'; o.dataset.l=L;
+    o.innerHTML='<span class="ltr">'+L.toUpperCase()+'</span><div class="body"><span class="otext">'+q.options[L]+'</span></div>';
+    o.addEventListener('click',()=>pick(q,sec,c,L));
+    opts.appendChild(o);
+  });
+  return c;
+}
+
+function pick(q,sec,c,L){
+  if(c.dataset.locked)return;
+  c.dataset.locked='1';
+  persist(sec,q.id,L);
+  answeredN++;
+  if(L===q.answer)correctN++;
+  c.querySelectorAll('.opt').forEach(o=>{
+    const OL=o.dataset.l; o.classList.add('disabled');
+    const tx=o.querySelector('.otext');
+    if(OL===q.answer){o.classList.add('correct');tx.insertAdjacentHTML('afterend','<span class="badge ok">Correct</span>');}
+    if(OL===L&&L!==q.answer){o.classList.add('wrongpick');tx.insertAdjacentHTML('afterend','<span class="badge no">Your pick</span>');}
+  });
+  c.querySelector('.rat').classList.add('show');
+  document.getElementById('ansN').textContent=answeredN;
+  document.getElementById('corN').textContent=correctN;
+  if(answeredN===quizQs.length)finish();
+}
+
+function finish(){
+  const d=document.getElementById('done');
+  const pct=Math.round(correctN/quizQs.length*100);
+  const bySec={};
+  quizQs.forEach(it=>{ bySec[it.sec.section]=bySec[it.sec.section]||0; bySec[it.sec.section]++; });
+  d.innerHTML='<h2>Quiz complete — '+correctN+' / '+quizQs.length+' ('+pct+'%)</h2>'
+    +'<div class="sub">Answers are saved to: '+Object.keys(bySec).map(s=>s+' ('+bySec[s]+')').join(', ')+'</div>'
+    +'<button class="startbtn" onclick="location.reload()">New quiz</button>';
+  d.classList.remove('hidden');
+  d.scrollIntoView({block:'center'});
+}
+</script>
+<script>
+(function(){
+var btns=document.querySelectorAll('.themebtn');
+function syncLinks(t){
+document.querySelectorAll('a[href]').forEach(function(a){
+var href=a.getAttribute('href');
+if(!href||href.charAt(0)==='#')return;
+try{
+var url=new URL(href,location.href);
+url.searchParams.set('theme',t);
+a.setAttribute('href',url.href);
+}catch(e){}
+});
+}
+function label(){var t=document.documentElement.getAttribute('data-theme')||'dark';var txt=t==='light'?'Dark mode':'Light mode';btns.forEach(function(b){b.textContent=txt;});syncLinks(t);}
+label();
+btns.forEach(function(btn){btn.addEventListener('click',function(){
+var cur=document.documentElement.getAttribute('data-theme');
+var next=cur==='light'?'dark':'light';
+document.documentElement.setAttribute('data-theme',next);
+try{localStorage.setItem('bcscTheme',next);}catch(e){}
+label();
+});});
+})();
+</script>
+<script data-goatcounter="https://lebers-learning.goatcounter.com/count" data-goatcounter-settings='{"no_onload": true}' async src="//gc.zgo.at/count.js"></script>
+<script>
+window.addEventListener('load', function(){
+  if(window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({path: location.pathname});
+  }
+});
+</script>

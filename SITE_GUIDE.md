@@ -85,3 +85,20 @@ oculus-uterque/       5 Oculus Uterque source-exam pages (a second engine)
 - After deploy, test in a real browser with a cache-busting query param.
 - Check theme toggle in both modes, phone width (375px), and that `localStorage` keys written
   are only the expected ones.
+
+## Random Quiz (bcsc-qbank/Quiz.html)
+
+Cross-subspecialty random quiz. It fetches per-section question pools from
+`bcsc-qbank/data/*.json` (derived files — MCQs without stem images, plus a complete
+MCQ answer key for stats). Answers lock into each section's normal progress key and
+`_stats`, so section pages and the landing page reflect them; it never overwrites an
+existing answer and only samples unanswered questions.
+
+**If you edit questions in any bcsc-qbank/*.html page, regenerate the data files:**
+
+```
+python3 tools/extract_quiz_data.py
+```
+
+and commit the changed `bcsc-qbank/data/` files with the page edit. The `tools` field
+in the landing `REVIEWERS` config renders the quiz link card (dashed border).

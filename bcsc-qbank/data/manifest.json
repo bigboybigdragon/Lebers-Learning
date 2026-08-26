@@ -1,0 +1,95 @@
+{
+ "sections": [
+  {
+   "name": "Update on General Medicine",
+   "file": "General.html",
+   "json": "data/General.json",
+   "key": "bcscanki_general-medicine",
+   "poolCount": 211
+  },
+  {
+   "name": "Fundamentals & Principles of Ophthalmology",
+   "file": "Fundamentals.html",
+   "json": "data/Fundamentals.json",
+   "key": "bcscanki_fundamentals",
+   "poolCount": 202
+  },
+  {
+   "name": "Clinical Optics & Vision Rehabilitation",
+   "file": "Optics.html",
+   "json": "data/Optics.json",
+   "key": "bcscanki_optics",
+   "poolCount": 174
+  },
+  {
+   "name": "Ophthalmic Pathology & Intraocular Tumors",
+   "file": "Pathology.html",
+   "json": "data/Pathology.json",
+   "key": "bcscanki_pathology",
+   "poolCount": 234
+  },
+  {
+   "name": "Neuro-Ophthalmology",
+   "file": "Neuro.html",
+   "json": "data/Neuro.json",
+   "key": "bcscanki_neuro",
+   "poolCount": 330
+  },
+  {
+   "name": "Pediatric Ophthalmology & Strabismus",
+   "file": "Peds.html",
+   "json": "data/Peds.json",
+   "key": "bcscanki_peds-strabismus",
+   "poolCount": 393
+  },
+  {
+   "name": "Oculofacial Plastic & Orbital Surgery",
+   "file": "Plastics.html",
+   "json": "data/Plastics.json",
+   "key": "bcscanki_plastics-orbit",
+   "poolCount": 386
+  },
+  {
+   "name": "External Disease & Cornea",
+   "file": "Cornea.html",
+   "json": "data/Cornea.json",
+   "key": "bcscanki_cornea",
+   "poolCount": 301
+  },
+  {
+   "name": "Uveitis & Ocular Inflammation",
+   "file": "Uveitis.html",
+   "json": "data/Uveitis.json",
+   "key": "bcscanki_uveitis",
+   "poolCount": 309
+  },
+  {
+   "name": "Glaucoma",
+   "file": "Glaucoma.html",
+   "json": "data/Glaucoma.json",
+   "key": "bcscanki_glaucoma",
+   "poolCount": 273
+  },
+  {
+   "name": "Lens & Cataract",
+   "file": "Cataract.html",
+   "json": "data/Cataract.json",
+   "key": "bcscanki_cataract",
+   "poolCount": 231
+  },
+  {
+   "name": "Retina & Vitreous",
+   "file": "Retina.html",
+   "json": "data/Retina.json",
+   "key": "bcscanki_retina",
+   "poolCount": 310
+  },
+  {
+   "name": "Refractive Surgery",
+   "file": "Refractive.html",
+   "json": "data/Refractive.json",
+   "key": "bcscanki_refractive",
+   "poolCount": 188
+  }
+ ]
+}

@@ -112,6 +112,7 @@ h1{font-size:17px}
 .scorebadge.low{background:var(--red);color:#ffe1e6}
 .scorebadge.mid{background:var(--gold);color:var(--goldink)}
 .scorebadge.high{background:var(--green);color:#dffbe9}
+.toolcard{border-style:dashed}.toolcard .secname{color:var(--accent)}
 </style><script>(function(){
 try{
 var q=new URLSearchParams(location.search).get('theme');
@@ -159,6 +160,8 @@ label();
      - id:       short unique slug, used for element ids only
      - password: null for open groups, or
                  { hash: "<sha256 hex of password>", storeKey: "<localStorage key remembering unlock>" }
+     - tools (optional): extra non-progress link cards, e.g. the Random Quiz:
+         { file, label, desc }
      - sections: one entry per page:
          { file, label, count, key }
          - file:  path relative to this index.html
@@ -175,6 +178,9 @@ var REVIEWERS = [
     meta: "4,052 questions \u00b7 13 sections",
     note: "Split into subspecialty sections so each page loads quickly. Works on desktop and phone.",
     password: null,
+    tools: [
+      {file:"bcsc-qbank/Quiz.html", label:"\ud83c\udfb2 Random Quiz", desc:"Random questions from subspecialties you pick \u2014 answers save to the section pages"}
+    ],
     sections: [
       {file:"bcsc-qbank/General.html",      label:"Update on General Medicine",                    count:213, key:"bcscanki_general-medicine"},
       {file:"bcsc-qbank/Fundamentals.html", label:"Fundamentals & Principles of Ophthalmology",    count:208, key:"bcscanki_fundamentals"},
@@ -218,6 +224,12 @@ function sectionCardHtml(sec){
     +'<div class="secprogress-label">Not started</div></a>';
 }
 
+function toolCardHtml(t){
+  return '<a class="seccard toolcard" href="'+esc(t.file)+'"><div class="secname">'+esc(t.label)+'</div><div class="seccount">'+esc(t.desc||'')+'</div></a>';
+}
+function gridHtml(g){
+  return (g.tools||[]).map(toolCardHtml).join('') + g.sections.map(sectionCardHtml).join('');
+}
 function renderGroups(){
   var root = document.getElementById('groups');
   root.innerHTML = '';
@@ -242,7 +254,7 @@ function renderGroups(){
         +'<div class="gateerr" id="gateerr-'+g.id+'"></div></div>'
         +'<div class="secgrid hidden" id="grid-'+g.id+'"></div>';
     } else {
-      inner += '<div class="secgrid" id="grid-'+g.id+'">'+g.sections.map(sectionCardHtml).join('')+'</div>';
+      inner += '<div class="secgrid" id="grid-'+g.id+'">'+gridHtml(g)+'</div>';
     }
     div.innerHTML = inner;
     root.appendChild(div);
@@ -271,7 +283,7 @@ function wireGate(g){
         try{ localStorage.setItem(g.password.storeKey,'1'); }catch(e){}
         document.getElementById('gate-'+g.id).classList.add('hidden');
         var grid = document.getElementById('grid-'+g.id);
-        grid.innerHTML = g.sections.map(sectionCardHtml).join('');
+        grid.innerHTML = gridHtml(g);
         grid.classList.remove('hidden');
         document.getElementById('meta-'+g.id).innerHTML = esc(g.meta)+'<span class="overallprog" id="overall-'+g.id+'"></span>';
         document.getElementById('note-'+g.id).textContent = g.note;
