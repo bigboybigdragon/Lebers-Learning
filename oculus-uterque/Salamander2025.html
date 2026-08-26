@@ -133,6 +133,7 @@ a{color:var(--accent)}
 .flagbtn{background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;opacity:.55}
 .flagbtn.flagged{color:var(--gold);opacity:1}
 .tbtn.activeview{color:var(--goldink);background:var(--gold);border-color:var(--gold)}
+#viewMisses{margin-left:auto}
 </style>
 <script>(function(){
 try{
@@ -151,6 +152,8 @@ if(q)try{localStorage.setItem('ouTheme',q);}catch(e){}
     <span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
     <span class="pill">Correct <b id="corN">0</b></span>
     <span class="pill">Score <b id="pct">&mdash;</b></span>
+    <button class="tbtn" id="viewMisses">Misses</button>
+    <button class="tbtn" id="viewFlagged">★ Flagged</button>
   </div>
   <div class="modeToggle">
     <button class="modeBtn active" id="modeQuiz">MCQ Quiz mode</button>
@@ -163,8 +166,6 @@ if(q)try{localStorage.setItem('ouTheme',q);}catch(e){}
     <button class="tbtn" id="revealAll">Reveal all answers</button>
     <button class="tbtn" id="shuffleBtn">Shuffle order</button>
     <button class="tbtn" id="resetAll">Reset / clear</button>
-    <button class="tbtn" id="viewMisses">Review misses</button>
-    <button class="tbtn" id="viewFlagged">Flagged</button>
   </div>
   <div class="note">Quiz mode: click an option to lock your answer — correct turns green, your wrong pick turns red, and every option explains itself (including why the distractors are wrong). Flashcard mode: tap the card to reveal the answer + rationale, then rate yourself and move to the next. Items tagged "confirm vs source" are best-reasoned answers where the source book coverage was thin or the question itself was ambiguous — double-check these against BCSC/Becker-Shaffer. Progress is saved automatically until reset.</div>
   <div id="quiz"></div>
@@ -194,8 +195,8 @@ function isMiss(q){const s=state[q.id];return !!(s&&s!=="__shown__"&&q.options&&
 function missCount(){return DATA.filter(isMiss).length;}
 function updateViewCounts(){
 const m=document.getElementById("viewMisses"),f=document.getElementById("viewFlagged");
-if(m){m.textContent=(viewFilter==="misses"?"Show all questions":"Review misses ("+missCount()+")");m.classList.toggle("activeview",viewFilter==="misses");}
-if(f){f.textContent=(viewFilter==="flagged"?"Show all questions":"Flagged ("+Object.keys(FLAGS).length+")");f.classList.toggle("activeview",viewFilter==="flagged");}}
+if(m){m.textContent="Misses ("+missCount()+")";m.title=(viewFilter==="misses"?"Showing missed questions only \u2014 click to show all":"Show only questions you answered wrong");m.classList.toggle("activeview",viewFilter==="misses");}
+if(f){f.textContent="\u2605 Flagged ("+Object.keys(FLAGS).length+")";f.title=(viewFilter==="flagged"?"Showing flagged questions only \u2014 click to show all":"Show only flagged questions");f.classList.toggle("activeview",viewFilter==="flagged");}}
 function syncFlagBtns(){document.querySelectorAll(".flagbtn").forEach(b=>{b.classList.toggle("flagged",!!FLAGS[b.dataset.fid]);});}
 const ratings = {}; // id -> got_it/review/missed (flash mode)
 let fcIndex = 0;
