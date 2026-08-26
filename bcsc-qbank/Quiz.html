@@ -377,11 +377,11 @@ function finish(){
       + 'Subspecialties are listed weakest first. Timing runs from your previous answer to your first answer on each item (changing an answer later does not change its time), so a pause mid-exam inflates whichever item you were on.'
     +'</div>'
     +'<div class="doneactions">'
-      +(missedN ? '<button class="tbtn" id="reviewMissedBtn">Review '+missedN+' missed</button>' : '')
+      +'<button class="tbtn" id="reviewAllBtn">Review answers'+(missedN?' ('+missedN+' missed)':'')+'</button>'
       +'<button class="startbtn" onclick="location.reload()">New exam</button>'
     +'</div>';
   renderSaveBox();
-  if(missedN) document.getElementById('reviewMissedBtn').onclick=toggleReviewMissed;
+  document.getElementById('reviewAllBtn').onclick=reviewAnswers;
   d.classList.remove('hidden');
   d.scrollIntoView({block:'center'});
 }
@@ -406,23 +406,9 @@ function renderSaveBox(){
   };
 }
 
-let reviewingMissed=false;
-function toggleReviewMissed(){
-  reviewingMissed=!reviewingMissed;
-  const btn=document.getElementById('reviewMissedBtn');
-  const cards=document.querySelectorAll('#quiz .card');
-  cards.forEach(function(c){
-    if(reviewingMissed && c.dataset.missed!=='1') c.classList.add('hidden');
-    else c.classList.remove('hidden');
-  });
-  btn.textContent=reviewingMissed?'Show all questions':'Review '+results.filter(r=>!r.correct).length+' missed';
-  btn.classList.toggle('activeview',reviewingMissed);
-  if(reviewingMissed){
-    const first=document.querySelector('#quiz .card:not(.hidden)');
-    if(first) first.scrollIntoView({block:'start'});
-  } else {
-    document.getElementById('done').scrollIntoView({block:'center'});
-  }
+function reviewAnswers(){
+  const first=document.querySelector('#quiz .card');
+  if(first) first.scrollIntoView({block:'start'});
 }
 </script>
 <script>
