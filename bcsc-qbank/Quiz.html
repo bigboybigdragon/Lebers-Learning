@@ -57,6 +57,10 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .stattable td{padding:8px;border-bottom:1px solid var(--line)}
 .stattable tr:last-child td{border-bottom:none}
 .statnote{font-size:12px;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5}
+.fig{margin:8px 0 12px}
+.fig img{max-width:100%;max-height:420px;border-radius:8px;display:block;margin:0 0 8px;cursor:zoom-in;border:1px solid var(--line)}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:8px}
 .opt.chosen{border-color:var(--accent);background:var(--panel);box-shadow:inset 0 0 0 1px var(--accent)}
 .opt.chosen .ltr{color:var(--accent)}
 .submitbtn{background:var(--panel);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
@@ -89,7 +93,7 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <button class="submitbtn hidden" id="submitBtn">Submit exam</button></div></header>
 <div class="wrap">
 <div id="setup">
-  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Image-based questions stay on the section pages.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Questions per subspecialty</div>
@@ -157,6 +161,15 @@ let poolMode='unanswered', saveMode=true;
 function esc(s){return String(s);} // pool content is trusted site data (already HTML)
 
 function readState(key){ try{return JSON.parse(localStorage.getItem(key))||{};}catch(e){return {};} }
+
+function openLB(src){
+  const o=document.createElement('div'); o.className='lb';
+  o.innerHTML='<img src="'+src+'" alt="Figure enlarged">';
+  o.onclick=function(){ o.remove(); document.removeEventListener('keydown',esc); };
+  function esc(e){ if(e.key==='Escape'){ o.remove(); document.removeEventListener('keydown',esc); } }
+  document.addEventListener('keydown',esc);
+  document.body.appendChild(o);
+}
 
 function persist(sec, qid, letter){
   let cur=readState(sec.key);
@@ -236,11 +249,18 @@ document.getElementById('startBtn').onclick=function(){
   });
 };
 
+function figHtml(list){
+  if(!list||!list.length) return '';
+  return '<div class="fig">'+list.map(function(f){
+    return '<img src="img/'+f+'" alt="Figure" loading="lazy" onclick="openLB(this.src)">';
+  }).join('')+'</div>';
+}
+
 function card(q,sec,dn){
   const c=document.createElement('div'); c.className='card';
   c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+' · #'+dn+'</span><span class="tag">'+esc(sec.section)+'</span></div>'
-    +'<div class="stem">'+q.q+'</div><div class="opts"></div>'
-    +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div><div class="ref">'+(q.ref||'')+'</div></div>';
+    +'<div class="stem">'+q.q+'</div>'+figHtml(q.images)+'<div class="opts"></div>'
+    +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div>'+figHtml(q.ratImages)+'<div class="ref">'+(q.ref||'')+'</div></div>';
   const opts=c.querySelector('.opts');
   ['a','b','c','d','e'].forEach(L=>{
     if(!q.options[L])return;

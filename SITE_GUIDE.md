@@ -86,13 +86,23 @@ oculus-uterque/       5 Oculus Uterque source-exam pages (a second engine)
 - Check theme toggle in both modes, phone width (375px), and that `localStorage` keys written
   are only the expected ones.
 
-## Random Quiz (bcsc-qbank/Quiz.html)
+## Exam Mode (bcsc-qbank/Quiz.html)
 
-Cross-subspecialty random quiz. It fetches per-section question pools from
-`bcsc-qbank/data/*.json` (derived files — MCQs without stem images, plus a complete
-MCQ answer key for stats). Answers lock into each section's normal progress key and
-`_stats`, so section pages and the landing page reflect them; it never overwrites an
-existing answer and only samples unanswered questions.
+Cross-subspecialty exam: you choose subspecialties and a count **per subspecialty**;
+answers and rationales stay hidden until Submit; results show per-subspecialty scores
+and per-item timing, then ask for confirmation before saving.
+
+Derived data (regenerate with the tool below, never hand-edit):
+- `bcsc-qbank/data/*.json` — per-section question pools + a complete MCQ answer key
+  (used to recompute `_stats` exactly after writing answers).
+- `bcsc-qbank/img/*.jpg` — clinical figures extracted from the base64 data URIs
+  embedded in the section pages, named by content hash and deduped. Pool entries
+  reference them as `images` / `ratImages` filenames; Quiz.html renders them from
+  `img/` with lazy loading and a click-to-zoom lightbox.
+
+Answers are held in memory during the exam and written only when the user confirms in
+the results window; writes go to each section's normal progress key and `_stats`, and
+an answer already recorded on a section page is never overwritten.
 
 **If you edit questions in any bcsc-qbank/*.html page, regenerate the data files:**
 
@@ -100,5 +110,12 @@ existing answer and only samples unanswered questions.
 python3 tools/extract_quiz_data.py
 ```
 
-and commit the changed `bcsc-qbank/data/` files with the page edit. The `tools` field
-in the landing `REVIEWERS` config renders the quiz link card (dashed border).
+and commit the changed `bcsc-qbank/data/` and `bcsc-qbank/img/` files with the page
+edit. The `tools` field in the landing `REVIEWERS` config renders the highlighted
+Exam Mode card.
+
+**Repo size note:** the section pages still carry their figures as inline base64, so
+each edit to one stores a fresh multi-MB blob in git history (`.git` is already
+~700 MB). If this becomes a problem, the fix is to point the section pages' hidden
+`<img id="qimg-N">` elements at `img/<hash>.jpg` instead of data URIs — that shrinks
+each page ~90%. Test lazy-loading behaviour carefully if you do.
