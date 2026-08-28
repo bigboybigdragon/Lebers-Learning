@@ -48,9 +48,15 @@ EXT = {"image/jpeg": ".jpg", "image/png": ".png", "image/gif": ".gif", "image/we
 written_imgs = {}
 
 def extract_images(html):
-    """qimg-N id -> filename written into bcsc-qbank/img/ (deduped by content hash)."""
+    """qimg-N id -> filename in bcsc-qbank/img/.
+
+    Handles both page forms: the original inline base64 data URIs (decoded and written
+    out, deduped by content hash) and already-slimmed pages that reference img/ files
+    directly (see tools/slim_section_pages.py). Keep both branches — a section page may
+    be in either state.
+    """
     out = {}
-    for iid, mime, b64 in re.findall(r'<img id="(qimg-\d+)" src="data:([^;]+);base64,([^"]*)"', html):
+    for iid, mime, b64 in re.findall(r'<img id="(qimg-\d+)"[^>]*? src="data:([^;]+);base64,([^"]*)"', html):
         try:
             raw = base64.b64decode(b64)
         except Exception:
@@ -61,6 +67,9 @@ def extract_images(html):
                 f.write(raw)
             written_imgs[name] = True
         out[iid] = name
+    for iid, fname in re.findall(r'<img id="(qimg-\d+)"[^>]*? src="img/([^"]+)"', html):
+        out.setdefault(iid, fname)
+        written_imgs.setdefault(fname, True)
     return out
 
 manifest = []

@@ -114,8 +114,20 @@ and commit the changed `bcsc-qbank/data/` and `bcsc-qbank/img/` files with the p
 edit. The `tools` field in the landing `REVIEWERS` config renders the highlighted
 Exam Mode card.
 
-**Repo size note:** the section pages still carry their figures as inline base64, so
-each edit to one stores a fresh multi-MB blob in git history (`.git` is already
-~700 MB). If this becomes a problem, the fix is to point the section pages' hidden
-`<img id="qimg-N">` elements at `img/<hash>.jpg` instead of data URIs — that shrinks
-each page ~90%. Test lazy-loading behaviour carefully if you do.
+**Figures are now external files, not base64.** The section pages' `<img id="qimg-N">`
+elements point at `img/<hash>.jpg` (converted by `tools/slim_section_pages.py`, which is
+idempotent and safe to re-run). This took the 13 pages from 83 MB to 14 MB, so editing a
+page no longer writes a multi-MB blob into git history. Two consequences to respect:
+
+- `extract_quiz_data.py` reads **both** page forms (inline base64 and `img/` references),
+  so it keeps working either way — do not "simplify" it to one branch.
+- A page's figures now depend on `bcsc-qbank/img/` existing. Never delete files there
+  without re-running both tools.
+
+Four `class="inline-fig"` images inside answer-option text in Pathology.html are still
+base64 (95 KB total) — deliberately left alone; extracting them would mean rewriting
+option HTML for negligible gain.
+
+`.git` itself is still ~700 MB from the pre-slimming history. That is historical weight
+only; new commits are small now. Shrinking it would require rewriting history
+(git-filter-repo) and a force-push — do that only if Arlon explicitly asks.
