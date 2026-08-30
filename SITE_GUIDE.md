@@ -35,7 +35,8 @@ Per section page (progress key `KEY` is in the `REVIEWERS` config in index.html)
 | `KEY_flags`   | section page    | `{qid: 1}` — flagged/bookmarked questions       |
 
 Site-wide: `bcscTheme` (landing+BCSC theme), `ouTheme` (OU pages theme),
-`ouUnlocked_lebers` (OU password-gate unlock memory), `skipgc` (GoatCounter self-exclusion).
+`ouUnlocked_lebers` (OU password-gate unlock memory), `skipgc` (GoatCounter self-exclusion),
+`bcsc_exam_session_v1` (Exam Mode in-progress autosave — see Exam Mode section).
 
 ## Repo layout
 
@@ -100,9 +101,17 @@ Derived data (regenerate with the tool below, never hand-edit):
   reference them as `images` / `ratImages` filenames; Quiz.html renders them from
   `img/` with lazy loading and a click-to-zoom lightbox.
 
-Answers are held in memory during the exam and written only when the user confirms in
-the results window; writes go to each section's normal progress key and `_stats`, and
-an answer already recorded on a section page is never overwritten.
+Answers are written to each section's progress key and `_stats` only when the user
+confirms in the results window, and an answer already recorded on a section page is
+never overwritten.
+
+**In-progress exams autosave** to their own key `bcsc_exam_session_v1` after every
+answer and on submit (question ids + picks + per-item times + submitted flag). On load,
+Quiz.html offers to resume or discard it; resuming refetches the section pools, rebuilds
+the exam, restores every selection, and — if the exam was already submitted — replays
+the reveal and results so the pending save is not lost. The session key is cleared when
+the user saves, declines to save, discards, or starts a new exam. It never writes to a
+section progress key, so an abandoned exam cannot pollute real progress.
 
 **If you edit questions in any bcsc-qbank/*.html page, regenerate the data files:**
 

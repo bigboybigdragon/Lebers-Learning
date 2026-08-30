@@ -67,6 +67,10 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .submitbtn:hover{background:var(--accent);color:var(--accentink)}
 .submitbtn.ready{background:var(--accent);color:var(--accentink)}
 .submitbottom{display:block;width:100%;margin:18px 0 0;padding:13px;font-size:15px;border-radius:10px}
+.resumebox{background:var(--panel2);border:1.5px solid var(--gold);border-radius:12px;padding:14px 16px;margin-bottom:6px}
+.resumebox .rtitle{font-size:15px;font-weight:700;margin-bottom:3px}
+.resumebox .rsub{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.resumeactions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .examtotal{margin-top:16px;font-size:13.5px;color:var(--muted)}
 .examtotal b{color:var(--gold);font-size:15px}
 .savebox{background:var(--panel2);border:1px solid var(--gold);border-radius:12px;padding:14px;margin:12px 0}
@@ -92,8 +96,9 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <span class="pill hidden" id="corPill">Correct <b id="corN">0</b></span>
 <button class="submitbtn hidden" id="submitBtn">Submit exam</button></div></header>
 <div class="wrap">
+<div id="resumeBox" class="resumebox hidden"></div>
 <div id="setup">
-  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it. Your answers are saved in this browser as you go, so a refresh or a closed tab will not lose them.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Questions per subspecialty</div>
@@ -118,6 +123,44 @@ const pending=[];  // answers awaiting the save confirmation at the end
 const picks={};    // qid -> letter, changeable until submit
 const itemSecs={}; // qid -> seconds taken to first answer that item
 let submitted=false;
+let saveResolved=false;      // true once the user has saved or declined at the end
+let examStartedAt=0;
+
+/* ---- in-progress exam autosave -------------------------------------------
+   Stored under its OWN key; this NEVER touches a section's progress key.
+   Section progress is still only written when the user confirms at the end. */
+const SESSION_KEY='bcsc_exam_session_v1';
+function saveSession(){
+  if(!quizQs.length) return;
+  try{
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      v:1, startedAt:examStartedAt, savedAt:Date.now(),
+      items:quizQs.map(function(it){return {k:it.sec.key, id:it.q.id};}),
+      picks:picks, secs:itemSecs,
+      submitted:submitted, saveMode:saveMode, resolved:saveResolved
+    }));
+  }catch(e){}
+}
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+function readSession(){
+  try{
+    const raw=localStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const s=JSON.parse(raw);
+    if(!s||s.v!==1||!s.items||!s.items.length) return null;
+    if(s.resolved) return null;            // finished and already dealt with
+    return s;
+  }catch(e){ return null; }
+}
+function ago(ts){
+  const m=Math.round((Date.now()-ts)/60000);
+  if(m<1) return 'just now';
+  if(m<60) return m+' minute'+(m===1?'':'s')+' ago';
+  const hr=Math.round(m/60);
+  if(hr<24) return hr+' hour'+(hr===1?'':'s')+' ago';
+  const d=Math.round(hr/24);
+  return d+' day'+(d===1?'':'s')+' ago';
+}
 let lastAnswerAt=0; // timestamp the current question became "active"
 
 fetch('data/manifest.json').then(r=>r.json()).then(m=>{
@@ -129,6 +172,7 @@ fetch('data/manifest.json').then(r=>r.json()).then(m=>{
     b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); };
     box.appendChild(b);
   });
+  offerResume();
 }).catch(e=>{ document.getElementById('setup').innerHTML='<div class="note">Could not load question data ('+e.message+'). Check your connection and reload.</div>'; });
 
 function updateTotal(){
@@ -137,6 +181,88 @@ function updateTotal(){
   el.innerHTML='Exam length: up to <b>'+(chosen.size*quizCount)+'</b> questions &mdash; '
     +chosen.size+' subspecialt'+(chosen.size===1?'y':'ies')+' \u00d7 '+quizCount+' each.';
 }
+function offerResume(){
+  const s=readSession();
+  if(!s) return;
+  const answered=Object.keys(s.picks||{}).length;
+  const box=document.getElementById('resumeBox');
+  box.innerHTML='<div class="rtitle">'+(s.submitted?'You have a finished exam waiting to be saved':'You have an exam in progress')+'</div>'
+    +'<div class="rsub">'+answered+' of '+s.items.length+' answered \u00b7 last activity '+ago(s.savedAt)+'</div>'
+    +'<div class="resumeactions">'
+      +'<button class="startbtn savebtn" id="resumeBtn">Resume exam</button>'
+      +'<button class="tbtn" id="discardExamBtn">Discard it</button>'
+    +'</div>';
+  box.classList.remove('hidden');
+  document.getElementById('discardExamBtn').onclick=function(){
+    if(!confirm('Discard that exam and its '+answered+' answered question'+(answered===1?'':'s')+'? This cannot be undone.')) return;
+    clearSession(); box.classList.add('hidden');
+  };
+  document.getElementById('resumeBtn').onclick=function(){
+    this.disabled=true; this.textContent='Loading\u2026';
+    resumeSession(s, box);
+  };
+}
+
+function resumeSession(s, box){
+  const keys=[]; s.items.forEach(function(it){ if(keys.indexOf(it.k)<0) keys.push(it.k); });
+  const entries=keys.map(function(k){ return MANIFEST.filter(function(m){return m.key===k;})[0]; }).filter(Boolean);
+  Promise.all(entries.map(function(m){ return fetch(m.json).then(function(r){return r.json();}); })).then(function(datas){
+    const byKey={};
+    datas.forEach(function(d){ secData[d.key]=d; byKey[d.key]={}; d.pool.forEach(function(q){ byKey[d.key][q.id]=q; }); });
+    quizQs=[];
+    let dropped=0;
+    s.items.forEach(function(it){
+      const q=byKey[it.k] && byKey[it.k][it.id];
+      if(q) quizQs.push({q:q, sec:secData[it.k]}); else dropped++;
+    });
+    if(!quizQs.length){ clearSession(); box.classList.add('hidden'); return; }
+
+    box.classList.add('hidden');
+    examStartedAt=s.startedAt||Date.now();
+    saveMode=(s.saveMode!==false);
+    renderExam(dropped?['(' + dropped + ' question(s) from that exam are no longer available and were dropped)']:null);
+
+    // restore selections
+    const cards=document.querySelectorAll('#quiz .card');
+    quizQs.forEach(function(item,i){
+      const L=s.picks[item.q.id];
+      if(L===undefined) return;
+      picks[item.q.id]=L;
+      itemSecs[item.q.id]=(s.secs&&s.secs[item.q.id])||0;
+      answeredN++;
+      cards[i].querySelectorAll('.opt').forEach(function(o){ o.classList.toggle('chosen', o.dataset.l===L); });
+    });
+    document.getElementById('ansN').textContent=answeredN;
+    updateSubmitBtn();
+
+    if(s.submitted){
+      submitted=true;
+      document.getElementById('submitBtn').classList.add('hidden');
+      const bb=document.getElementById('submitBottom'); if(bb) bb.classList.add('hidden');
+      quizQs.forEach(function(item,i){
+        revealCard(item,cards[i]);
+        const L=picks[item.q.id];
+        if(L===undefined) return;
+        const correct=L===item.q.answer;
+        if(correct) correctN++;
+        results.push({section:item.sec.section, correct:correct, seconds:itemSecs[item.q.id]||0});
+        pending.push({sec:item.sec, qid:item.q.id, letter:L});
+      });
+      document.getElementById('corPill').classList.remove('hidden');
+      document.getElementById('corN').textContent=correctN;
+      finish();
+    } else {
+      lastAnswerAt=Date.now();
+      const firstUn=quizQs.findIndex(function(it){ return picks[it.q.id]===undefined; });
+      if(firstUn>=0) cards[firstUn].scrollIntoView({block:'start'});
+      else window.scrollTo({top:0});
+    }
+    saveSession();
+  }).catch(function(e){
+    box.innerHTML='<div class="rsub">Could not restore that exam: '+e.message+'</div>';
+  });
+}
+
 [5,10,20,30].forEach(n=>{
   const b=document.createElement('button');
   b.className='chip'+(n===10?' on':''); b.textContent=n;
@@ -196,12 +322,15 @@ function commitPending(){
 }
 
 window.addEventListener('beforeunload', function(e){
-  const unsubmitted = !submitted && Object.keys(picks).length>0;
-  if(unsubmitted || (pending.length && saveMode)){ e.preventDefault(); e.returnValue=''; }
+  // Mid-exam answers are autosaved and resumable, so only warn when a finished
+  // exam still has answers the user has not chosen to save or discard.
+  if(submitted && pending.length && !saveResolved){ e.preventDefault(); e.returnValue=''; }
 });
 
 document.getElementById('startBtn').onclick=function(){
   this.disabled=true; this.textContent='Loading…';
+  clearSession();
+  document.getElementById('resumeBox').classList.add('hidden');
   const files=MANIFEST.filter(s=>chosen.has(s.file));
   Promise.all(files.map(s=>fetch(s.json).then(r=>r.json()))).then(datas=>{
     let picked=[]; const shortfalls=[];
@@ -224,22 +353,9 @@ document.getElementById('startBtn').onclick=function(){
       this.disabled=false; this.textContent='Start exam';
       return;
     }
-    document.getElementById('setup').classList.add('hidden');
-    const quiz=document.getElementById('quiz');
-    quiz.classList.remove('hidden');
-    if(shortfalls.length){
-      const n=document.createElement('div'); n.className='note';
-      n.textContent='Fewer questions than requested were available in: '+shortfalls.join(', ')+'. Total this exam: '+quizQs.length+'.';
-      quiz.appendChild(n);
-    }
-    document.getElementById('totN').textContent=quizQs.length;
-    quizQs.forEach((item,i)=>quiz.appendChild(card(item.q,item.sec,i+1)));
-    const bb=document.createElement('button');
-    bb.className='submitbtn submitbottom'; bb.id='submitBottom'; bb.textContent='Submit exam (0/'+quizQs.length+')';
-    bb.onclick=submitExam; quiz.appendChild(bb);
-    document.getElementById('submitBtn').onclick=submitExam;
-    updateSubmitBtn();
-    lastAnswerAt=Date.now();
+    examStartedAt=Date.now();
+    renderExam(shortfalls);
+    saveSession();
     window.scrollTo({top:0});
   }).catch(e=>{
     const m=document.getElementById('setupMsg');
@@ -248,6 +364,26 @@ document.getElementById('startBtn').onclick=function(){
     this.disabled=false; this.textContent='Start exam';
   });
 };
+
+function renderExam(shortfalls){
+  document.getElementById('setup').classList.add('hidden');
+  const quiz=document.getElementById('quiz');
+  quiz.innerHTML='';
+  quiz.classList.remove('hidden');
+  if(shortfalls && shortfalls.length){
+    const n=document.createElement('div'); n.className='note';
+    n.textContent='Fewer questions than requested were available in: '+shortfalls.join(', ')+'. Total this exam: '+quizQs.length+'.';
+    quiz.appendChild(n);
+  }
+  document.getElementById('totN').textContent=quizQs.length;
+  quizQs.forEach((item,i)=>quiz.appendChild(card(item.q,item.sec,i+1)));
+  const bb=document.createElement('button');
+  bb.className='submitbtn submitbottom'; bb.id='submitBottom'; bb.textContent='Submit exam (0/'+quizQs.length+')';
+  bb.onclick=submitExam; quiz.appendChild(bb);
+  document.getElementById('submitBtn').onclick=submitExam;
+  updateSubmitBtn();
+  lastAnswerAt=Date.now();
+}
 
 function figHtml(list){
   if(!list||!list.length) return '';
@@ -284,6 +420,7 @@ function pick(q,sec,c,L){
   picks[q.id]=L;                            // changeable until submit
   c.querySelectorAll('.opt').forEach(o=>o.classList.toggle('chosen', o.dataset.l===L));
   updateSubmitBtn();
+  saveSession();                            // survives refresh / crash / tab eviction
 }
 
 function updateSubmitBtn(){
@@ -329,6 +466,7 @@ function submitExam(){
   });
   document.getElementById('corPill').classList.remove('hidden');
   document.getElementById('corN').textContent=correctN;
+  saveSession();
   finish();
 }
 
@@ -408,7 +546,11 @@ function finish(){
 
 function renderSaveBox(){
   const box=document.getElementById('saveBox');
-  if(!pending.length){ box.innerHTML='<div class="sub">Nothing left to save.</div>'; return; }
+  if(!pending.length){
+    box.innerHTML='<div class="sub">Nothing left to save.</div>';
+    saveResolved=true; clearSession();
+    return;
+  }
   box.innerHTML='<div class="savequestion">Save these '+pending.length+' answers to the section pages?</div>'
     +'<div class="sub">Progress bars, scores and misses on those pages will update. Questions you had already answered there are left untouched.</div>'
     +'<div class="doneactions">'
@@ -417,11 +559,13 @@ function renderSaveBox(){
     +'</div>';
   document.getElementById('confirmSaveBtn').onclick=function(){
     const r=commitPending();
+    saveResolved=true; clearSession();
     box.innerHTML='<div class="savedline">\u2713 Saved '+r.written+' answer'+(r.written===1?'':'s')+' to the section pages.'
       +(r.skipped?' '+r.skipped+' were already answered there and left untouched.':'')+'</div>';
   };
   document.getElementById('discardSaveBtn').onclick=function(){
     pending.length=0;
+    saveResolved=true; clearSession();
     box.innerHTML='<div class="sub">Not saved &mdash; this exam was practice only.</div>';
   };
 }
