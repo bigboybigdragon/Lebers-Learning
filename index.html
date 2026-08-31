@@ -112,11 +112,12 @@ h1{font-size:17px}
 .scorebadge.low{background:var(--red);color:#ffe1e6}
 .scorebadge.mid{background:var(--gold);color:var(--goldink)}
 .scorebadge.high{background:var(--green);color:#dffbe9}
-.toolcard{grid-column:1/-1;position:relative;background:linear-gradient(135deg,var(--ratbg),var(--panel));border:1.5px solid var(--gold)}
-.toolcard:hover{border-color:var(--gold);filter:brightness(1.08)}
-.toolcard .secname{color:var(--gold);font-size:16.5px}
-.toolcard .seccount{color:var(--ink);opacity:.8}
-.toolflag{position:absolute;top:10px;right:12px;background:var(--gold);color:var(--goldink);font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:2px 8px;border-radius:5px}
+.toolgroup{position:relative;background:linear-gradient(135deg,var(--ratbg),var(--panel));border:1.5px solid var(--gold);padding:0}
+.toolboxlink{display:block;color:inherit;text-decoration:none;padding:16px 18px 18px}
+.toolboxlink:hover{filter:brightness(1.08)}
+.toolboxlink .groupname{color:var(--gold);font-size:17px;margin-bottom:4px}
+.toolboxlink .groupnote{color:var(--ink);opacity:.85;font-size:13px}
+.toolflag{position:absolute;top:14px;right:16px;background:var(--gold);color:var(--goldink);font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:2px 8px;border-radius:5px}
 </style><script>(function(){
 try{
 var q=new URLSearchParams(location.search).get('theme');
@@ -175,6 +176,11 @@ label();
                   the key inside that page's own save()/load() code.
                   NEVER change an existing key.
    ============================================================ */
+var TOOLS = [
+  {file:"bcsc-qbank/Quiz.html", flag:"Exam", label:"\ud83d\udcdd Exam Mode",
+   desc:"Set a number of random questions from each subspecialty you choose, across the BCSC Question Bank, Review Questions in Ophthalmology, and BCSC End-of-Volume Quizzes \u2014 timed stats at the end, answers can save back to the section pages."}
+];
+
 var REVIEWERS = [
   {
     id: "bcsc",
@@ -182,9 +188,6 @@ var REVIEWERS = [
     meta: "4,052 questions \u00b7 13 sections",
     note: "Split into subspecialty sections so each page loads quickly. Works on desktop and phone.",
     password: null,
-    tools: [
-      {file:"bcsc-qbank/Quiz.html", label:"\ud83d\udcdd Exam Mode", desc:"Set a number of random questions from each subspecialty you choose \u2014 timed stats at the end, answers can save back to the section pages"}
-    ],
     sections: [
       {file:"bcsc-qbank/General.html",      label:"Update on General Medicine",                    count:213, key:"bcscanki_general-medicine"},
       {file:"bcsc-qbank/Fundamentals.html", label:"Fundamentals & Principles of Ophthalmology",    count:208, key:"bcscanki_fundamentals"},
@@ -271,18 +274,19 @@ function sectionCardHtml(sec){
     +'<div class="secprogress-label">Not started</div></a>';
 }
 
-function toolCardHtml(t){
-  return '<a class="seccard toolcard" href="'+esc(t.file)+'">'
-    +'<div class="toolflag">Exam</div>'
-    +'<div class="secname">'+esc(t.label)+'</div>'
-    +'<div class="seccount">'+esc(t.desc||'')+'</div></a>';
+function toolBoxHtml(t){
+  return '<div class="group toolgroup"><a class="toolboxlink" href="'+esc(t.file)+'">'
+    +'<div class="toolflag">'+esc(t.flag||'Tool')+'</div>'
+    +'<div class="groupname">'+esc(t.label)+'</div>'
+    +'<div class="groupnote">'+esc(t.desc||'')+'</div>'
+    +'</a></div>';
 }
 function gridHtml(g){
-  return (g.tools||[]).map(toolCardHtml).join('') + g.sections.map(sectionCardHtml).join('');
+  return g.sections.map(sectionCardHtml).join('');
 }
 function renderGroups(){
   var root = document.getElementById('groups');
-  root.innerHTML = '';
+  root.innerHTML = TOOLS.map(toolBoxHtml).join('');
   REVIEWERS.forEach(function(g){
     var div = document.createElement('div');
     div.className = 'group';

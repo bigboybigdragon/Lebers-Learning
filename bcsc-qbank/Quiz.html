@@ -20,8 +20,16 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
 .setuplabel{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:16px 0 8px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chipgrouplabel{font-size:12px;color:var(--muted);font-weight:600;margin:10px 0 6px;text-transform:uppercase;letter-spacing:.4px}
-.chipgrouplabel:first-child{margin-top:0}
+.srcgroup{flex:1 1 100%;border:1px solid var(--line);border-radius:12px;margin-top:10px;overflow:hidden}
+.srcgroup:first-child{margin-top:0}
+.srcheader{width:100%;display:flex;align-items:center;gap:8px;background:var(--panel);border:none;color:var(--ink);padding:12px 14px;font-size:14px;cursor:pointer;text-align:left}
+.srcheader:hover{background:var(--panel2)}
+.srcchevron{display:inline-block;transition:transform .15s;color:var(--muted);font-size:11px}
+.srcheader.open .srcchevron{transform:rotate(90deg)}
+.srcname{font-weight:600}
+.srcmeta{color:var(--muted);font-size:12.5px;margin-left:auto}
+.srcmeta b{color:var(--gold)}
+.srcrow{padding:12px 14px 14px;background:var(--panel2)}
 .chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer}
 .chip:hover{border-color:var(--accent)}
 .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accentink);font-weight:600}
@@ -180,20 +188,38 @@ Promise.all(SOURCES.map(s=>fetch(s.url).then(r=>r.json()).catch(()=>({sections:[
   const box=document.getElementById('secChips');
   all.forEach(function(m, gi){
     if(!m.sections.length) return;
-    const h=document.createElement('div');
-    h.className='chipgrouplabel';
-    h.textContent = SOURCES[gi].label;
-    box.appendChild(h);
+    const group=document.createElement('div');
+    group.className='srcgroup';
+    const header=document.createElement('button');
+    header.type='button';
+    header.className='srcheader';
     const row=document.createElement('div');
-    row.className='chips';
+    row.className='chips srcrow hidden';
+
+    function updateHeader(){
+      const selCount=m.sections.filter(s=>chosen.has(s.file)).length;
+      header.innerHTML='<span class="srcchevron">&#9656;</span>'
+        +'<span class="srcname">'+SOURCES[gi].label+'</span>'
+        +'<span class="srcmeta">'+m.sections.length+' subspecialt'+(m.sections.length===1?'y':'ies')
+        +(selCount?' &middot; <b>'+selCount+' selected</b>':'')+'</span>';
+    }
+    header.onclick=()=>{
+      const open=!row.classList.contains('hidden');
+      row.classList.toggle('hidden', open);
+      header.classList.toggle('open', !open);
+    };
+    updateHeader();
+
     m.sections.forEach(function(s){
       MANIFEST.push(s);
       const b=document.createElement('button');
       b.className='chip'; b.textContent=s.name+' ('+s.poolCount+')';
-      b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); };
+      b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); updateHeader(); };
       row.appendChild(b);
     });
-    box.appendChild(row);
+    group.appendChild(header);
+    group.appendChild(row);
+    box.appendChild(group);
   });
   offerResume();
 }).catch(e=>{ document.getElementById('setup').innerHTML='<div class="note">Could not load question data ('+e.message+'). Check your connection and reload.</div>'; });
