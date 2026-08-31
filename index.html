@@ -225,11 +225,23 @@ var REVIEWERS = [
   {
     id: "bcsceov",
     name: "BCSC End-of-Volume Quizzes",
-    meta: "488 questions \u00b7 1 section",
-    note: "The self-assessment questions from the end of each BCSC subspecialty volume \u2014 a separate question set from the main BCSC Question Bank above.",
+    meta: "488 questions \u00b7 13 sections",
+    note: "The self-assessment questions from the end of each BCSC subspecialty volume \u2014 a separate question set from the main BCSC Question Bank above. Split into subspecialty sections so each page loads quickly.",
     password: null,
     sections: [
-      {file:"bcsc-eov/EndOfVolume.html", label:"BCSC End-of-Volume Quizzes (all subspecialties)", count:488, key:"bcsceov_all"}
+      {file:"bcsc-eov/General.html",      label:"Update on General Medicine",                    count:38, key:"bcsceov_general"},
+      {file:"bcsc-eov/Fundamentals.html", label:"Fundamentals & Principles of Ophthalmology",    count:40, key:"bcsceov_fundamentals"},
+      {file:"bcsc-eov/Optics.html",       label:"Clinical Optics & Vision Rehab",                count:35, key:"bcsceov_optics"},
+      {file:"bcsc-eov/Pathology.html",    label:"Ophthalmic Pathology & Intraocular Tumors",     count:36, key:"bcsceov_pathology"},
+      {file:"bcsc-eov/Neuro.html",        label:"Neuro-Ophthalmology",                           count:40, key:"bcsceov_neuro"},
+      {file:"bcsc-eov/Peds.html",         label:"Pediatric Ophthalmology & Strabismus",          count:44, key:"bcsceov_peds"},
+      {file:"bcsc-eov/Plastics.html",     label:"Oculofacial Plastic & Orbital Surgery",         count:30, key:"bcsceov_plastics"},
+      {file:"bcsc-eov/Cornea.html",       label:"External Disease & Cornea",                     count:41, key:"bcsceov_cornea"},
+      {file:"bcsc-eov/Uveitis.html",      label:"Uveitis & Ocular Inflammation",                 count:36, key:"bcsceov_uveitis"},
+      {file:"bcsc-eov/Glaucoma.html",     label:"Glaucoma",                                      count:32, key:"bcsceov_glaucoma"},
+      {file:"bcsc-eov/Cataract.html",     label:"Lens & Cataract",                               count:30, key:"bcsceov_cataract"},
+      {file:"bcsc-eov/Retina.html",       label:"Retina & Vitreous",                             count:46, key:"bcsceov_retina"},
+      {file:"bcsc-eov/Refractive.html",   label:"Refractive Surgery",                            count:40, key:"bcsceov_refractive"}
     ]
   },
   {

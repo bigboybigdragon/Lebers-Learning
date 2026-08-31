@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One-time import: build the "Review Questions in Ophthalmology" (12 subspecialty pages)
-and "BCSC End-of-Volume Quizzes" (1 combined page) reviewer sets from the source file
+and "BCSC End-of-Volume Quizzes" (13 subspecialty pages) reviewer sets from the source file
 Reviewers/Ophtho_QBank_BCSC_Review_Desktop.html, which holds both question sets tagged
 by a "section" field ("BCSC · ..." vs "Review Q · ...").
 
@@ -49,6 +49,24 @@ REVIEW_SECTIONS = [
     ("Review Q · Cornea & External Disease", "Cornea & External Disease", "cornea", "Cornea.html"),
     ("Review Q · Lens and Cataract", "Lens and Cataract", "cataract", "Cataract.html"),
     ("Review Q · Retina and Vitreous", "Retina and Vitreous", "retina", "Retina.html"),
+]
+
+# (source "section" value, display label, storage-key slug, filename) — filenames match
+# bcsc-qbank/'s own naming for the same subspecialty, for consistency/predictability.
+EOV_SECTIONS = [
+    ("BCSC · Update on General Medicine", "Update on General Medicine", "general", "General.html"),
+    ("BCSC · Fundamentals & Principles of Ophthalmology", "Fundamentals & Principles of Ophthalmology", "fundamentals", "Fundamentals.html"),
+    ("BCSC · Clinical Optics & Vision Rehab", "Clinical Optics & Vision Rehab", "optics", "Optics.html"),
+    ("BCSC · Ophthalmic Pathology & Intraocular Tumors", "Ophthalmic Pathology & Intraocular Tumors", "pathology", "Pathology.html"),
+    ("BCSC · Neuro-Ophthalmology", "Neuro-Ophthalmology", "neuro", "Neuro.html"),
+    ("BCSC · Pediatric Ophthalmology & Strabismus", "Pediatric Ophthalmology & Strabismus", "peds", "Peds.html"),
+    ("BCSC · Oculofacial Plastic & Orbital Surgery", "Oculofacial Plastic & Orbital Surgery", "plastics", "Plastics.html"),
+    ("BCSC · External Disease & Cornea", "External Disease & Cornea", "cornea", "Cornea.html"),
+    ("BCSC · Uveitis & Ocular Inflammation", "Uveitis & Ocular Inflammation", "uveitis", "Uveitis.html"),
+    ("BCSC · Glaucoma", "Glaucoma", "glaucoma", "Glaucoma.html"),
+    ("BCSC · Lens & Cataract", "Lens & Cataract", "cataract", "Cataract.html"),
+    ("BCSC · Retina & Vitreous", "Retina & Vitreous", "retina", "Retina.html"),
+    ("BCSC · Refractive Surgery", "Refractive Surgery", "refractive", "Refractive.html"),
 ]
 
 EXT = {"image/jpeg": ".jpg", "image/png": ".png", "image/gif": ".gif", "image/webp": ".webp"}
@@ -107,10 +125,17 @@ def load_template():
     old_qdata_end = body.find('</script>', old_qdata_start)
     assert old_qdata_start > 0
 
+    # updateHomeLinks() hardcodes this template's OWN subspecialty name into the
+    # prog_tag query param it appends to the Home link (harmless — index.html doesn't
+    # read prog_tag/prog_ans — but wrong/misleading if left as "Cataract" on every page
+    # built from this template). Swap it per-page below.
+    old_progtag = 'prog_tag","Cataract"'
+    assert body.count(old_progtag) == 1
+
     return {
         "head": head, "body": body,
         "old_title": old_title, "old_h1": old_h1, "old_note": old_note,
-        "old_key": old_key, "qdata_span": (old_qdata_start, old_qdata_end),
+        "old_key": old_key, "old_progtag": old_progtag, "qdata_span": (old_qdata_start, old_qdata_end),
     }
 
 
@@ -133,12 +158,37 @@ def extract_images(qbank_html, img_dir, wanted_ids):
     return out
 
 
-def build_page(tpl, out_path, title, h1, note_html, storage_key, questions, folder_depth_home="../index.html"):
+def write_pool_json(entries_dir, fname, section_label, key, html_file, img_base, questions):
+    """Write a Quiz.html-compatible data/<Section>.json pool file (same shape as
+    bcsc-qbank/data/*.json). All questions go in the pool (unlike the older BCSC
+    extractor, image questions are NOT excluded — Quiz.html can render them via
+    imgBase). Returns the manifest entry."""
+    data_dir = os.path.join(entries_dir, "data")
+    os.makedirs(data_dir, exist_ok=True)
+    pool = [{"id": q["id"], "q": q["q"], "options": q["options"], "answer": q["answer"],
+             "rationale": q["rationale"], "ref": q.get("ref", ""),
+             "images": q.get("images", []), "ratImages": q.get("ratImages", [])}
+            for q in questions]
+    answers = {str(q["id"]): q["answer"] for q in questions}
+    folder_name = os.path.basename(entries_dir.rstrip("/"))
+    out = {"section": section_label, "key": key, "file": f"{folder_name}/{html_file}",
+           "imgBase": img_base, "pool": pool, "answers": answers}
+    jname = html_file.replace(".html", ".json")
+    with open(os.path.join(data_dir, jname), "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    return {"name": section_label, "file": f"{folder_name}/{html_file}",
+            "json": f"../{folder_name}/data/{jname}", "key": key, "poolCount": len(pool)}
+
+
+def build_page(tpl, out_path, title, h1, note_html, storage_key, questions, h1_plain=None, folder_depth_home="../index.html"):
+    if h1_plain is None:
+        h1_plain = title
     body = tpl["body"]
     body = body[:tpl["qdata_span"][0]] + json.dumps(questions, ensure_ascii=False) + body[tpl["qdata_span"][1]:]
     body = body.replace(tpl["old_h1"], h1, 1)
     body = body.replace(tpl["old_note"], note_html, 1)
     body = body.replace(tpl["old_key"], storage_key)  # all 6 occurrences, same suffix shapes
+    body = body.replace(tpl["old_progtag"], 'prog_tag",' + json.dumps(h1_plain), 1)
     head = tpl["head"].replace(tpl["old_title"], title, 1)
     html = head + body
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -157,6 +207,7 @@ def main():
 
     # ---------------- Review Questions in Ophthalmology (12 files) ----------------
     review_manifest = []
+    review_quiz_manifest = []
     for src_section, label, slug, fname in REVIEW_SECTIONS:
         qs = [q for q in all_q if q["section"] == src_section]
         assert qs, f"no questions found for {src_section!r}"
@@ -183,37 +234,53 @@ def main():
         size = build_page(tpl, out_path, f"Review Questions · {label}",
                            f"Review Questions &middot; {label}", note, key, entries)
         review_manifest.append({"label": label, "file": fname, "key": key, "count": n})
+        review_quiz_manifest.append(write_pool_json(
+            REVIEW_DIR, fname, label, key, fname, "../review-questions/img/", entries))
         print(f"review-questions/{fname}: {n} questions, {size/1024:.0f} KB, key={key}")
 
-    # ---------------- BCSC End-of-Volume Quizzes (1 combined file) ----------------
-    eov_qs = [q for q in all_q if q["section"].startswith("BCSC")]
-    assert eov_qs
-    entries = []
-    for q in eov_qs:
-        entries.append({
-            "id": q["id"], "section": q["section"], "type": "mcq", "q": q["q"],
-            "options": q["options"], "answer": q["answer"],
-            "rationale": q["rationale"], "ref": q.get("ref", ""),
-            "images": [], "ratImages": [],
-        })
-    n = len(entries)
-    key = "bcsceov_all"
-    note = (f'{n} end-of-volume self-assessment questions across all 13 BCSC subspecialty '
-            f'volumes — a separate question set from the main BCSC Question Bank above. '
-            f'Click an option to lock your answer: correct turns green, your wrong pick turns '
-            f'red, and the rationale appears. Progress is saved until you reset.')
-    out_path = os.path.join(EOV_DIR, "EndOfVolume.html")
-    size = build_page(tpl, out_path, "BCSC End-of-Volume Quizzes",
-                       "BCSC End-of-Volume Quizzes", note, key, entries)
-    print(f"bcsc-eov/EndOfVolume.html: {n} questions, {size/1024:.0f} KB, key={key}")
+    # ---------------- BCSC End-of-Volume Quizzes (13 subspecialty files) ----------------
+    eov_manifest = []
+    eov_quiz_manifest = []
+    for src_section, label, slug, fname in EOV_SECTIONS:
+        qs = [q for q in all_q if q["section"] == src_section]
+        assert qs, f"no questions found for {src_section!r}"
+        entries = []
+        for q in qs:
+            entries.append({
+                "id": q["id"], "section": label, "type": "mcq", "q": q["q"],
+                "options": q["options"], "answer": q["answer"],
+                "rationale": q["rationale"], "ref": q.get("ref", ""),
+                "images": [], "ratImages": [],
+            })
+        key = "bcsceov_" + slug
+        n = len(entries)
+        note = (f'{n} end-of-volume self-assessment questions in {label} — a separate '
+                f'question set from the main BCSC Question Bank above. Click an option to '
+                f'lock your answer: correct turns green, your wrong pick turns red, and the '
+                f'rationale appears. Progress is saved until you reset.')
+        out_path = os.path.join(EOV_DIR, fname)
+        size = build_page(tpl, out_path, f"BCSC End-of-Volume · {label}",
+                           f"BCSC End-of-Volume &middot; {label}", note, key, entries)
+        eov_manifest.append({"label": label, "file": fname, "key": key, "count": n})
+        eov_quiz_manifest.append(write_pool_json(
+            EOV_DIR, fname, label, key, fname, "../bcsc-eov/img/", entries))
+        print(f"bcsc-eov/{fname}: {n} questions, {size/1024:.0f} KB, key={key}")
+
+    with open(os.path.join(REVIEW_DIR, "data", "manifest.json"), "w", encoding="utf-8") as f:
+        json.dump({"sections": review_quiz_manifest}, f, ensure_ascii=False, indent=1)
+    with open(os.path.join(EOV_DIR, "data", "manifest.json"), "w", encoding="utf-8") as f:
+        json.dump({"sections": eov_quiz_manifest}, f, ensure_ascii=False, indent=1)
+    print("Wrote review-questions/data/manifest.json and bcsc-eov/data/manifest.json "
+          "(Exam Mode pool data, fetched by bcsc-qbank/Quiz.html).")
 
     with open(os.path.join(ROOT, "tools", "_import_manifest.json"), "w", encoding="utf-8") as f:
         json.dump({
             "review_questions": {"dir": "review-questions", "sections": review_manifest,
                                   "total": sum(m["count"] for m in review_manifest)},
-            "bcsc_eov": {"dir": "bcsc-eov", "file": "EndOfVolume.html", "key": key, "count": n},
+            "bcsc_eov": {"dir": "bcsc-eov", "sections": eov_manifest,
+                         "total": sum(m["count"] for m in eov_manifest)},
         }, f, indent=1)
-    print("\nWrote tools/_import_manifest.json (used to generate the landing-page config).")
+    print("Wrote tools/_import_manifest.json (used to generate the landing-page config).")
 
 
 if __name__ == "__main__":

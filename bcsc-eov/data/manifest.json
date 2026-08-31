@@ -1,0 +1,95 @@
+{
+ "sections": [
+  {
+   "name": "Update on General Medicine",
+   "file": "bcsc-eov/General.html",
+   "json": "../bcsc-eov/data/General.json",
+   "key": "bcsceov_general",
+   "poolCount": 38
+  },
+  {
+   "name": "Fundamentals & Principles of Ophthalmology",
+   "file": "bcsc-eov/Fundamentals.html",
+   "json": "../bcsc-eov/data/Fundamentals.json",
+   "key": "bcsceov_fundamentals",
+   "poolCount": 40
+  },
+  {
+   "name": "Clinical Optics & Vision Rehab",
+   "file": "bcsc-eov/Optics.html",
+   "json": "../bcsc-eov/data/Optics.json",
+   "key": "bcsceov_optics",
+   "poolCount": 35
+  },
+  {
+   "name": "Ophthalmic Pathology & Intraocular Tumors",
+   "file": "bcsc-eov/Pathology.html",
+   "json": "../bcsc-eov/data/Pathology.json",
+   "key": "bcsceov_pathology",
+   "poolCount": 36
+  },
+  {
+   "name": "Neuro-Ophthalmology",
+   "file": "bcsc-eov/Neuro.html",
+   "json": "../bcsc-eov/data/Neuro.json",
+   "key": "bcsceov_neuro",
+   "poolCount": 40
+  },
+  {
+   "name": "Pediatric Ophthalmology & Strabismus",
+   "file": "bcsc-eov/Peds.html",
+   "json": "../bcsc-eov/data/Peds.json",
+   "key": "bcsceov_peds",
+   "poolCount": 44
+  },
+  {
+   "name": "Oculofacial Plastic & Orbital Surgery",
+   "file": "bcsc-eov/Plastics.html",
+   "json": "../bcsc-eov/data/Plastics.json",
+   "key": "bcsceov_plastics",
+   "poolCount": 30
+  },
+  {
+   "name": "External Disease & Cornea",
+   "file": "bcsc-eov/Cornea.html",
+   "json": "../bcsc-eov/data/Cornea.json",
+   "key": "bcsceov_cornea",
+   "poolCount": 41
+  },
+  {
+   "name": "Uveitis & Ocular Inflammation",
+   "file": "bcsc-eov/Uveitis.html",
+   "json": "../bcsc-eov/data/Uveitis.json",
+   "key": "bcsceov_uveitis",
+   "poolCount": 36
+  },
+  {
+   "name": "Glaucoma",
+   "file": "bcsc-eov/Glaucoma.html",
+   "json": "../bcsc-eov/data/Glaucoma.json",
+   "key": "bcsceov_glaucoma",
+   "poolCount": 32
+  },
+  {
+   "name": "Lens & Cataract",
+   "file": "bcsc-eov/Cataract.html",
+   "json": "../bcsc-eov/data/Cataract.json",
+   "key": "bcsceov_cataract",
+   "poolCount": 30
+  },
+  {
+   "name": "Retina & Vitreous",
+   "file": "bcsc-eov/Retina.html",
+   "json": "../bcsc-eov/data/Retina.json",
+   "key": "bcsceov_retina",
+   "poolCount": 46
+  },
+  {
+   "name": "Refractive Surgery",
+   "file": "bcsc-eov/Refractive.html",
+   "json": "../bcsc-eov/data/Refractive.json",
+   "key": "bcsceov_refractive",
+   "poolCount": 40
+  }
+ ]
+}

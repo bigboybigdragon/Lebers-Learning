@@ -1,0 +1,296 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BCSC End-of-Volume · Lens & Cataract</title><style>
+:root{--bg:#0e1726;--panel:#16213a;--panel2:#1d2b48;--ink:#e8eef7;--muted:#9fb0c8;--line:#283a5c;
+--accent:#4f9cff;--green:#1f7a44;--greenbg:#0f3b22;--greenln:#39c07a;--red:#7a2330;--redbg:#3a0f16;--redln:#ff6b7d;--gold:#f2c14e;
+--bodybg:linear-gradient(180deg,#0b1320,#0e1726 240px);--headerbg:rgba(11,19,32,.95);--goldink:#06101f;--accentink:#06101f;--ratbg:#1a233a}
+:root[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--panel2:#f1f4fa;--ink:#1a2333;--muted:#5b6b85;--line:#dde4f0;
+--accent:#2f6fed;--green:#1f8a4c;--greenbg:#e5f7ec;--greenln:#1f9d52;--red:#c23a4d;--redbg:#fdeced;--redln:#e0495d;--gold:#b5790a;
+--bodybg:linear-gradient(180deg,#eef2fa,#f4f6fb 240px);--headerbg:rgba(255,255,255,.92);--goldink:#fff8e8;--accentink:#ffffff;--ratbg:#fbf3e2}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bodybg);color:var(--ink);line-height:1.5}
+header{padding:18px 22px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;
+background:var(--headerbg);backdrop-filter:blur(8px)}
+h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.themebtn:hover{border-color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;margin-top:3px}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 80px}
+.scorebar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:11px;font-size:13px}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}.pill b{color:var(--gold)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tbtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+.tbtn:hover{color:var(--ink);border-color:var(--accent)}
+.note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:14px 0}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:7px}
+.qnum{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.tag{font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+.stem{font-size:15.5px;margin:2px 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;cursor:pointer;font-size:14.5px}
+.opt:hover{border-color:var(--accent)}.opt .ltr{font-weight:700;color:var(--muted);min-width:18px}
+.opt.correct{background:var(--greenbg);border-color:var(--greenln)}.opt.correct .ltr{color:var(--greenln)}
+.opt.wrongpick{background:var(--redbg);border-color:var(--redln)}.opt.wrongpick .ltr{color:var(--redln)}
+.opt.disabled{cursor:default}.opt .body{flex:1}
+.badge{font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px}
+.badge.ok{background:var(--green);color:#dffbe9}.badge.no{background:var(--red);color:#ffe1e6}
+.rat{display:none;margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+.rat.show{display:block}.rat h4{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+.rat .ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+.revealbtn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+.hidden{display:none!important}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
+a{color:var(--accent)}
+.inline-fig{max-width:220px;max-height:160px;border-radius:6px;vertical-align:middle;margin-left:6px;display:inline-block}
+.fig{margin:8px 0 12px}.fig img{max-width:100%;border-radius:8px;display:block;margin:0 0 8px}
+.fcbtn{margin-top:10px;background:var(--accent);border:1px solid var(--accent);color:var(--accentink);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:480px;width:100%;max-height:80vh;display:flex;flex-direction:column;gap:10px;color:var(--ink)}
+.modal-box textarea{width:100%;height:180px;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;resize:vertical}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+
+#staticApp{max-width:900px;margin:0 auto;padding:16px 16px 60px;background:var(--bg)}
+#staticApp .sq-h1{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+#staticApp .sq-sub{color:var(--muted);font-size:13px;margin:6px 0 14px}
+#staticApp .sq-back{color:var(--accent);text-decoration:none;font-size:12.5px;display:inline-block;margin-bottom:12px}
+#staticApp .sq-note{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.5}
+#staticApp .sq-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:0 0 14px}
+#staticApp .sq-qmeta{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+#staticApp .sq-tags{font-size:11px;margin-bottom:6px}
+#staticApp .sq-tag{display:inline-block;font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+#staticApp .sq-stem{font-size:15.5px;margin:2px 0 10px}
+#staticApp .sq-r{position:absolute;opacity:0;pointer-events:none}
+#staticApp .sq-opt{display:flex;gap:10px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;margin:0 0 8px;cursor:pointer;font-size:14.5px}
+#staticApp .sq-ltr{font-weight:700;color:var(--muted);min-width:18px}
+#staticApp .sq-r:checked + .sq-opt{border-color:var(--redln);background:var(--redbg)}
+#staticApp .sq-r.ok:checked + .sq-opt{border-color:var(--greenln);background:var(--greenbg)}
+#staticApp .sq-q:has(.sq-r:checked) .sq-r.ok + .sq-opt{border-color:var(--greenln);background:var(--greenbg)}
+#staticApp .sq-q:has(.sq-r:checked) .sq-r.ok + .sq-opt .sq-ltr::after{content:" \2713";color:var(--greenln)}
+#staticApp .sq-r.no:checked + .sq-opt .sq-ltr::after{content:" \2717";color:var(--redln)}
+#staticApp .sq-r:checked ~ .sq-explain{display:block}
+#staticApp .sq-explain{display:none;margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+#staticApp .sq-ansline{font-weight:700;margin-bottom:6px}
+#staticApp .sq-lab{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+#staticApp .sq-ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+#staticApp .sq-resetbtn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px}
+#staticApp .sq-flip{position:absolute;opacity:0;pointer-events:none}
+#staticApp .sq-revealbtn-static{display:inline-block;margin-top:6px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+#staticApp .sq-answer{display:none;margin-top:10px}
+#staticApp .sq-flip:checked ~ .sq-answer{display:block}
+
+@media (max-width:640px){
+
+body{font-size:16px}
+.wrap{max-width:520px;padding:14px 12px 90px}
+h1{font-size:17px}
+.opt{padding:13px 12px;font-size:15px}
+.tbtn{padding:9px 12px}
+.card{padding:15px 14px 12px}
+
+}
+
+.flagbtn{background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;opacity:.55}
+.flagbtn.flagged{color:var(--gold);opacity:1}
+.tbtn.activeview{color:var(--goldink);background:var(--gold);border-color:var(--gold)}
+#viewMisses{margin-left:auto}
+
+.ministat,.hdrtoggle{display:none}
+@media (max-width:640px){
+h1{justify-content:flex-start}
+.themebtn{margin-left:auto}
+.hdrtoggle{display:inline-flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;width:32px;height:32px;font-size:11px;cursor:pointer;flex:none}
+header.collapsed{padding-top:10px;padding-bottom:10px}
+header.collapsed .ministat{display:inline-flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap}
+header.collapsed .themebtn{display:none}
+header.collapsed .scorebar{display:none}
+header.collapsed .modeToggle{display:none}
+}
+</style><script>(function(){
+try{
+var q=new URLSearchParams(location.search).get('theme');
+var t=(q==='light'||q==='dark')?q:(localStorage.getItem('bcscTheme')||'dark');
+document.documentElement.setAttribute('data-theme',t);
+if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
+}catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();</script><div id="jsApp"><header><h1><span>BCSC End-of-Volume &middot; Lens & Cataract</span><button class="themebtn" type="button">Light mode</button><span class="ministat" id="miniStat"></span><button class="hdrtoggle" id="hdrToggle" type="button" aria-label="Show header controls">&#9660;</button></h1><div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a><button class="tbtn" id="jumpUnanswered">Jump to unanswered</button><span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span><span class="pill">Score <b id="pct">—</b></span><button class="tbtn" id="viewMisses">Misses</button><button class="tbtn" id="viewFlagged">★ Flagged</button></div></header><div class="wrap"><div class="toolbar"><button class="tbtn" id="revealAll">Reveal all</button><button class="tbtn" id="resetAll">Reset / clear</button><button class="tbtn" id="exportProgress">Export progress</button><button class="tbtn" id="importProgress">Import progress</button><input type="file" id="importFile" accept="application/json" style="display:none"></div><div class="note">30 end-of-volume self-assessment questions in Lens & Cataract — a separate question set from the main BCSC Question Bank above. Click an option to lock your answer: correct turns green, your wrong pick turns red, and the rationale appears. Progress is saved until you reset.</div><div id="quiz"></div><footer>From the Ophthalmology BCSC Question Bank. Answers and rationales are taken verbatim from the source cards. Study aid only &mdash; verify against the current BCSC edition.</footer></div><script type="application/json" id="qbankData">[{"id": 373, "section": "Lens & Cataract", "type": "mcq", "q": "What systemic disorder increases the likelihood of developing a cataract?", "options": {"a": "multiple sclerosis", "b": "diabetes mellitus", "c": "hypercholesterolemia", "d": "ischemic cardiovascular disease"}, "answer": "b", "rationale": "Diabetes mellitus is associated with accelerated development of all age- related lens changes. The proposed pathophysiologic reasons for these changes are multifactorial, including increased lens hydration from sorbitol accumulation, glycation of lens proteins, and increased oxidative stress. Multiple sclerosis, hypercholesterolemia, and ischemic cardiovascular disease are not associated with increased risk for developing cataracts.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 1", "images": [], "ratImages": []}, {"id": 374, "section": "Lens & Cataract", "type": "mcq", "q": "Where are the oldest layers of the lens located?", "options": {"a": "capsule", "b": "cortex", "c": "epinucleus", "d": "endonucleus"}, "answer": "d", "rationale": "The oldest layers of the lens are located in the center of the lens, or the endonucleus. This occurs because the new lens fibers are laid down in the periphery of the lens, compacting the previously formed fibers in the center of the lens. The outermost fibers of the lens are therefore the newest and make up the cortex of the lens. Of note: though t here is no morphologic difference between the cortex, nucleus, epinucleus, or endonucleus, these structures appear dif fer ent and behave differently during surgery.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 2", "images": [], "ratImages": []}, {"id": 375, "section": "Lens & Cataract", "type": "mcq", "q": "How is metabolic waste removed from the crystalline lens?", "options": {"a": "It is broken down by lysosomes.", "b": "It is removed by the venous system of the lens.", "c": "It is stored in the lens and not removed, contributing to the increase in lens size throughout life.", "d": "It is removed via the aqueous humor."}, "answer": "d", "rationale": "After fetal development, the lens has no blood supply or organelles and depends on the aqueous humor for removal of metabolic waste. Changes in lens size occur throughout life as the lens epithelial cells (LECs) at the equator continue to divide.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 3", "images": [], "ratImages": []}, {"id": 376, "section": "Lens & Cataract", "type": "mcq", "q": "What common function do superoxide dismutase, catalase, and glutathione peroxidase have in lens physiology?", "options": {"a": "adjust pH to act as a buffer", "b": "control enzymatic functions in glucose metabolism", "c": "convert water-s oluble proteins to water- insoluble proteins", "d": "protect against oxidative and free radical damage 259"}, "answer": "d", "rationale": "Superoxide dismutase, catalase, and glutathione perioxidase work together to destroy the superoxide anion (O −), protecting the lens against oxidative and free radical damage. 2 There are no known repair mechanisms for free radical damage to proteins or membrane lipids in the lens cortex. Glutathione acts as a major free radical scavenger, along with vitamin E and ascorbic acid, in the lens. These 3 enzymes have no effect on the pH of the lens and do not participate in the carbohydrate metabolism of the lens. Conversion from water-s oluble proteins to water-i nsoluble proteins appears to be a natur al (age-r elated) process in lens fiber maturation and does not involve an enzymatic function.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 4", "images": [], "ratImages": []}, {"id": 377, "section": "Lens & Cataract", "type": "mcq", "q": "What carbohydrate metabolism–r elated change occurs in the lens in the presence of high levels of glucose?", "options": {"a": "Aldose reductase activity increases.", "b": "Glucose that is not phosphorylated to glucose-6-p hosphate (G6P) enters the Krebs cycle.", "c": "The hexose monophosphate shunt is deactivated.", "d": "Sorbitol is eliminated from the lens via simple diffusion through the capsule into the aqueous humor."}, "answer": "a", "rationale": "When glucose concentration increases in the lens, the sorbitol pathway is activated; aldose reductase, which is the key enzyme in this pathway, is increased. Glucose that is not phosphorylated to glucose-6- phosphate (G6P) enters the sorbitol pathway, not the Krebs cycle. The hexose monophosphate shunt is also stimulated when glucose concentration in the lens is increased. Sorbitol accumulates in the lens both b ecause of a low rate of metabolism and poor lens permeability, promoting lens opacification.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 5", "images": [], "ratImages": []}, {"id": 378, "section": "Lens & Cataract", "type": "mcq", "q": "The lens has higher levels of what electrolyte in comparison to the surrounding aqueous and vitreous humors?", "options": {"a": "chloride ions (Cl−)", "b": "potassium ions (K+)", "c": "sodium ions (Na+)", "d": "calcium (Ca2+)"}, "answer": "b", "rationale": "The lens has higher concentrations of potassium (K+) and amino acids than the surrounding aqueous and vitreous humors. The lens has lower concentrations of sodium (Na+), chloride (Cl−), and calcium (Ca2+) compared with the surrounding aqueous and vitreous. Recall that the Na+/K+- ATPase is located on the anterior lens capsule and creates a gradient of elevated intralenticular K+ and elevated extralenticular Na+.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 6", "images": [], "ratImages": []}, {"id": 379, "section": "Lens & Cataract", "type": "mcq", "q": "With what congenital disorder is microspherophakia most commonly associated?", "options": {"a": "Axenfeld anomaly", "b": "Axenfeld- Rieger syndrome", "c": "galactosemia", "d": "Weill- Marchesani syndrome"}, "answer": "d", "rationale": "Microspherophakia, a developmental abnormality in which the lens is small in dia meter and spherical, is most often associated with Weill-M archesani syndrome. It can also be associated with a variety of diseases, including Peters anomaly, Marfan syndrome, Alport syndrome, Lowe syndrome, and congenital rubella. It is not associated with AxenfeldRieger syndrome, galactosemia, or Axenfeld anomaly.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 7", "images": [], "ratImages": []}, {"id": 380, "section": "Lens & Cataract", "type": "mcq", "q": "What is the most common cause of acquired ectopia lentis?", "options": {"a": "aniridia", "b": "trauma", "c": "Marfan syndrome", "d": "Homocystinuria"}, "answer": "b", "rationale": "Trauma is the most common cause of acquired lens displacement. Aniridia is associated with lens opacities, poor zonular integrity, and ectopia lentis, but it is an uncommon panocular syndrome. Marfan syndrome and homocystinuria are also associated with ectopia lentis, but they are inherited disorders and less common than trauma as etiology for lens displacement. 267", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 8", "images": [], "ratImages": []}, {"id": 381, "section": "Lens & Cataract", "type": "mcq", "q": "Glaukomflecken are seen on examination. What is the histologic finding and most likely clinical scenario?", "options": {"a": "endothelial cells associated with Cogan- Reese syndrome", "b": "gray- white fibrillar material from pseudoexfoliative glaucoma", "c": "macrophages engorged with phagocytosed proteinaceous, eosinophilic lens material from phacolytic glaucoma", "d": "necrotic lens epithelial cells (LECs) and degenerated subepithelial cortex following angle- closure glaucoma"}, "answer": "d", "rationale": "Glaukomflecken are composed of necrotic lens epithelial cells (LECs) and degenerated subepithelial cortex that result from prolonged elevated intraocular pressure (IOP), as in acute angle- closure glaucoma. Glaukomflecken are not associated with the other findings and scenarios presented. Pseudoexfoliation syndrome is a systemic condition that is characterized by the production and progressive accumulation of a fibrillar material in tissues throughout the anterior segment and in the connective tissue of vari ous visceral organs.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 9", "images": [], "ratImages": []}, {"id": 382, "section": "Lens & Cataract", "type": "mcq", "q": "A 14- year-o ld female patient with atopic dermatitis has experienced decreased vision in both eyes. Her best-c orrected visual acuity (BCVA) is 20/100 OD and 20/80 OS. What is the most likely cause of her decreased vision?", "options": {"a": "anterior subcapsular cataract", "b": "dry eye syndrome", "c": "cystoid macular edema", "d": "lens subluxation"}, "answer": "a", "rationale": "Atopic dermatitis is associated with cataract formation in up to 38% of affected patients. The cataracts are most often bilateral, anterior or posterior subcapsular opacities that resemble shieldlike plaques and usually develop in the second or third d ecade of life. Dry eye syndrome, cystoid macular edema, and lens subluxation are not associated with atopic dermatitis.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 10", "images": [], "ratImages": []}, {"id": 383, "section": "Lens & Cataract", "type": "mcq", "q": "A 47- year-o ld female vegan web developer spends 16 hours per day working on the computer, takes high- dose vitamin C supplements, and drinks an average of 3 glasses of wine each e vening. She describes gradual, progressive bilateral blurry vision and has visually significant nuclear cataract in both eyes. Which of her lifestyle habits predisposed her to early cataract development?", "options": {"a": "prolonged computer use", "b": "veganism", "c": "vitamin C supplementation", "d": "alcohol consumption"}, "answer": "d", "rationale": "Excessive alcohol consumption (more than 14 standard drinks per week for men and 7 standard drinks per week for women) increases the risk for nuclear cataract. Computer use, veganism, and vitamin C supplementation are not associated with cataract development. Other lifestyle habits that increase the risk of cataract are tobacco use (both smoked and smokeless forms), long-t erm exposure to sunlight (due to damage from ultraviolet radiation), and high- dose vitamin B supplementation (more than 10 times the recommended daily allowance).", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 11", "images": [], "ratImages": []}, {"id": 384, "section": "Lens & Cataract", "type": "mcq", "q": "After an episode of uveitis, what is the minimum amount of time, ideally, that the eye should be free from inflammation, without the use of topical corticosteroids, before cataract surgery is performed?", "options": {"a": "1 week", "b": "1 month", "c": "2 months", "d": "3 months"}, "answer": "d", "rationale": "Ideally, the eye should be quiet without the use of topical corticosteroids a fter an episode of uveitis for at least 3 months before cataract surgery in order to minimize the risk of complications from postoperative inflammation, such as iris adhesion to the lens implant and macular edema.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 12", "images": [], "ratImages": []}, {"id": 385, "section": "Lens & Cataract", "type": "mcq", "q": "A patient with nystagmus has visually significant cataract and would like to undergo cataract surgery. He is capable of lying flat for surgery and prefers not to undergo general anesthesia. Aside from general anesthesia, what type of anesthesia would provide the best akinesia for his cataract surgery?", "options": {"a": "intracameral anesthesia", "b": "sub- Tenon anesthesia", "c": "peribulbar anesthesia", "d": "retrobulbar anesthesia"}, "answer": "d", "rationale": "Retrobulbar anesthesia provides excellent akinesia and anesthesia. Though peribulbar and sub-T enon anesthesia can also provide akinesia, these methods may not provide akinesis as complete as retrobulbar injection does. Intracameral anesthetic does not provide akinesia during surgery.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 13", "images": [], "ratImages": []}, {"id": 386, "section": "Lens & Cataract", "type": "mcq", "q": "A patient with high axial myopia and regular against-t he- rule astigmatism underwent uncomplicated cataract surgery with a toric intraocular lens (IOL). She was very pleased with her uncorrected vision in the operative eye on postoperative day 1, so immediately resumed her work, which involves several hours of computer use per day. She also resumed walking 2 miles per day on postoperative day 2. At postpoperative week 1, she noticed a reduction in the clarity of her uncorrected vision and was found to have rotation of her toric IOL off- axis. What most likely contributed to her postoperative toric IOL rotation?", "options": {"a": "against- the- rule astigmatism", "b": "high axial myopia", "c": "excessive visual tasking", "d": "walking long distances"}, "answer": "b", "rationale": "High axial myopia predisposed this patient to postoperative toric IOL rotation, due to both the larger capsular bag size and the thinner optics of the lower- spherical- power IOL needed for myopes. Alignment of the toric IOL to correct with- the rule astigmatism, not against- the- rule astigmatism, also increases the risk of postoperative rotation. Excessive visual tasking is not associated with postoperative toric IOL rotation. Though vigorous physical activity can increase the risk of postoperative toric IOL rotation, walking would not.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 14", "images": [], "ratImages": []}, {"id": 387, "section": "Lens & Cataract", "type": "mcq", "q": "What layers of the lens are separated from each other during hydrodelineation?", "options": {"a": "capsule and cortex", "b": "cortex and the epinucleus", "c": "capsule and the nucleus", "d": "epinucleus and the endonucleus"}, "answer": "d", "rationale": "Hydrodelineation is used to separate the harder endonucleus from the softer epinucleus, allowing the epinucleus to cushion the posterior capsule during phacoemulsification. Hydrodissection, on the other hand, is used to separate the cortex from the lens capsule, not only loosening the lens– cortex complex, but also facilitating nucleus rotation during phacoemulsification.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 15", "images": [], "ratImages": []}, {"id": 388, "section": "Lens & Cataract", "type": "mcq", "q": "What type of effect (ie, direct or indirect) does a peristaltic pump (or “flow pump”) of a phacoemulsification machine have on the aspiration flow rate (AFR) and vacuum?", "options": {"a": "It directly controls the AFR and directly produces the vacuum level.", "b": "It indirectly controls AFR and directly produces the vacuum level.", "c": "It directly controls AFR and indirectly produces the vacuum level.", "d": "It indirectly controls the AFR and indirectly produces the vacuum level."}, "answer": "c", "rationale": "A peristaltic pump directly creates flow with a set of rollers that move along flexible tubing, pushing fluid through the tubing. The pressure differential between the lowerpressure aspiration tubing and the higher- pressure anterior chamber creates a relative vacuum. Although a vacuum limit is set on the machine, the peristaltic pump does not directly produce the level of vacuum. Rather, it controls the aspiration flow rate (AFR), which indirectly produces vacuum. In contrast, a Venturi (or vacuum) pump directly creates the vacuum based on the Venturi effect. Direct control of vacuum level in the pump cassette then indirectly produces flow (while the aspiration port is not occluded) by “pulling” on the fluid in the aspiration tubing. In the absence of significant occlusion, higher vacuum levels produce a faster AFR.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 16", "images": [], "ratImages": []}, {"id": 389, "section": "Lens & Cataract", "type": "mcq", "q": "In manual small incision cataract surgery (MSICS), how does the width of the external scleral incision compare to the internal corneal incision?", "options": {"a": "The width of the external scleral incision is greater than the width of the internal corneal incision.", "b": "The width of the external scleral incision is equal to the width of the internal corneal incision.", "c": "The width of the external scleral incision is smaller than the width of the internal corneal incision.", "d": "The proportion of the external scleral incision to the internal corneal incision depends on the density of the nucleus being expressed."}, "answer": "c", "rationale": "In manual small incision cataract surgery (MSICS), the scleral tunnel is shaped like a trapezoid, such that the external scleral incision is narrower than the internal corneal incision, allowing for the delivery of the nucleus while maintaining a self- sealing external incision. The density of the nucleus being expressed does not affect the relative widths of the external scleral incision and the internal corneal incision.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 17", "images": [], "ratImages": []}, {"id": 390, "section": "Lens & Cataract", "type": "mcq", "q": "An ophthalmologist is performing a routine phacoemulsification when she notes that the remaining half of the nucleus has suddenly dropped through an open posterior capsule and appears to be suspended on the anterior vitreous face. What is the best next step?", "options": {"a": "immediate withdrawal of the phaco instrument and any secondary instrument from the eye", "b": "injection of an ophthalmic viscosurgical device (OVD) to stabilize the anterior chamber", "c": "lollipopping the nucleus with the phaco tip in order to pull it into the anterior chamber", "d": "vigorous irrigation with a balanced salt solution to flush the remaining nucleus into the anterior chamber"}, "answer": "b", "rationale": "If capsule rupture occurs during phacoemulsification, lens fragments may enter the posterior segment. At the time of posterior capsule rupture, the surgeon should stabilize the anterior chamber by reducing the high fluid flow and vacuum levels and by compartmentalizing the vitreous with an ophthalmic viscosurgical device (OVD) before removing the phaco instrument. The surgeon should avoid immediate withdrawal of the phaco instrument from the eye b ecause that would result in an outward pressure gradient, bringing more vitreous forward into the anterior chamber and outward t oward the incisions. OVD can also be introduced posterior to a suspended nuclear fragment in an effort to float it anteriorly. Insertion of a second instrument or lens glide behind the nuclear remnant may help prevent the remnant from being dislocated into the vitreous, whereas attempts to impale the nuclear fragment with the phaco tip may force the fragment posteriorly by either the tip or the irrigation, as might also occur with an attempt to flush the fragment with vigorous balanced salt solution irrigation. Lollipopping the nuclear fragment with the phaco tip may force it back and may transect the fragment, exposing the aspiration port and increasing the risk of aspirating vitreous.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 18", "images": [], "ratImages": []}, {"id": 391, "section": "Lens & Cataract", "type": "mcq", "q": "During phacoemulsification, the surgeon notes loss of anterior chamber depth; the eye becomes firm, and the patient reports feeling pain. What should the surgeon do next?", "options": {"a": "Ask the anesthesiologist to increase the patient’s intravenous pain medic ation.", "b": "Decrease the infusion pressure and increase the aspiration rate.", "c": "Prepare for a pars plana vitrectomy.", "d": "Suture the wounds closed and examine the fundus."}, "answer": "d", "rationale": "With a suprachoroidal hemorrhage, the eye typically becomes very firm, and the patient becomes agitated and reports having pain. The surgeon should immediately close the incisions and confirm the diagnosis by examining the fundus with an indirect ophthalmoscope or fundus lens. If the hemorrhage or effusion is significant, the operation should be postponed.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 19", "images": [], "ratImages": []}, {"id": 392, "section": "Lens & Cataract", "type": "mcq", "q": "An eye with extreme increased axial length may be susceptible to what intraoperative issue?", "options": {"a": "higher risk of endothelial damage", "b": "higher risk of iris prolapse", "c": "higher risk of wound burn", "d": "lens– iris diaphragm retropulsion syndrome (LIDRS)"}, "answer": "d", "rationale": "Eyes with very high axial lengths are at risk for lens– iris diaphragm retropulsion syndrome (LIDRS), in which a reverse pupillary block occurs, and the anterior chamber becomes very deep, causing pain. Eyes with lax zonular fibers are more prone to this issue. Lifting the iris off the capsule with a second instrument and lowering the infusion b ottle might help correct this prob lem. Endothelial damage and iris prolapse are more commonly associated with small eyes. Wound burn is more commonly associated with dense nuclei.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 20", "images": [], "ratImages": []}, {"id": 393, "section": "Lens & Cataract", "type": "mcq", "q": "If vitreous prolapse occurs, what is the recommended technique for anterior vitreous removal by an anterior segment surgeon?", "options": {"a": "coaxial anterior vitrectomy through the main corneal incision", "b": "complete vitrectomy and lensectomy through 2 pars plana incisions", "c": "manual externalization and cutting of vitreous through the main corneal incision", "d": "2- port bimanual anterior vitrectomy with instruments through new limbal incisions or cutting instrument through pars plana"}, "answer": "d", "rationale": "The surgeon should avoid manually externalizing and cutting vitreous through the incision. A 2- port bimanual anterior vitrectomy can be performed with separate infusion and aspirating/cutting instruments inserted through new, properly sized limbal incisions. Alternatively, the aspiration/cutting instrument may be placed through a pars plana incision while irrigation is continued through the limbus. This directs flow posteriorly and reduces the amount of vitreous that migrates into the anterior segment, thereby decreasing vitreoret i nal traction. Coaxial anterior vitrectomy is no longer recommended.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 21", "images": [], "ratImages": []}, {"id": 394, "section": "Lens & Cataract", "type": "mcq", "q": "After cataract surgery, a patient pres ents with a high intraocular pressure (IOP). On examination, the anterior chamber is shallow, the IOL is in the capsular bag, and t here is no space between the IOL and the posterior capsule. A l aser peripheral iridotomy fails to deepen the chamber or lower the IOP. What is the next most appropriate treatment?", "options": {"a": "cyclophotocoagulation", "b": "cycloplegia and aqueous suppression", "c": "surgical vitrectomy", "d": "topical miotics and a second laser peripheral iridotomy"}, "answer": "b", "rationale": "Malignant glaucoma (also known as ciliary block glaucoma, aqueous misdirection, or vitreous block) results from ciliolenticular block induced by anterior movement of the lens– iris diaphragm, poor vitreous fluid conductivity, and choroidal expansion. These factors result in a shallow anterior chamber and secondary elevation of IOP as a consequence of a ngle obstruction. IOP remains elevated despite the presence of a patent iridectomy or iridotomy. Medical treatment consists of cycloplegia and aqueous suppression. Use of miotics is not recommended because they can worsen malignant glaucoma by exacerbating anterior displacement of the lens–i ris interface. Surgical intervention consists of Nd:YAG laser irido-z onulo- hyaloidotomy or vitrectomy to disrupt the anterior vitreous face and vitreous– ciliary body interface.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 22", "images": [], "ratImages": []}, {"id": 395, "section": "Lens & Cataract", "type": "mcq", "q": "A 74- year-o ld male patient undergoes uncomplicated cataract surgery and has a roundedge IOL placed in the capsular bag. The anterior capsulorrhexis was noted to be smaller than the optic of the IOL that was placed. Following cataract surgery, the patient was on a longer-t han- usual course of topical corticosteroid for prophylaxis against cystoid macular edema (CME) due to the patient’s pre- existing epiret i nal membrane. In postoperative month 3, he was noted to have a visually significant posterior capsule opacification (PCO). What put him at greatest risk of developing a PCO?", "options": {"a": "advanced age", "b": "size of the capsulorrhexis", "c": "longer course of topical corticosteroid postoperatively", "d": "round- edge IOL"}, "answer": "d", "rationale": "The round- edge design of the IOL optic put the patient at greatest risk of developing a posterior capsule opacification (PCO). The truncated square-e dge optic design of an IOL is associated with lower rates of PCO formation; however, this type of IOL can increase the chance of developing positive dysphotopsias and other optical reflections. Other factors that can increase the rate of PCO include: youn ger patient age, history of intraocular inflammation, pseudoexfoliation syndrome, a larger capsulorrhexis (such that the anterior capsule does not cover 360° of the IOL edge), incomplete cortical cleanup, more time elapsed since surgery, and the presence of silicone oil. There is no difference in PCO rates with prolonged use of topical corticosteroids or nonsteroidal anti- inflammatory drugs (NSAIDs).", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 23", "images": [], "ratImages": []}, {"id": 396, "section": "Lens & Cataract", "type": "mcq", "q": "In postoperative month 1 following uncomplicated cataract surgery with a 1- piece posterior chamber IOL (PCIOL), a patient notices a pers ist ent dark crescent in the temporal visual field of the operative eye. Confrontation visual fields are full in both eyes, and results of a dilated fundus examination in the operative eye are normal. What is the most appropriate next step in management?", "options": {"a": "Observation.", "b": "Perform a Nd:YAG laser posterior capsulotomy.", "c": "Perform reverse optic capture of the existing lens.", "d": "Exchange the 1-p iece PCIOL for a 3- piece PCIOL in the sulcus."}, "answer": "a", "rationale": "This patient is describing a negative dysphotopsia, which is common in the early postoperative period, affecting approximately 15% of all patients. Negative dysphotopsias usually improve over time, due to anterior capsular opacification and neuroadaptation; therefore, observation is advised initially. Only 3% of patients report symptoms 1 year after surgery. For patients with per sis tent symptoms, surgery can be offered, either by reverse optic capture of the existing posterior chamber IOL (PCIOL) or placement of an appropriate PCIOL in the sulcus. Nd:YAG posterior capsulotomy is not indicated for the treatment of negative dysphotopsia.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 24", "images": [], "ratImages": []}, {"id": 397, "section": "Lens & Cataract", "type": "mcq", "q": "What criterion determines the type of intervention that should be performed for acute post– cataract extraction endophthalmitis, based on the results of the Endophthalmitis Vitrectomy Study (EVS)?", "options": {"a": "amount of time that has passed since surgery", "b": "degree of inflammation in the vitreous", "c": "presence of intact posterior capsule", "d": "visual acuity"}, "answer": "d", "rationale": "As a result of the Endophthalmitis Vitrectomy Study (EVS) findings, immediate pars plana vitrectomy and antibiotic injections are recommended when the patient’s visual acuity is light perception. When the visual acuity is hand motions or better, a less- invasive anterior chamber and vitreous biopsy for cultures, with subsequent intravitreal injection of antibiotics, is sufficient. Time passed since surgery, degree of vitreous inflammation, and presence of intact posterior capsule were not used to determine management in the EVS study.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 25", "images": [], "ratImages": []}, {"id": 398, "section": "Lens & Cataract", "type": "mcq", "q": "A patient has decreased visual acuity secondary to CME 1 month after uncomplicated cataract surgery. What is the next most appropriate step in management?", "options": {"a": "observation", "b": "treatment with topical corticosteroids and/or NSAIDs", "c": "intravitreal injection of corticosteroids", "d": "intravitreal injection of vascular endothelial growth factor inhibitors"}, "answer": "b", "rationale": "Topical anti-i nflammatory drugs are the typical first-l ine treatment for CME and may take up to 6 months to resolve chronic cystoid macular edema (CME). Spontaneous resolution of CME occurs in approximately 95% of cases but may take 3 to 12 months. Though intravitreal injections of corticosteroids or vascular endothelial growth f actor inhibitors can be successful in treating chronic CME, t hese treatments are usually reserved for t hose cases not responding to topical treatment.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 26", "images": [], "ratImages": []}, {"id": 399, "section": "Lens & Cataract", "type": "mcq", "q": "During phacoemulsification, the surgeon realizes that t here are 3 clock- hours (90°) of zonular dialysis pre sent. How should the surgeon proceed?", "options": {"a": "Increase the bottle height and flow rate to maintain adequate anterior chamber depth.", "b": "Close the corneal incision and convert to an extracapsular cataract extraction.", "c": "Proceed with phacoemulsification and place an anterior chamber intraocular lens (ACIOL).", "d": "Place a capsular tension ring or capsular hooks, complete phacoemulsification, and place a PCIOL."}, "answer": "d", "rationale": "For a patient with 90° of zonular dialysis, management consists of continued phacoemulsification and capsular tension ring (CTR) placement. The timing of the CTR placement depends on the extent of the zonular compromise and the surgeon’s preference. Placement of the CTR before completion of phacoemulsification stabilizes the capsule for further lens manipulation and extraction but makes cortical aspiration more difficult. Thorough cortical aspiration is easier if CTR placement is delayed u ntil just before IOL insertion. However, there is a risk of extending the zonular dialysis if phacoemulsification is performed without adequate capsule support. The flow rate and b ottle height should not be increased, because doing so could cause vitreous to prolapse through the dialysis and into the anterior chamber. OVD may be used as a tamponade against the forward movement of vitreous in the area of the dialysis. U nless the situation were to deteriorate further, neither conversion to extracapsular cataract extraction nor use of an anterior chamber IOL (ACIOL) would be necessary.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 27", "images": [], "ratImages": []}, {"id": 400, "section": "Lens & Cataract", "type": "mcq", "q": "What surgical step should be avoided in a patient with a posterior polar cataract?", "options": {"a": "hydrodissection", "b": "hydrodelineation", "c": "Little capsulorrhexis rescue technique", "d": "viscodissection with OVD"}, "answer": "a", "rationale": "Hydrodissection should be avoided in a posterior polar cataract due to the possibility of tearing the posterior capsule directly under the region of the posterior polar opacity, because the posterior capsule may be weak or absent in this area. Gentle hydrodelineation, however, can be performed in order to leave an epinuclear bowl to protect the capsule during nucleus removal. After nucleus removal, OVD can be used for viscodissection of the epinucleus from the capsular bag. The Little capsulorrhexis rescue technique is not contraindicated in this situation.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 28", "images": [], "ratImages": []}, {"id": 401, "section": "Lens & Cataract", "type": "mcq", "q": "What complication is common in cataract surgery in a patient with nanophthalmos?", "options": {"a": "endophthalmitis", "b": "irregular astigmatism", "c": "rhegmatogenous ret i nal detachment", "d": "uveal effusion"}, "answer": "d", "rationale": "Nanophthalmos is a rare condition in which the eye is extremely short (axial length &lt; 20 mm) and the ratio of lens volume to eye volume is higher than normal. T hese eyes have shallow anterior chambers, narrow a ngles, and thickened sclerae, with l ittle room for the surgeon to maneuver. Small-i ncision bimanual surgery is an alternative technique to consider. Intraoperative or postoperative uveal effusion is a unique h azard in nanophthalmic eyes. Maintaining positive pressure in the anterior chamber and limiting the length of the procedure help prevent intraoperative uveal effusion. Scleral wind ows should be considered as a prophylactic measure to treat uveal effusion. A sutured wound prevents hypotony from contributing to this complication postoperatively. Endophthalmitis, irregular astigmatism, and rhegmatogenous ret i nal detachments are not common complications in these patients.", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 29", "images": [], "ratImages": []}, {"id": 402, "section": "Lens & Cataract", "type": "mcq", "q": "For a patient with mild glaucoma and visually significant cataract, what is the average extent of IOP lowering that may be expected from phacoemulsification and IOL implantation?", "options": {"a": "&lt;10%", "b": "10%–34%", "c": "35%–49%", "d": "&gt;50%"}, "answer": "b", "rationale": "Uncomplicated phacoemulsification surgery lowers IOP between 10% and 34%, though this decrease diminishes over time. It can therefore be considered as a stand- alone procedure in eyes with mild to moderate glaucoma. Microinvasive glaucoma surgery (MIGS) can also be performed at the time of cataract surgery to benefit patients with mild to moderate glaucoma. For more advanced cases of glaucoma and visually significant cataract, adjunctive filtration procedures may need to be considered at the time of cataract surgery. Staged procedures can also be considered ( either the cataract or glaucoma procedure first, then the second procedure at l ater date).", "ref": "AAO BCSC Section 11, Lens &amp; Cataract — Study Question 30", "images": [], "ratImages": []}]</script><script>
+const DATA=JSON.parse(document.getElementById("qbankData").textContent);
+const state={};
+function figHtml(files){ if(!files||!files.length) return ""; return '<div class="fig">' + files.map(f=>`<img src="img/${f}" alt="Figure" loading="lazy">`).join("") + '</div>'; }
+function visibleList(){
+if(viewFilter==="misses")return DATA.filter(q=>{const s=state[q.id];return s&&s!=="__shown__"&&q.type==="mcq"&&s!==q.answer;});
+if(viewFilter==="flagged")return DATA.filter(q=>FLAGS[q.id]);
+return DATA;}
+function render(){const quiz=document.getElementById("quiz");quiz.innerHTML="";
+const list=visibleList();
+if(!list.length){const d=document.createElement("div");d.className="note";d.textContent=viewFilter==="misses"?"No missed questions here \u2014 every answered MCQ is correct so far.":(viewFilter==="flagged"?"No flagged questions yet. Tap the \u2605 on any question to flag it.":"No questions.");quiz.appendChild(d);}
+list.forEach((q,i)=>quiz.appendChild(card(q,i+1)));updateScore();syncFlagBtns();}
+function card(q,dn){const c=document.createElement("div");c.className="card";c.dataset.id=q.id;
+let figBlock=figHtml(q.images);
+if(q.type==="card"){
+c.innerHTML=`<div class="qhead"><span class="qnum">Q${q.id} &middot; #${dn} &middot; flashcard</span><span><span class="tag">${q.section}</span><button class="flagbtn" data-fid="${q.id}" title="Flag for review">&#9733;</button></span></div>
+<div class="stem">${q.q}</div>${figBlock}
+<button class="fcbtn">Tap to reveal answer</button>
+<div class="rat"><h4>Answer</h4><div>${q.answerHtml}</div>${figHtml(q.ratImages)}<div class="ref">${q.ref||""}</div></div>`;
+c.querySelector(".fcbtn").addEventListener("click",()=>{c.querySelector(".rat").classList.add("show");c.querySelector(".fcbtn").classList.add("hidden");state[q.id]="__shown__";save();updateScore();});
+if(state[q.id]){c.querySelector(".rat").classList.add("show");c.querySelector(".fcbtn").classList.add("hidden");}
+return c;
+}
+c.innerHTML=`<div class="qhead"><span class="qnum">Q${q.id} &middot; #${dn}</span><span><span class="tag">${q.section}</span><button class="flagbtn" data-fid="${q.id}" title="Flag for review">&#9733;</button></span></div>
+<div class="stem">${q.q}</div>${figBlock}<div class="opts"></div>
+<button class="revealbtn">Show answer without choosing</button>
+<div class="rat"><h4>Rationale</h4><div>${q.rationale}</div>${figHtml(q.ratImages)}<div class="ref">${q.ref||""}</div></div>`;
+const opts=c.querySelector(".opts");["a","b","c","d","e"].forEach(L=>{if(!q.options[L])return;
+const o=document.createElement("div");o.className="opt";o.dataset.l=L;
+o.innerHTML=`<span class="ltr">${L.toUpperCase()}</span><div class="body"><span class="otext">${q.options[L]}</span></div>`;
+o.addEventListener("click",()=>pick(q,c,L));opts.appendChild(o);});
+c.querySelector(".revealbtn").addEventListener("click",()=>reveal(q,c));
+if(state[q.id])applyReveal(q,c,state[q.id]);return c;}
+function pick(q,c,L){if(c.dataset.locked)return;state[q.id]=L;save();applyReveal(q,c,L);updateScore();}
+function reveal(q,c){if(c.dataset.locked)return;if(!state[q.id])state[q.id]="__shown__";save();applyReveal(q,c,state[q.id]);updateScore();}
+function applyReveal(q,c,picked){c.dataset.locked="1";c.querySelector(".revealbtn").classList.add("hidden");
+c.querySelectorAll(".opt").forEach(o=>{const L=o.dataset.l;o.classList.add("disabled");const tx=o.querySelector(".otext");
+if(L===q.answer){o.classList.add("correct");if(!o.querySelector(".badge"))tx.insertAdjacentHTML("afterend",'<span class="badge ok">Correct</span>');}
+if(L===picked&&picked!==q.answer&&picked!=="__shown__"){o.classList.add("wrongpick");if(!o.querySelector(".badge"))tx.insertAdjacentHTML("afterend",'<span class="badge no">Your pick</span>');}});
+c.querySelector(".rat").classList.add("show");}
+function updateScore(){let ans=0,cor=0;DATA.forEach(q=>{const s=state[q.id];if(s){ans++;if(q.type==="mcq"&&s===q.answer)cor++;}});
+document.getElementById("ansN").textContent=ans;document.getElementById("totN").textContent=DATA.length;
+document.getElementById("pct").textContent=ans?Math.round(cor/ans*100)+"%":"—";
+const msEl=document.getElementById("miniStat");if(msEl)msEl.textContent=ans+" / "+DATA.length+(ans?" \u00b7 "+Math.round(cor/ans*100)+"%":"");
+try{localStorage.setItem("bcsceov_cataract_stats",JSON.stringify({ans:ans,cor:cor}))}catch(e){}
+updateViewCounts();updateHomeLinks(ans);}
+function updateHomeLinks(ans){
+document.querySelectorAll("a.sq-back, #jsApp a.tbtn").forEach(a=>{
+const href=a.getAttribute("href");if(!href)return;
+try{const url=new URL(href,location.href);
+url.searchParams.set("prog_tag","BCSC End-of-Volume \u00b7 Lens & Cataract");
+url.searchParams.set("prog_ans",ans);
+a.setAttribute("href",url.href);}catch(e){}
+});}
+function save(){try{localStorage.setItem("bcsceov_cataract",JSON.stringify(state))}catch(e){}}
+function load(){try{const v=localStorage.getItem("bcsceov_cataract");if(v)Object.assign(state,JSON.parse(v))}catch(e){}}
+let viewFilter="all";
+const FLAGS={};
+function saveFlags(){try{localStorage.setItem("bcsceov_cataract_flags",JSON.stringify(FLAGS))}catch(e){}}
+function loadFlags(){try{const v=localStorage.getItem("bcsceov_cataract_flags");if(v)Object.assign(FLAGS,JSON.parse(v))}catch(e){}}
+function missCount(){return DATA.filter(q=>{const s=state[q.id];return s&&s!=="__shown__"&&q.type==="mcq"&&s!==q.answer;}).length;}
+function updateViewCounts(){
+const m=document.getElementById("viewMisses"),f=document.getElementById("viewFlagged");
+if(m){m.textContent="Misses ("+missCount()+")";m.title=(viewFilter==="misses"?"Showing missed questions only \u2014 click to show all":"Show only questions you answered wrong");m.classList.toggle("activeview",viewFilter==="misses");}
+if(f){f.textContent="\u2605 Flagged ("+Object.keys(FLAGS).length+")";f.title=(viewFilter==="flagged"?"Showing flagged questions only \u2014 click to show all":"Show only flagged questions");f.classList.toggle("activeview",viewFilter==="flagged");}}
+function syncFlagBtns(){document.querySelectorAll(".flagbtn").forEach(b=>{b.classList.toggle("flagged",!!FLAGS[b.dataset.fid]);});}
+document.getElementById("revealAll").onclick=()=>{DATA.forEach(q=>{if(!state[q.id])state[q.id]="__shown__"});save();render();};
+document.getElementById("resetAll").onclick=()=>{if(!confirm("Clear all your answers?"))return;for(const k in state)delete state[k];try{localStorage.removeItem("bcsceov_cataract")}catch(e){}render();};
+function showExportModal(json){
+const overlay=document.createElement("div");
+overlay.className="modal-overlay";
+overlay.innerHTML='<div class="modal-box">'
++'<div style="font-weight:700">Save your progress</div>'
++'<div style="font-size:12.5px;color:var(--muted)">Downloads are not available in this shared view. Copy the text below (button or Ctrl/Cmd+C) and save it yourself as a .json file &mdash; use Import progress to restore it later.</div>'
++'<textarea readonly></textarea>'
++'<div class="modal-actions"><button class="tbtn" id="modalCopy">Copy to clipboard</button><button class="tbtn" id="modalClose">Close</button></div>'
++'</div>';
+document.body.appendChild(overlay);
+const ta=overlay.querySelector("textarea");
+ta.value=json;
+ta.focus();ta.select();
+overlay.querySelector("#modalCopy").onclick=async()=>{
+try{await navigator.clipboard.writeText(json);}catch(e){ta.select();try{document.execCommand("copy");}catch(e2){}}
+overlay.querySelector("#modalCopy").textContent="Copied!";
+};
+overlay.querySelector("#modalClose").onclick=()=>overlay.remove();
+overlay.addEventListener("click",(e)=>{if(e.target===overlay)overlay.remove();});
+}
+async function exportProgress(){
+const payload={section:"Cataract",exportedAt:new Date().toISOString(),answers:state};
+const json=JSON.stringify(payload,null,2);
+const filename="bcsc-progress-Cataract.json";
+try{
+if(window.claude&&window.claude.use){
+const downloads=await window.claude.use("downloads");
+if(downloads){await downloads.save({filename,data:json});return;}
+}
+}catch(e){}
+if(window.self!==window.top){showExportModal(json);return;}
+const blob=new Blob([json],{type:"application/json"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;a.download=filename;
+document.body.appendChild(a);a.click();document.body.removeChild(a);
+URL.revokeObjectURL(url);
+}
+function importProgressFile(file){
+if(!file)return;
+const reader=new FileReader();
+reader.onload=()=>{
+try{
+const data=JSON.parse(reader.result);
+if(!data||typeof data.answers!=="object")throw new Error("bad shape");
+Object.assign(state,data.answers);
+save();render();
+alert("Imported "+Object.keys(data.answers).length+" answers"+(data.section&&data.section!=="Cataract"?" (from a different section export — merged anyway).":"."));
+}catch(e){alert("Could not read that file — is it a BCSC progress export?");}
+};
+reader.readAsText(file);
+}
+document.getElementById("exportProgress").onclick=exportProgress;
+document.getElementById("importProgress").onclick=()=>document.getElementById("importFile").click();
+document.getElementById("importFile").onchange=(e)=>importProgressFile(e.target.files[0]);
+document.getElementById("jumpUnanswered").onclick=()=>{
+const card=Array.from(document.querySelectorAll("#quiz .card")).find(c=>!state[c.dataset.id]);
+if(card){card.scrollIntoView({block:"center"});}
+else{alert("Every question in this section is answered.");}
+};
+loadFlags();load();render();updateViewCounts();
+document.getElementById("viewMisses").onclick=()=>{viewFilter=(viewFilter==="misses"?"all":"misses");render();updateViewCounts();window.scrollTo({top:0});};
+document.getElementById("viewFlagged").onclick=()=>{viewFilter=(viewFilter==="flagged"?"all":"flagged");render();updateViewCounts();window.scrollTo({top:0});};
+document.getElementById("quiz").addEventListener("click",e=>{const b=e.target.closest(".flagbtn");if(!b)return;const id=b.dataset.fid;if(FLAGS[id])delete FLAGS[id];else FLAGS[id]=1;saveFlags();syncFlagBtns();updateViewCounts();if(viewFilter==="flagged")render();});
+(function(){
+function doAutoJump(){try{var ansCount=Object.keys(state).length;if(ansCount>0&&ansCount<DATA.length){var jb=document.getElementById("jumpUnanswered");if(jb)jb.click();}}catch(e){}}
+function schedule(){setTimeout(doAutoJump,250);}
+if(document.readyState==="complete"){schedule();}else{window.addEventListener("load",schedule);}
+})();
+</script></div><script>
+(function(){
+var btns=document.querySelectorAll('.themebtn');
+function syncLinks(t){
+document.querySelectorAll('a[href]').forEach(function(a){
+var href=a.getAttribute('href');
+if(!href||href.charAt(0)==='#')return;
+try{
+var url=new URL(href,location.href);
+url.searchParams.set('theme',t);
+a.setAttribute('href',url.href);
+}catch(e){}
+});
+}
+function label(){var t=document.documentElement.getAttribute('data-theme')||'dark';var txt=t==='light'?'Dark mode':'Light mode';btns.forEach(function(b){b.textContent=txt;});syncLinks(t);}
+label();
+btns.forEach(function(btn){btn.addEventListener('click',function(){
+var cur=document.documentElement.getAttribute('data-theme');
+var next=cur==='light'?'dark':'light';
+document.documentElement.setAttribute('data-theme',next);
+try{localStorage.setItem('bcscTheme',next);}catch(e){}
+label();
+});});
+})();
+</script>
+<script>
+(function(){
+var h=document.querySelector("header"),t=document.getElementById("hdrToggle");
+if(!h||!t)return;
+if(window.matchMedia&&window.matchMedia("(max-width:640px)").matches)h.classList.add("collapsed");
+t.addEventListener("click",function(){
+  h.classList.toggle("collapsed");
+  t.innerHTML=h.classList.contains("collapsed")?"&#9660;":"&#9650;";
+});
+})();
+</script>
+<script data-goatcounter="https://lebers-learning.goatcounter.com/count" data-goatcounter-settings='{"no_onload": true}' async src="//gc.zgo.at/count.js"></script>
+<script>
+window.addEventListener('load', function(){
+  if(window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({path: location.pathname});
+  }
+});
+</script>

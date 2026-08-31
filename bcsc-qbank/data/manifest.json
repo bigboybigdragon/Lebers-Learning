@@ -2,91 +2,91 @@
  "sections": [
   {
    "name": "Update on General Medicine",
-   "file": "General.html",
+   "file": "bcsc-qbank/General.html",
    "json": "data/General.json",
    "key": "bcscanki_general-medicine",
    "poolCount": 213
   },
   {
    "name": "Fundamentals & Principles of Ophthalmology",
-   "file": "Fundamentals.html",
+   "file": "bcsc-qbank/Fundamentals.html",
    "json": "data/Fundamentals.json",
    "key": "bcscanki_fundamentals",
    "poolCount": 206
   },
   {
    "name": "Clinical Optics & Vision Rehabilitation",
-   "file": "Optics.html",
+   "file": "bcsc-qbank/Optics.html",
    "json": "data/Optics.json",
    "key": "bcscanki_optics",
    "poolCount": 185
   },
   {
    "name": "Ophthalmic Pathology & Intraocular Tumors",
-   "file": "Pathology.html",
+   "file": "bcsc-qbank/Pathology.html",
    "json": "data/Pathology.json",
    "key": "bcscanki_pathology",
    "poolCount": 285
   },
   {
    "name": "Neuro-Ophthalmology",
-   "file": "Neuro.html",
+   "file": "bcsc-qbank/Neuro.html",
    "json": "data/Neuro.json",
    "key": "bcscanki_neuro",
    "poolCount": 399
   },
   {
    "name": "Pediatric Ophthalmology & Strabismus",
-   "file": "Peds.html",
+   "file": "bcsc-qbank/Peds.html",
    "json": "data/Peds.json",
    "key": "bcscanki_peds-strabismus",
    "poolCount": 438
   },
   {
    "name": "Oculofacial Plastic & Orbital Surgery",
-   "file": "Plastics.html",
+   "file": "bcsc-qbank/Plastics.html",
    "json": "data/Plastics.json",
    "key": "bcscanki_plastics-orbit",
    "poolCount": 430
   },
   {
    "name": "External Disease & Cornea",
-   "file": "Cornea.html",
+   "file": "bcsc-qbank/Cornea.html",
    "json": "data/Cornea.json",
    "key": "bcscanki_cornea",
    "poolCount": 420
   },
   {
    "name": "Uveitis & Ocular Inflammation",
-   "file": "Uveitis.html",
+   "file": "bcsc-qbank/Uveitis.html",
    "json": "data/Uveitis.json",
    "key": "bcscanki_uveitis",
    "poolCount": 338
   },
   {
    "name": "Glaucoma",
-   "file": "Glaucoma.html",
+   "file": "bcsc-qbank/Glaucoma.html",
    "json": "data/Glaucoma.json",
    "key": "bcscanki_glaucoma",
    "poolCount": 293
   },
   {
    "name": "Lens & Cataract",
-   "file": "Cataract.html",
+   "file": "bcsc-qbank/Cataract.html",
    "json": "data/Cataract.json",
    "key": "bcscanki_cataract",
    "poolCount": 264
   },
   {
    "name": "Retina & Vitreous",
-   "file": "Retina.html",
+   "file": "bcsc-qbank/Retina.html",
    "json": "data/Retina.json",
    "key": "bcscanki_retina",
    "poolCount": 365
   },
   {
    "name": "Refractive Surgery",
-   "file": "Refractive.html",
+   "file": "bcsc-qbank/Refractive.html",
    "json": "data/Refractive.json",
    "key": "bcscanki_refractive",
    "poolCount": 207

@@ -101,11 +101,12 @@ for fname, label, key in SECTIONS:
             entry["ratImages"] = rat_imgs
         pool.append(entry)
 
-    out = {"section": label, "key": key, "file": fname, "pool": pool, "answers": answers}
+    out = {"section": label, "key": key, "file": "bcsc-qbank/" + fname, "imgBase": "img/",
+           "pool": pool, "answers": answers}
     jname = fname.replace(".html", ".json")
     with open(os.path.join(outdir, jname), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-    manifest.append({"name": label, "file": fname, "json": "data/" + jname,
+    manifest.append({"name": label, "file": "bcsc-qbank/" + fname, "json": "data/" + jname,
                      "key": key, "poolCount": len(pool)})
     withimg = sum(1 for e in pool if e.get("images"))
     print(f"{fname}: {len(pool)} pool ({withimg} with stem figure) / {len(answers)} mcq answers")

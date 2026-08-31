@@ -1,0 +1,88 @@
+{
+ "sections": [
+  {
+   "name": "Fundamentals",
+   "file": "review-questions/Fundamentals.html",
+   "json": "../review-questions/data/Fundamentals.json",
+   "key": "reviewq_fundamentals",
+   "poolCount": 45
+  },
+  {
+   "name": "Embryology and Anatomy",
+   "file": "review-questions/EmbryologyAnatomy.html",
+   "json": "../review-questions/data/EmbryologyAnatomy.json",
+   "key": "reviewq_embryology-anatomy",
+   "poolCount": 29
+  },
+  {
+   "name": "Optics",
+   "file": "review-questions/Optics.html",
+   "json": "../review-questions/data/Optics.json",
+   "key": "reviewq_optics",
+   "poolCount": 47
+  },
+  {
+   "name": "Neuro-Ophthalmology",
+   "file": "review-questions/Neuro.html",
+   "json": "../review-questions/data/Neuro.json",
+   "key": "reviewq_neuro",
+   "poolCount": 87
+  },
+  {
+   "name": "Pediatrics and Strabismus",
+   "file": "review-questions/Peds.html",
+   "json": "../review-questions/data/Peds.json",
+   "key": "reviewq_peds",
+   "poolCount": 97
+  },
+  {
+   "name": "Oculoplastics, Lacrimal & Orbit",
+   "file": "review-questions/Oculoplastics.html",
+   "json": "../review-questions/data/Oculoplastics.json",
+   "key": "reviewq_oculoplastics",
+   "poolCount": 96
+  },
+  {
+   "name": "Pathology & Tumors",
+   "file": "review-questions/Pathology.html",
+   "json": "../review-questions/data/Pathology.json",
+   "key": "reviewq_pathology",
+   "poolCount": 47
+  },
+  {
+   "name": "Uveitis",
+   "file": "review-questions/Uveitis.html",
+   "json": "../review-questions/data/Uveitis.json",
+   "key": "reviewq_uveitis",
+   "poolCount": 96
+  },
+  {
+   "name": "Glaucoma",
+   "file": "review-questions/Glaucoma.html",
+   "json": "../review-questions/data/Glaucoma.json",
+   "key": "reviewq_glaucoma",
+   "poolCount": 99
+  },
+  {
+   "name": "Cornea & External Disease",
+   "file": "review-questions/Cornea.html",
+   "json": "../review-questions/data/Cornea.json",
+   "key": "reviewq_cornea",
+   "poolCount": 146
+  },
+  {
+   "name": "Lens and Cataract",
+   "file": "review-questions/Cataract.html",
+   "json": "../review-questions/data/Cataract.json",
+   "key": "reviewq_cataract",
+   "poolCount": 48
+  },
+  {
+   "name": "Retina and Vitreous",
+   "file": "review-questions/Retina.html",
+   "json": "../review-questions/data/Retina.json",
+   "key": "reviewq_retina",
+   "poolCount": 135
+  }
+ ]
+}

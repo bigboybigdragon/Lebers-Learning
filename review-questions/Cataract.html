@@ -163,7 +163,7 @@ function updateHomeLinks(ans){
 document.querySelectorAll("a.sq-back, #jsApp a.tbtn").forEach(a=>{
 const href=a.getAttribute("href");if(!href)return;
 try{const url=new URL(href,location.href);
-url.searchParams.set("prog_tag","Lens and Cataract");
+url.searchParams.set("prog_tag","Review Questions \u00b7 Lens and Cataract");
 url.searchParams.set("prog_ans",ans);
 a.setAttribute("href",url.href);}catch(e){}
 });}

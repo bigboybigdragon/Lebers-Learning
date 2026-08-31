@@ -79,8 +79,86 @@
  },
  "bcsc_eov": {
   "dir": "bcsc-eov",
-  "file": "EndOfVolume.html",
-  "key": "bcsceov_all",
-  "count": 488
+  "sections": [
+   {
+    "label": "Update on General Medicine",
+    "file": "General.html",
+    "key": "bcsceov_general",
+    "count": 38
+   },
+   {
+    "label": "Fundamentals & Principles of Ophthalmology",
+    "file": "Fundamentals.html",
+    "key": "bcsceov_fundamentals",
+    "count": 40
+   },
+   {
+    "label": "Clinical Optics & Vision Rehab",
+    "file": "Optics.html",
+    "key": "bcsceov_optics",
+    "count": 35
+   },
+   {
+    "label": "Ophthalmic Pathology & Intraocular Tumors",
+    "file": "Pathology.html",
+    "key": "bcsceov_pathology",
+    "count": 36
+   },
+   {
+    "label": "Neuro-Ophthalmology",
+    "file": "Neuro.html",
+    "key": "bcsceov_neuro",
+    "count": 40
+   },
+   {
+    "label": "Pediatric Ophthalmology & Strabismus",
+    "file": "Peds.html",
+    "key": "bcsceov_peds",
+    "count": 44
+   },
+   {
+    "label": "Oculofacial Plastic & Orbital Surgery",
+    "file": "Plastics.html",
+    "key": "bcsceov_plastics",
+    "count": 30
+   },
+   {
+    "label": "External Disease & Cornea",
+    "file": "Cornea.html",
+    "key": "bcsceov_cornea",
+    "count": 41
+   },
+   {
+    "label": "Uveitis & Ocular Inflammation",
+    "file": "Uveitis.html",
+    "key": "bcsceov_uveitis",
+    "count": 36
+   },
+   {
+    "label": "Glaucoma",
+    "file": "Glaucoma.html",
+    "key": "bcsceov_glaucoma",
+    "count": 32
+   },
+   {
+    "label": "Lens & Cataract",
+    "file": "Cataract.html",
+    "key": "bcsceov_cataract",
+    "count": 30
+   },
+   {
+    "label": "Retina & Vitreous",
+    "file": "Retina.html",
+    "key": "bcsceov_retina",
+    "count": 46
+   },
+   {
+    "label": "Refractive Surgery",
+    "file": "Refractive.html",
+    "key": "bcsceov_refractive",
+    "count": 40
+   }
+  ],
+  "total": 488
  }
 }

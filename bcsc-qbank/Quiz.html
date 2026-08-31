@@ -20,6 +20,8 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
 .setuplabel{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:16px 0 8px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
+.chipgrouplabel{font-size:12px;color:var(--muted);font-weight:600;margin:10px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+.chipgrouplabel:first-child{margin-top:0}
 .chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer}
 .chip:hover{border-color:var(--accent)}
 .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accentink);font-weight:600}
@@ -167,14 +169,31 @@ function ago(ts){
 }
 let lastAnswerAt=0; // timestamp the current question became "active"
 
-fetch('data/manifest.json').then(r=>r.json()).then(m=>{
-  MANIFEST=m.sections;
+const SOURCES = [
+  {label:'BCSC Question Bank', url:'data/manifest.json'},
+  {label:'Review Questions in Ophthalmology', url:'../review-questions/data/manifest.json'},
+  {label:'BCSC End-of-Volume Quizzes', url:'../bcsc-eov/data/manifest.json'}
+];
+Promise.all(SOURCES.map(s=>fetch(s.url).then(r=>r.json()).catch(()=>({sections:[]}))))
+.then(function(all){
+  MANIFEST = [];
   const box=document.getElementById('secChips');
-  MANIFEST.forEach(s=>{
-    const b=document.createElement('button');
-    b.className='chip'; b.textContent=s.name+' ('+s.poolCount+')';
-    b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); };
-    box.appendChild(b);
+  all.forEach(function(m, gi){
+    if(!m.sections.length) return;
+    const h=document.createElement('div');
+    h.className='chipgrouplabel';
+    h.textContent = SOURCES[gi].label;
+    box.appendChild(h);
+    const row=document.createElement('div');
+    row.className='chips';
+    m.sections.forEach(function(s){
+      MANIFEST.push(s);
+      const b=document.createElement('button');
+      b.className='chip'; b.textContent=s.name+' ('+s.poolCount+')';
+      b.onclick=()=>{ if(chosen.has(s.file)){chosen.delete(s.file);b.classList.remove('on');}else{chosen.add(s.file);b.classList.add('on');} document.getElementById('startBtn').disabled=chosen.size===0; updateTotal(); };
+      row.appendChild(b);
+    });
+    box.appendChild(row);
   });
   offerResume();
 }).catch(e=>{ document.getElementById('setup').innerHTML='<div class="note">Could not load question data ('+e.message+'). Check your connection and reload.</div>'; });
@@ -416,10 +435,11 @@ function renderExam(shortfalls){
   lastAnswerAt=Date.now();
 }
 
-function figHtml(list){
+function figHtml(list, base){
   if(!list||!list.length) return '';
+  base = base || 'img/';
   return '<div class="fig">'+list.map(function(f){
-    return '<img src="img/'+f+'" alt="Figure" loading="lazy" onclick="openLB(this.src)">';
+    return '<img src="'+base+f+'" alt="Figure" loading="lazy" onclick="openLB(this.src)">';
   }).join('')+'</div>';
 }
 
@@ -428,8 +448,8 @@ function card(q,sec,dn){
   c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+' · #'+dn+'</span>'
     +'<span><span class="tag">'+esc(sec.section)+'</span>'
     +'<button class="flagbtn'+(isFlagged(sec,q.id)?' flagged':'')+'" type="button" title="Flag this question for review" aria-pressed="'+(isFlagged(sec,q.id)?'true':'false')+'">&#9733;</button></span></div>'
-    +'<div class="stem">'+q.q+'</div>'+figHtml(q.images)+'<div class="opts"></div>'
-    +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div>'+figHtml(q.ratImages)+'<div class="ref">'+(q.ref||'')+'</div></div>';
+    +'<div class="stem">'+q.q+'</div>'+figHtml(q.images, sec.imgBase)+'<div class="opts"></div>'
+    +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div>'+figHtml(q.ratImages, sec.imgBase)+'<div class="ref">'+(q.ref||'')+'</div></div>';
   const opts=c.querySelector('.opts');
   ['a','b','c','d','e'].forEach(L=>{
     if(!q.options[L])return;
