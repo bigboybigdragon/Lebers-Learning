@@ -168,7 +168,33 @@ depended on hidden anchor elements that lived inside the now-omitted staticApp b
 **Do not copy the original pages' `figHtml()` into new pages built this way** — copy
 `import_review_and_eov.py`'s version instead.
 
-`import_review_and_eov.py` is safe to re-run (regenerates the same 13 files from the
-source); it does not touch the 13 original BCSC files, Oculus Uterque, or Quiz.html.
-If the source file's questions ever change, re-running it changes these `id`s only if
-the source itself renumbers them — check before re-running (rule 2).
+`import_review_and_eov.py` is safe to re-run (regenerates the same files from the
+source); it does not touch the 13 original BCSC files or Oculus Uterque. If the source
+file's questions ever change, re-running it changes these `id`s only if the source
+itself renumbers them — check before re-running (rule 2).
+
+**BCSC End-of-Volume is split by subspecialty** (13 files, same pattern as Review
+Questions — not the single combined file the first version of this shipped as), keys
+`bcsceov_<slug>`.
+
+**Exam Mode spans all three question banks.** `Quiz.html` fetches three manifests —
+`bcsc-qbank/data/manifest.json`, `review-questions/data/manifest.json`,
+`bcsc-eov/data/manifest.json` — and concatenates them into one `MANIFEST`, with the
+setup screen grouping chips under each source's own labeled header (avoids ambiguous
+duplicate labels like three different "Glaucoma" chips). `import_review_and_eov.py`
+writes the latter two manifests + per-section `data/*.json` pool files itself, via a
+shared `write_pool_json()` helper — unlike the older BCSC-only pool files, these
+**include image questions** (no exclusion), because:
+
+- Every pool entry carries an `imgBase` (`"img/"` for BCSC, `"../review-questions/img/"`,
+  `"../bcsc-eov/img/"`) that Quiz.html's `figHtml(list, base)` prepends to each filename.
+  This is what makes cross-folder figures resolve correctly from `bcsc-qbank/Quiz.html`.
+- `bcsc-qbank/data/*.json` were regenerated once (by the patched `extract_quiz_data.py`)
+  to add this same `imgBase` field and a folder-prefixed `file` (`"bcsc-qbank/X.html"`,
+  needed so `file` stays unique as a merge key once three sources share one MANIFEST) —
+  pool/answers content is byte-identical, only those two header fields changed.
+
+If you add a fourth question source later: give its pool files the same shape
+(`section, key, file, imgBase, pool, answers`), add its `data/manifest.json` path to
+the `SOURCES` array in Quiz.html's manifest-fetch code, and it gets its own labeled
+chip group for free.
