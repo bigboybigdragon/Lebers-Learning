@@ -202,6 +202,37 @@ var REVIEWERS = [
     ]
   },
   {
+    id: "reviewq",
+    name: "Review Questions in Ophthalmology",
+    meta: "972 questions \u00b7 12 sections",
+    note: "Split into subspecialty sections so each page loads quickly. Works on desktop and phone.",
+    password: null,
+    sections: [
+      {file:"review-questions/Fundamentals.html",       label:"Fundamentals",                       count:45,  key:"reviewq_fundamentals"},
+      {file:"review-questions/EmbryologyAnatomy.html",  label:"Embryology and Anatomy",             count:29,  key:"reviewq_embryology-anatomy"},
+      {file:"review-questions/Optics.html",             label:"Optics",                              count:47,  key:"reviewq_optics"},
+      {file:"review-questions/Neuro.html",              label:"Neuro-Ophthalmology",                 count:87,  key:"reviewq_neuro"},
+      {file:"review-questions/Peds.html",               label:"Pediatrics and Strabismus",           count:97,  key:"reviewq_peds"},
+      {file:"review-questions/Oculoplastics.html",      label:"Oculoplastics, Lacrimal & Orbit",     count:96,  key:"reviewq_oculoplastics"},
+      {file:"review-questions/Pathology.html",          label:"Pathology & Tumors",                  count:47,  key:"reviewq_pathology"},
+      {file:"review-questions/Uveitis.html",            label:"Uveitis",                             count:96,  key:"reviewq_uveitis"},
+      {file:"review-questions/Glaucoma.html",           label:"Glaucoma",                            count:99,  key:"reviewq_glaucoma"},
+      {file:"review-questions/Cornea.html",             label:"Cornea & External Disease",           count:146, key:"reviewq_cornea"},
+      {file:"review-questions/Cataract.html",           label:"Lens and Cataract",                   count:48,  key:"reviewq_cataract"},
+      {file:"review-questions/Retina.html",             label:"Retina and Vitreous",                 count:135, key:"reviewq_retina"}
+    ]
+  },
+  {
+    id: "bcsceov",
+    name: "BCSC End-of-Volume Quizzes",
+    meta: "488 questions \u00b7 1 section",
+    note: "The self-assessment questions from the end of each BCSC subspecialty volume \u2014 a separate question set from the main BCSC Question Bank above.",
+    password: null,
+    sections: [
+      {file:"bcsc-eov/EndOfVolume.html", label:"BCSC End-of-Volume Quizzes (all subspecialties)", count:488, key:"bcsceov_all"}
+    ]
+  },
+  {
     id: "ou",
     name: "Oculus Uterque Reviewer",
     meta: "2,263 questions \u00b7 5 sections",

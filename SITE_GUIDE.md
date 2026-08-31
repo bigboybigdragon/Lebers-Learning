@@ -146,3 +146,29 @@ option HTML for negligible gain.
 `.git` itself is still ~700 MB from the pre-slimming history. That is historical weight
 only; new commits are small now. Shrinking it would require rewriting history
 (git-filter-repo) and a force-push — do that only if Arlon explicitly asks.
+
+## Review Questions in Ophthalmology + BCSC End-of-Volume Quizzes
+
+Two more reviewer groups, imported from `Reviewers/Ophtho_QBank_BCSC_Review_Desktop.html`
+(a combined source with two tagged question sets) by `tools/import_review_and_eov.py`:
+
+- `review-questions/` — 12 subspecialty files (972 q), storage keys `reviewq_<slug>`,
+  own `review-questions/img/` figure folder (225 unique images).
+- `bcsc-eov/EndOfVolume.html` — 1 combined file (488 q, all 13 BCSC subspecialty
+  self-assessment sets in one page — deliberately NOT split further, per Arlon's ask),
+  key `bcsceov_all`. No figures in this source set.
+
+These pages were built **without** the no-JS `#staticApp` fallback that the original 13
+BCSC files carry — it's genuinely dead code (unconditionally hidden the instant JS runs,
+and every feature on this site already requires JS), so omitting it just saves ~60% of
+page weight with zero functional loss. Because of that, `figHtml()` in these 13 pages
+was rewritten to build `<img src="img/<file>">` directly from `q.images` filenames,
+rather than the original pages' `document.getElementById(qimg-N).src` lookup (which
+depended on hidden anchor elements that lived inside the now-omitted staticApp block).
+**Do not copy the original pages' `figHtml()` into new pages built this way** — copy
+`import_review_and_eov.py`'s version instead.
+
+`import_review_and_eov.py` is safe to re-run (regenerates the same 13 files from the
+source); it does not touch the 13 original BCSC files, Oculus Uterque, or Quiz.html.
+If the source file's questions ever change, re-running it changes these `id`s only if
+the source itself renumbers them — check before re-running (rule 2).
