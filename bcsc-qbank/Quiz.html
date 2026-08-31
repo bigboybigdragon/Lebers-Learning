@@ -57,6 +57,9 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .stattable td{padding:8px;border-bottom:1px solid var(--line)}
 .stattable tr:last-child td{border-bottom:none}
 .statnote{font-size:12px;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5}
+.flagbtn{background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;opacity:.55}
+.flagbtn:hover{opacity:1}
+.flagbtn.flagged{color:var(--gold);opacity:1}
 .fig{margin:8px 0 12px}
 .fig img{max-width:100%;max-height:420px;border-radius:8px;display:block;margin:0 0 8px;cursor:zoom-in;border:1px solid var(--line)}
 .lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
@@ -94,11 +97,12 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
 <span class="pill">Answered <b id="ansN">0</b> / <span id="totN">0</span></span>
 <span class="pill hidden" id="corPill">Correct <b id="corN">0</b></span>
+<span class="pill hidden" id="flagCount">&#9733; 0 flagged</span>
 <button class="submitbtn hidden" id="submitBtn">Submit exam</button></div></header>
 <div class="wrap">
 <div id="resumeBox" class="resumebox hidden"></div>
 <div id="setup">
-  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it. Your answers are saved in this browser as you go, so a refresh or a closed tab will not lose them.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it. Tap the &#9733; on any question to flag it for later &mdash; flagged questions appear under &ldquo;&#9733; Flagged&rdquo; on that subspecialty&rsquo;s own page. Your answers are saved in this browser as you go, so a refresh or a closed tab will not lose them.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Questions per subspecialty</div>
@@ -288,6 +292,32 @@ function esc(s){return String(s);} // pool content is trusted site data (already
 
 function readState(key){ try{return JSON.parse(localStorage.getItem(key))||{};}catch(e){return {};} }
 
+/* Flags write immediately to the SAME key the section page uses (KEY_flags), so a
+   question flagged mid-exam shows up under that section's "Flagged" filter right away.
+   Independent of the end-of-exam answer save: a flag is a bookmark, not a score. */
+function readFlags(key){ try{ return JSON.parse(localStorage.getItem(key+'_flags'))||{}; }catch(e){ return {}; } }
+function isFlagged(sec,qid){ return !!readFlags(sec.key)[qid]; }
+function toggleFlag(sec,qid,btn){
+  const f=readFlags(sec.key);
+  if(f[qid]) delete f[qid]; else f[qid]=1;
+  try{ localStorage.setItem(sec.key+'_flags', JSON.stringify(f)); }catch(e){}
+  btn.classList.toggle('flagged', !!f[qid]);
+  btn.setAttribute('aria-pressed', f[qid]?'true':'false');
+  updateFlagCount();
+}
+function flaggedInExam(){
+  let n=0;
+  quizQs.forEach(function(it){ if(isFlagged(it.sec,it.q.id)) n++; });
+  return n;
+}
+function updateFlagCount(){
+  const el=document.getElementById('flagCount');
+  if(!el) return;
+  const n=flaggedInExam();
+  el.textContent='\u2605 '+n+' flagged';
+  el.classList.toggle('hidden', n===0);
+}
+
 function openLB(src){
   const o=document.createElement('div'); o.className='lb';
   o.innerHTML='<img src="'+src+'" alt="Figure enlarged">';
@@ -382,6 +412,7 @@ function renderExam(shortfalls){
   bb.onclick=submitExam; quiz.appendChild(bb);
   document.getElementById('submitBtn').onclick=submitExam;
   updateSubmitBtn();
+  updateFlagCount();
   lastAnswerAt=Date.now();
 }
 
@@ -394,7 +425,9 @@ function figHtml(list){
 
 function card(q,sec,dn){
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+' · #'+dn+'</span><span class="tag">'+esc(sec.section)+'</span></div>'
+  c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+' · #'+dn+'</span>'
+    +'<span><span class="tag">'+esc(sec.section)+'</span>'
+    +'<button class="flagbtn'+(isFlagged(sec,q.id)?' flagged':'')+'" type="button" title="Flag this question for review" aria-pressed="'+(isFlagged(sec,q.id)?'true':'false')+'">&#9733;</button></span></div>'
     +'<div class="stem">'+q.q+'</div>'+figHtml(q.images)+'<div class="opts"></div>'
     +'<div class="rat"><h4>Rationale</h4><div>'+q.rationale+'</div>'+figHtml(q.ratImages)+'<div class="ref">'+(q.ref||'')+'</div></div>';
   const opts=c.querySelector('.opts');
@@ -404,6 +437,10 @@ function card(q,sec,dn){
     o.innerHTML='<span class="ltr">'+L.toUpperCase()+'</span><div class="body"><span class="otext">'+q.options[L]+'</span></div>';
     o.addEventListener('click',()=>pick(q,sec,c,L));
     opts.appendChild(o);
+  });
+  c.querySelector('.flagbtn').addEventListener('click',function(e){
+    e.preventDefault(); e.stopPropagation();
+    toggleFlag(sec,q.id,this);
   });
   return c;
 }
@@ -532,6 +569,7 @@ function finish(){
     +'<div class="statnote">'
       + (mean(corrTimes)!==null ? 'Correct answers averaged '+fmtTime(mean(corrTimes))+'. ' : '')
       + (mean(wrongTimes)!==null ? 'Missed ones averaged '+fmtTime(mean(wrongTimes))+'. ' : '')
+      + (flaggedInExam()? 'You flagged '+flaggedInExam()+' question'+(flaggedInExam()===1?'':'s')+' \u2014 find them under \u201c\u2605 Flagged\u201d on the matching section page. ' : '')
       + 'Subspecialties are listed weakest first. Timing runs from your previous answer to your first answer on each item (changing an answer later does not change its time), so a pause mid-exam inflates whichever item you were on.'
     +'</div>'
     +'<div class="doneactions">'

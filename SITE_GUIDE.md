@@ -105,6 +105,12 @@ Answers are written to each section's progress key and `_stats` only when the us
 confirms in the results window, and an answer already recorded on a section page is
 never overwritten.
 
+**Flagging works in Exam Mode** and writes straight to the section's own `KEY_flags`
+key (not gated behind the end-of-exam save, and never touching `KEY`/`KEY_stats`), so a
+question starred mid-exam appears immediately under that section page's "★ Flagged"
+filter. Quiz.html reads current flag state from those keys when rendering, so flags
+survive refresh/resume for free.
+
 **In-progress exams autosave** to their own key `bcsc_exam_session_v1` after every
 answer and on submit (question ids + picks + per-item times + submitted flag). On load,
 Quiz.html offers to resume or discard it; resuming refetches the section pools, rebuilds
