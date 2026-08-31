@@ -198,3 +198,45 @@ If you add a fourth question source later: give its pool files the same shape
 (`section, key, file, imgBase, pool, answers`), add its `data/manifest.json` path to
 the `SOURCES` array in Quiz.html's manifest-fetch code, and it gets its own labeled
 chip group for free.
+
+## Figure cross-referencing (review-questions figures)
+
+`review-questions/*.html` question `images`/`ratImages` arrays were originally populated
+only from the combined source's own inline figures (375 total). A later pass added 68
+more figures whose citations existed in the question/rationale text but weren't linked,
+found by extracting each cited "Figure N-M" straight from the actual source PDFs in
+`Books/` (mainly *Review Questions in Ophthalmology 3rd*, plus 2 BCSC volumes for the
+4 BCSC-tagged citations) using PyMuPDF — no `pdftoppm`/poppler needed. Two-tier caption
+search (strict all-caps `FIGURE N-M` first, case-insensitive fallback second) handles
+this book's bold-caption convention plus picture-ID questions and BCSC's mixed-case-only
+captions. Figures that span a page break (the caption's image lives on the *previous*
+page) need a manual two-render-and-stitch — the automated single-page crop silently
+produces a caption-only crop in that case, which shows up as an anomalously short
+extracted image (a cheap sanity check: flag any crop under ~200px tall).
+
+## Known source-text corruption (BCSC End-of-Volume + Review Questions)
+
+The original combined source (`Reviewers/Ophtho_QBank_BCSC_Review_Desktop.html`) has
+baked-in mid-word space corruption — a PDF-extraction artifact, not something this
+site's tooling introduced — mostly in `bcsc-eov/*.html` (243 of 488 questions) and
+lightly in `review-questions/*.html` (25 of 972). Examples: "ret i nal" → retinal,
+"pres ents" → presents, "14- year-o ld" → 14-year-old, garbled formulas/chemical
+notation (subscripts landing as stray floating digits, e.g. Goldmann equation, C3F8/SF6
+gas names), and stray leaked footer/citation text (page numbers, "Study Questions"
+footer fragments, book citations mid-sentence).
+
+This was hand-corrected once (2026-08-31) by reading every flagged question and
+retyping the fix — **not** a blind find-replace, because a dictionary-based auto-merge
+is unsafe here (it can produce a different *valid* word instead of the right one, e.g.
+"though t here is" → wrongly "thought here is" instead of "though there is"; it also
+false-flags real two-word terms like "pars plana" as a broken word). Two mechanical
+regexes ARE safe to reapply blind if this recurs: strip a space directly after a
+hyphen/en-dash/Greek-letter-hyphen (`-\s+` → `-`, and `[αβγ]\s+-` → no space) — that
+configuration is never intentional in this text.
+
+Left alone (different bug class, not spacing — don't "fix" these without checking the
+actual source): stray digits from lost Greek-letter/subscript notation (e.g. "a error"
+for "an α error", "α agonist" missing a subscript like α2), and one flattened
+comparison table in `review-questions/Uveitis.html` id 970 (HSV vs VZV keratitis) whose
+row/column structure was lost — reconstructing it needs the source table, not a text
+fix.
