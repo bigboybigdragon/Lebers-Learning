@@ -153,10 +153,12 @@ Two more reviewer groups, imported from `Reviewers/Ophtho_QBank_BCSC_Review_Desk
 (a combined source with two tagged question sets) by `tools/import_review_and_eov.py`:
 
 - `review-questions/` — 12 subspecialty files (972 q), storage keys `reviewq_<slug>`,
-  own `review-questions/img/` figure folder (225 unique images).
+  own `review-questions/img/` figure folder (225 unique images from the original
+  inline source, +78 more from the later figure cross-referencing pass — see below).
 - `bcsc-eov/EndOfVolume.html` — 1 combined file (488 q, all 13 BCSC subspecialty
   self-assessment sets in one page — deliberately NOT split further, per Arlon's ask),
-  key `bcsceov_all`. No figures in this source set.
+  key `bcsceov_all`. No figures in the original source; 4 added by the cross-referencing
+  pass into `bcsc-eov/img/` (didn't exist before that).
 
 These pages were built **without** the no-JS `#staticApp` fallback that the original 13
 BCSC files carry — it's genuinely dead code (unconditionally hidden the instant JS runs,
