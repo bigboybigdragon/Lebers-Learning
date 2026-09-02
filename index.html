@@ -15,7 +15,7 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
 .themebtn:hover{border-color:var(--accent)}
 .sub{color:var(--muted);font-size:13px;margin-top:3px}
-.countdown{margin-top:9px;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;display:inline-block}
+.countdown{margin:10px 0 4px;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;display:inline-block}
 .countdown b{color:var(--gold);font-variant-numeric:tabular-nums}
 .wrap{max-width:900px;margin:0 auto;padding:16px 16px 80px}
 .scorebar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:11px;font-size:13px}
@@ -128,8 +128,8 @@ document.documentElement.setAttribute('data-theme',t);
 if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 }catch(e){document.documentElement.setAttribute('data-theme','dark');}
 })();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div>
-<div class="countdown" id="countdown">Loading countdown&hellip;</div>
 </header><div class="wrap"><div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div>
+<div class="countdown" id="countdown">Loading countdown&hellip;</div>
 <div id="groups"></div>
 <footer>See you on the other side<br>#RoadtoDPBO<br>&mdash;OBU &amp; AAS</footer>
 </div>
