@@ -15,7 +15,7 @@ h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space
 .themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
 .themebtn:hover{border-color:var(--accent)}
 .sub{color:var(--muted);font-size:13px;margin-top:3px}
-.countdown{margin:12px 0 3px;font-size:14.5px;font-weight:600;color:var(--ink);text-align:center}
+.countdown{margin:12px 0 3px;font-size:26px;font-weight:600;color:var(--ink);text-align:center}
 .countdown b{color:var(--gold);font-variant-numeric:tabular-nums;font-weight:800}
 .countermsg{margin:2px 0 14px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
 .wrap{max-width:900px;margin:0 auto;padding:16px 16px 80px}
@@ -131,7 +131,7 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 })();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div>
 </header><div class="wrap">
 <div class="countdown" id="countdown">Loading countdown&hellip;</div>
-<div class="countermsg">See you on the other side<br>#RoadtoDPBO<br>&mdash;OBU &amp; AAS</div>
+<div class="countermsg">See you on the other side<br>#RoadtoDPBO<br>&mdash;AAS &amp; OBU</div>
 <div id="groups"></div>
 <div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div>
 </div>
@@ -161,7 +161,7 @@ function tick(){
   var hrs=Math.floor(s/3600); s-=hrs*3600;
   var mins=Math.floor(s/60); s-=mins*60;
   var secs=s;
-  el.innerHTML='&#8987; Sunday 8:00 AM (PHT): <b>'+days+'d '+pad(hrs)+'h '+pad(mins)+'m '+pad(secs)+'s</b>';
+  el.innerHTML='<b>'+days+'d '+pad(hrs)+'h '+pad(mins)+'m '+pad(secs)+'s</b>';
 }
 tick();
 timer=setInterval(tick, 1000);
