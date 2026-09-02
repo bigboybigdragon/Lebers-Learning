@@ -129,10 +129,11 @@ document.documentElement.setAttribute('data-theme',t);
 if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 }catch(e){document.documentElement.setAttribute('data-theme','dark');}
 })();</script><header><h1><span>Leber's Learning</span><button class="themebtn" type="button">Light mode</button></h1><div class="sub">Landing page for all reviewers. Pick a reviewer group below, then a section, to begin.</div>
-</header><div class="wrap"><div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div>
+</header><div class="wrap">
 <div class="countdown" id="countdown">Loading countdown&hellip;</div>
 <div class="countermsg">See you on the other side<br>#RoadtoDPBO<br>&mdash;OBU &amp; AAS</div>
 <div id="groups"></div>
+<div class="toolbar" id="backupBar"><button class="tbtn" id="exportAllBtn">Export all progress</button><button class="tbtn" id="importAllBtn">Import progress</button><input type="file" id="importAllFile" accept="application/json" style="display:none"><span id="backupMsg" style="font-size:12px;color:var(--muted);align-self:center"></span></div>
 </div>
 <script>
 (function(){
@@ -145,11 +146,16 @@ function nextSunday8amPHT(){
   return d;
 }
 function pad(n){return n<10?'0'+n:''+n;}
+var target=nextSunday8amPHT();
+var timer;
 function tick(){
   var el=document.getElementById('countdown');
   if(!el) return;
-  var diff=nextSunday8amPHT().getTime()-Date.now();
-  if(diff<0) diff=0;
+  var diff=target.getTime()-Date.now();
+  if(diff<=0){
+    diff=0;
+    if(timer) clearInterval(timer);
+  }
   var s=Math.floor(diff/1000);
   var days=Math.floor(s/86400); s-=days*86400;
   var hrs=Math.floor(s/3600); s-=hrs*3600;
@@ -158,7 +164,7 @@ function tick(){
   el.innerHTML='&#8987; Sunday 8:00 AM (PHT): <b>'+days+'d '+pad(hrs)+'h '+pad(mins)+'m '+pad(secs)+'s</b>';
 }
 tick();
-setInterval(tick, 1000);
+timer=setInterval(tick, 1000);
 })();
 (function(){
 var btns=document.querySelectorAll('.themebtn');
