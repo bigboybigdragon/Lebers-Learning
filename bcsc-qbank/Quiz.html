@@ -112,13 +112,15 @@ if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
 <div class="wrap">
 <div id="resumeBox" class="resumebox hidden"></div>
 <div id="setup">
-  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose and shuffled together. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it. Tap the &#9733; on any question to flag it for later &mdash; flagged questions appear under &ldquo;&#9733; Flagged&rdquo; on that subspecialty&rsquo;s own page. Your answers are saved in this browser as you go, so a refresh or a closed tab will not lose them.</div>
+  <div class="note">Pick your subspecialties and how many questions you want <b>from each</b>, then Start. Questions are drawn at random from the subspecialties you choose, then either fully shuffled together or kept grouped by subspecialty, per the <b>Question order</b> setting below. Answers and rationales stay hidden until you press <b>Submit exam</b>, and you can change any answer before then. Your answers can then be saved to the matching section pages (progress bars, scores and misses all update, exactly as if you had answered them there) &mdash; you confirm that at the end, and an answer already recorded on a section page is never overwritten. Questions with clinical figures are included &mdash; tap any image to enlarge it. Tap the &#9733; on any question to flag it for later &mdash; flagged questions appear under &ldquo;&#9733; Flagged&rdquo; on that subspecialty&rsquo;s own page. Your answers are saved in this browser as you go, so a refresh or a closed tab will not lose them.</div>
   <div class="setuplabel">Subspecialties</div>
   <div class="chips" id="secChips"></div>
   <div class="setuplabel">Questions per subspecialty</div>
   <div class="chips" id="countChips"></div>
   <div class="setuplabel">Question pool</div>
   <div class="chips" id="poolChips"></div>
+  <div class="setuplabel">Question order</div>
+  <div class="chips" id="orderChips"></div>
   <div class="setuplabel">Save answers to section pages?</div>
   <div class="chips" id="saveChips"></div>
   <div class="examtotal" id="examTotal">Select subspecialties to begin.</div>
@@ -319,12 +321,18 @@ function resumeSession(s, box){
   document.getElementById('countChips').appendChild(b);
 });
 
-let poolMode='unanswered', saveMode=true;
+let poolMode='unanswered', saveMode=true, orderMode='random';
 [['unanswered','Unanswered only'],['all','Include answered']].forEach(([val,lbl])=>{
   const b=document.createElement('button');
   b.className='chip'+(val===poolMode?' on':''); b.textContent=lbl;
   b.onclick=()=>{poolMode=val;document.querySelectorAll('#poolChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
   document.getElementById('poolChips').appendChild(b);
+});
+[['random','Completely random'],['grouped','Group by subtopic']].forEach(([val,lbl])=>{
+  const b=document.createElement('button');
+  b.className='chip'+(val===orderMode?' on':''); b.textContent=lbl;
+  b.onclick=()=>{orderMode=val;document.querySelectorAll('#orderChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
+  document.getElementById('orderChips').appendChild(b);
 });
 [[true,'Save progress'],[false,'Practice only (nothing saved)']].forEach(([val,lbl])=>{
   const b=document.createElement('button');
@@ -408,7 +416,7 @@ document.getElementById('startBtn').onclick=function(){
   document.getElementById('resumeBox').classList.add('hidden');
   const files=MANIFEST.filter(s=>chosen.has(s.file));
   Promise.all(files.map(s=>fetch(s.json).then(r=>r.json()))).then(datas=>{
-    let picked=[]; const shortfalls=[];
+    const groups=[]; const shortfalls=[];
     datas.forEach(d=>{
       secData[d.key]=d;
       const st=readState(d.key);
@@ -416,11 +424,17 @@ document.getElementById('startBtn').onclick=function(){
       for(let i=avail.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[avail[i],avail[j]]=[avail[j],avail[i]];}
       const take=avail.slice(0,quizCount);
       if(take.length<quizCount) shortfalls.push(d.section+' ('+take.length+' of '+quizCount+')');
-      take.forEach(q=>picked.push({q:q, sec:d}));
+      groups.push(take.map(q=>({q:q, sec:d})));
     });
-    // interleave subspecialties so the exam doesn't run section by section
-    for(let i=picked.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[picked[i],picked[j]]=[picked[j],picked[i]];}
-    quizQs=picked;
+    if(orderMode==='grouped'){
+      // shuffle which subspecialty comes first, but keep each one's questions together
+      for(let i=groups.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[groups[i],groups[j]]=[groups[j],groups[i]];}
+      quizQs=[].concat(...groups);
+    } else {
+      quizQs=[].concat(...groups);
+      // fully interleave subspecialties so the exam doesn't run section by section
+      for(let i=quizQs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quizQs[i],quizQs[j]]=[quizQs[j],quizQs[i]];}
+    }
     if(!quizQs.length){
       const m=document.getElementById('setupMsg');
       m.textContent='No unanswered questions left in the selected subspecialties — pick others, switch to "Include answered", or reset a section.';
