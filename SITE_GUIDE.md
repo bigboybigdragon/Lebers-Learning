@@ -36,7 +36,8 @@ Per section page (progress key `KEY` is in the `REVIEWERS` config in index.html)
 
 Site-wide: `bcscTheme` (landing+BCSC theme), `ouTheme` (OU pages theme),
 `ouUnlocked_lebers` (OU password-gate unlock memory), `skipgc` (GoatCounter self-exclusion),
-`bcsc_exam_session_v1` (Exam Mode in-progress autosave — see Exam Mode section).
+`bcsc_exam_session_v1` (Exam Mode in-progress autosave — see Exam Mode section),
+`bcsc_reviewed_v1` (Review My Misses "mark reviewed" bookmarks — see that section).
 
 ## Repo layout
 
@@ -118,6 +119,31 @@ the exam, restores every selection, and — if the exam was already submitted �
 the reveal and results so the pending save is not lost. The session key is cleared when
 the user saves, declines to save, discards, or starts a new exam. It never writes to a
 section progress key, so an abandoned exam cannot pollute real progress.
+
+## Review My Misses (bcsc-qbank/Misses.html)
+
+Read-only compilation page: on load it fetches all three manifests (same `SOURCES` list as
+Quiz.html) and every section's pool JSON, then reads each section's `KEY` (answers) and
+`KEY_flags` straight from localStorage to build one combined list of every question that is
+either **missed** (answered, and the saved letter ≠ `q.answer`) or **flagged**. No section
+selection step — it always compiles across everything, then lets you filter/reorder client-side.
+
+Controls: Show (All / Missed only / Flagged only), Source (All / per-source), Order (**Group
+by subtopic**, weakest-accuracy-section-first using each section's own `KEY_stats` — or
+**Completely random**, a stable per-load shuffle so filter clicks don't reshuffle the list),
+and Show/Hide reviewed.
+
+Two write paths, both narrow:
+- The star button toggles that question in `KEY_flags` — the *same* key section pages and
+  Quiz.html already own, so unflagging here removes it from that section's own "★ Flagged"
+  filter too, and nothing here ever writes to `KEY` or `KEY_stats`.
+- "Mark reviewed" writes only to its own new key `bcsc_reviewed_v1` (`{"sectionKey:qid": 1}`),
+  used purely to dim/hide a card locally. It never touches scores, answers, or flags.
+
+Rationales, correct answers, and figures are shown immediately (this is a review page, not a
+quiz), using the exact same `figHtml`/lightbox pattern and `imgBase` resolution as Quiz.html
+(Misses.html lives in the same `bcsc-qbank/` folder, so the manifests' relative `json`/image
+paths resolve the same way for both pages).
 
 **If you edit questions in any bcsc-qbank/*.html page, regenerate the data files:**
 

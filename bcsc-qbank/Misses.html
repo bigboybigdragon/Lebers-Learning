@@ -1,0 +1,370 @@
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review My Misses</title><style>
+:root{--bg:#0e1726;--panel:#16213a;--panel2:#1d2b48;--ink:#e8eef7;--muted:#9fb0c8;--line:#283a5c;
+--accent:#4f9cff;--green:#1f7a44;--greenbg:#0f3b22;--greenln:#39c07a;--red:#7a2330;--redbg:#3a0f16;--redln:#ff6b7d;--gold:#f2c14e;
+--bodybg:linear-gradient(180deg,#0b1320,#0e1726 240px);--headerbg:rgba(11,19,32,.95);--goldink:#06101f;--accentink:#06101f;--ratbg:#1a233a}
+:root[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--panel2:#f1f4fa;--ink:#1a2333;--muted:#5b6b85;--line:#dde4f0;
+--accent:#2f6fed;--green:#1f8a4c;--greenbg:#e5f7ec;--greenln:#1f9d52;--red:#c23a4d;--redbg:#fdeced;--redln:#e0495d;--gold:#b5790a;
+--bodybg:linear-gradient(180deg,#eef2fa,#f4f6fb 240px);--headerbg:rgba(255,255,255,.92);--goldink:#fff8e8;--accentink:#ffffff;--ratbg:#fbf3e2}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bodybg);color:var(--ink);line-height:1.5}
+header{padding:16px 18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;background:var(--headerbg);backdrop-filter:blur(8px)}
+h1{margin:0;font-size:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.themebtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.themebtn:hover{border-color:var(--accent)}
+.scorebar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:11px;font-size:13px}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}.pill b{color:var(--gold)}
+.tbtn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 11px;font-size:12.5px;cursor:pointer;text-decoration:none}
+.tbtn:hover{color:var(--ink);border-color:var(--accent)}
+.tbtn.activeview{color:var(--goldink);background:var(--gold);border-color:var(--gold)}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 90px}
+.note{font-size:12px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.setuplabel{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:16px 0 8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accentink);font-weight:600}
+.toclink{font-size:12.5px;padding:6px 12px;text-decoration:none;display:inline-block}
+.summary{margin-top:14px;font-size:13.5px;color:var(--muted)}
+.summary b{color:var(--gold)}
+.revgroup{margin:22px 0 10px}
+.revgroup h3{margin:0;font-size:15px}
+.revgroup .srctag{font-weight:400;color:var(--muted);font-size:12px;margin-left:6px}
+.revgroupmeta{font-size:12px;color:var(--muted);margin-top:3px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 17px 13px;margin:14px 0;transition:opacity .15s}
+.card.reviewed{opacity:.5}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:7px;flex-wrap:wrap}
+.qnum{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.tag{font-size:11px;color:var(--goldink);background:var(--gold);border-radius:6px;padding:2px 8px;font-weight:700}
+.srctag{font-size:11px;color:var(--muted);margin-left:6px}
+.badge{font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-left:6px;display:inline-block}
+.badge.ok{background:var(--green);color:#dffbe9}.badge.no{background:var(--red);color:#ffe1e6}
+.badge.flag{background:var(--gold);color:var(--goldink)}
+.stem{font-size:15.5px;margin:2px 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px 12px;font-size:14.5px}
+.opt .ltr{font-weight:700;color:var(--muted);min-width:18px}
+.opt.correct{background:var(--greenbg);border-color:var(--greenln)}.opt.correct .ltr{color:var(--greenln)}
+.opt.wrongpick{background:var(--redbg);border-color:var(--redln)}.opt.wrongpick .ltr{color:var(--redln)}
+.opt .body{flex:1}
+.rat{margin-top:12px;border-left:3px solid var(--gold);background:var(--ratbg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px}
+.rat h4{margin:0 0 5px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+.rat .ref{margin-top:7px;font-size:12px;color:var(--muted);font-style:italic}
+.fig{margin:8px 0 12px}
+.fig img{max-width:100%;max-height:420px;border-radius:8px;display:block;margin:0 0 8px;cursor:zoom-in;border:1px solid var(--line)}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:8px}
+.itemactions{display:flex;gap:8px;align-items:center;margin-top:13px}
+.flagbtn{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:15px;cursor:pointer;padding:5px 10px;line-height:1;border-radius:8px}
+.flagbtn:hover{border-color:var(--accent)}
+.flagbtn.flagged{color:var(--gold);border-color:var(--gold)}
+.hidden{display:none!important}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 16px 40px;max-width:900px;margin:0 auto}
+@media (max-width:640px){body{font-size:16px}.wrap{max-width:520px;padding:14px 12px 90px}h1{font-size:17px}.opt{padding:13px 12px;font-size:15px}.tbtn{padding:9px 12px}.card{padding:15px 14px 12px}}
+</style><script>(function(){
+try{
+var q=new URLSearchParams(location.search).get('theme');
+var t=(q==='light'||q==='dark')?q:(localStorage.getItem('bcscTheme')||'dark');
+document.documentElement.setAttribute('data-theme',t);
+if(q)try{localStorage.setItem('bcscTheme',q);}catch(e){}
+}catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();</script>
+<header><h1><span>Review My Misses</span><button class="themebtn" type="button">Light mode</button></h1>
+<div class="scorebar"><a class="tbtn" href="../index.html" style="text-decoration:none">Home</a>
+<a class="tbtn" href="Quiz.html" style="text-decoration:none">Exam Mode</a>
+<span class="pill" id="totPill">Loading&hellip;</span></div></header>
+<div class="wrap">
+<div class="note" id="loadingNote">Loading every missed and flagged question across the BCSC Question Bank, Review Questions in Ophthalmology, and BCSC End-of-Volume Quizzes&hellip;</div>
+<div id="controls" class="hidden">
+  <div class="note">Every question you have answered wrong or starred, from all three question sets, in one place. Correct answers and rationales are shown right away &mdash; this is a review page, not a quiz. Unflagging a question here removes it from that section's own &ldquo;&#9733; Flagged&rdquo; list too. &ldquo;Mark reviewed&rdquo; just dims a card for you &mdash; it never changes your scores.</div>
+  <div class="setuplabel">Show</div>
+  <div class="chips" id="reasonChips"></div>
+  <div class="setuplabel">Source</div>
+  <div class="chips" id="sourceChips"></div>
+  <div class="setuplabel">Order</div>
+  <div class="chips" id="orderChips"></div>
+  <div class="setuplabel">Reviewed items</div>
+  <div class="chips" id="reviewedChips"></div>
+</div>
+<div class="summary hidden" id="summary"></div>
+<div class="chips" id="toc" style="margin-top:10px"></div>
+<div class="note hidden" id="emptyNote">Nothing to show for these filters &mdash; either you are caught up, or try widening Show/Source above. &#127881;</div>
+<div id="list"></div>
+</div>
+<footer>Rationales are BCSC excerpts as written on the source cards. This page only reads your saved answers and flags &mdash; it never changes a section's score.</footer>
+<script>
+const SOURCES = [
+  {label:'BCSC Question Bank', id:'qbank', url:'data/manifest.json'},
+  {label:'Review Questions in Ophthalmology', id:'reviewq', url:'../review-questions/data/manifest.json'},
+  {label:'BCSC End-of-Volume Quizzes', id:'eov', url:'../bcsc-eov/data/manifest.json'}
+];
+const REVIEWED_KEY='bcsc_reviewed_v1';
+
+let ALL_ITEMS=[];
+let reasonMode='all', sourceMode='all', orderMode='grouped', hideReviewed=false;
+
+function readState(key){ try{return JSON.parse(localStorage.getItem(key))||{};}catch(e){return {};} }
+function readFlags(key){ try{return JSON.parse(localStorage.getItem(key+'_flags'))||{};}catch(e){return {};} }
+function readStats(key){ try{return JSON.parse(localStorage.getItem(key+'_stats'))||null;}catch(e){return null;} }
+function readReviewed(){ try{return JSON.parse(localStorage.getItem(REVIEWED_KEY))||{};}catch(e){return {};} }
+function saveReviewed(obj){ try{localStorage.setItem(REVIEWED_KEY, JSON.stringify(obj));}catch(e){} }
+function itemKey(it){ return it.sec.key+':'+it.q.id; }
+function isReviewed(it){ return !!readReviewed()[itemKey(it)]; }
+
+function openLB(src){
+  const o=document.createElement('div'); o.className='lb';
+  o.innerHTML='<img src="'+src+'" alt="Figure enlarged">';
+  o.onclick=function(){ o.remove(); document.removeEventListener('keydown',esc); };
+  function esc(e){ if(e.key==='Escape'){ o.remove(); document.removeEventListener('keydown',esc); } }
+  document.addEventListener('keydown',esc);
+  document.body.appendChild(o);
+}
+function figHtml(list, base){
+  if(!list||!list.length) return '';
+  base = base || 'img/';
+  return '<div class="fig">'+list.map(function(f){
+    return '<img src="'+base+f+'" alt="Figure" loading="lazy" onclick="openLB(this.src)">';
+  }).join('')+'</div>';
+}
+
+Promise.all(SOURCES.map(s=>fetch(s.url).then(r=>r.json()).catch(()=>({sections:[]}))))
+.then(function(manifests){
+  let refs=[];
+  manifests.forEach(function(m, gi){
+    m.sections.forEach(function(sec){
+      refs.push({file:sec.file, json:sec.json, key:sec.key, name:sec.name, source:SOURCES[gi].label, sourceId:SOURCES[gi].id});
+    });
+  });
+  return Promise.all(refs.map(function(ref){
+    return fetch(ref.json).then(function(r){return r.json();}).then(function(d){
+      ref.pool=d.pool; ref.imgBase=d.imgBase; ref.stats=readStats(ref.key);
+      return ref;
+    });
+  }));
+})
+.then(function(sections){
+  buildItems(sections);
+  document.getElementById('loadingNote').classList.add('hidden');
+  document.getElementById('controls').classList.remove('hidden');
+  renderAll();
+})
+.catch(function(e){
+  document.getElementById('loadingNote').textContent='Could not load question data (' + e.message + '). Check your connection and reload.';
+});
+
+function buildItems(sections){
+  ALL_ITEMS=[];
+  sections.forEach(function(sec){
+    const st=readState(sec.key);
+    const fl=readFlags(sec.key);
+    sec.pool.forEach(function(q){
+      const picked=st[q.id];
+      const missed = picked!==undefined && picked!==q.answer;
+      const flagged = !!fl[q.id];
+      if(!missed && !flagged) return;
+      ALL_ITEMS.push({q:q, sec:sec, picked:picked, missed:missed, flagged:flagged, _rand:Math.random()});
+    });
+  });
+}
+
+function filteredItems(){
+  return ALL_ITEMS.filter(function(it){
+    if(reasonMode==='missed' && !it.missed) return false;
+    if(reasonMode==='flagged' && !it.flagged) return false;
+    if(sourceMode!=='all' && it.sec.sourceId!==sourceMode) return false;
+    if(hideReviewed && isReviewed(it)) return false;
+    return true;
+  });
+}
+
+function groupBy(items){
+  const g={};
+  items.forEach(function(it){ (g[it.sec.key]=g[it.sec.key]||[]).push(it); });
+  return g;
+}
+function weakestFirstOrder(groups){
+  return Object.keys(groups).sort(function(a,b){
+    const sa=groups[a][0].sec.stats, sb=groups[b][0].sec.stats;
+    const pa=(sa&&sa.ans)?sa.cor/sa.ans:null, pb=(sb&&sb.ans)?sb.cor/sb.ans:null;
+    if(pa===null&&pb===null) return groups[a][0].sec.name.localeCompare(groups[b][0].sec.name);
+    if(pa===null) return 1;
+    if(pb===null) return -1;
+    return pa-pb;
+  });
+}
+
+[['all','All'],['missed','Missed only'],['flagged','Flagged only']].forEach(function(pair){
+  const b=document.createElement('button');
+  b.className='chip'+(pair[0]===reasonMode?' on':''); b.textContent=pair[1];
+  b.onclick=function(){reasonMode=pair[0];document.querySelectorAll('#reasonChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderAll();};
+  document.getElementById('reasonChips').appendChild(b);
+});
+[['all','All sources']].concat(SOURCES.map(s=>[s.id,s.label])).forEach(function(pair){
+  const b=document.createElement('button');
+  b.className='chip'+(pair[0]===sourceMode?' on':''); b.textContent=pair[1];
+  b.onclick=function(){sourceMode=pair[0];document.querySelectorAll('#sourceChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderAll();};
+  document.getElementById('sourceChips').appendChild(b);
+});
+[['grouped','Group by subtopic'],['random','Completely random']].forEach(function(pair){
+  const b=document.createElement('button');
+  b.className='chip'+(pair[0]===orderMode?' on':''); b.textContent=pair[1];
+  b.onclick=function(){orderMode=pair[0];document.querySelectorAll('#orderChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderAll();};
+  document.getElementById('orderChips').appendChild(b);
+});
+[[false,'Show reviewed'],[true,'Hide reviewed']].forEach(function(pair){
+  const b=document.createElement('button');
+  b.className='chip'+(pair[0]===hideReviewed?' on':''); b.textContent=pair[1];
+  b.onclick=function(){hideReviewed=pair[0];document.querySelectorAll('#reviewedChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderAll();};
+  document.getElementById('reviewedChips').appendChild(b);
+});
+
+function renderAll(){
+  const items=filteredItems();
+  renderTopPill();
+  renderSummary(items);
+  renderToc(items);
+  renderList(items);
+}
+
+function renderTopPill(){
+  document.getElementById('totPill').innerHTML='<b>'+ALL_ITEMS.length+'</b> total missed/flagged';
+}
+
+function renderSummary(items){
+  const el=document.getElementById('summary');
+  if(!ALL_ITEMS.length){ el.classList.add('hidden'); return; }
+  const missedN=items.filter(i=>i.missed).length, flaggedN=items.filter(i=>i.flagged).length;
+  el.innerHTML='Showing <b>'+items.length+'</b> question'+(items.length===1?'':'s')+' &mdash; <b>'+missedN+'</b> missed, <b>'+flaggedN+'</b> flagged'
+    +(hideReviewed?' (reviewed items hidden)':'')+'.';
+  el.classList.remove('hidden');
+}
+
+function renderToc(items){
+  const toc=document.getElementById('toc');
+  toc.innerHTML=''; toc.classList.add('hidden');
+  if(orderMode!=='grouped' || !items.length) return;
+  const groups=groupBy(items);
+  weakestFirstOrder(groups).forEach(function(gkey){
+    const g=groups[gkey], sec=g[0].sec;
+    const a=document.createElement('a');
+    a.className='chip toclink'; a.href='#grp-'+gkey;
+    a.textContent=sec.name+' ('+g.length+')';
+    toc.appendChild(a);
+  });
+  toc.classList.remove('hidden');
+}
+
+function renderList(items){
+  const list=document.getElementById('list');
+  list.innerHTML='';
+  document.getElementById('emptyNote').classList.toggle('hidden', items.length>0);
+  if(!items.length) return;
+  if(orderMode==='grouped'){
+    const groups=groupBy(items);
+    weakestFirstOrder(groups).forEach(function(gkey){
+      const g=groups[gkey].slice().sort((a,b)=>a.q.id-b.q.id);
+      list.appendChild(groupHeader(g));
+      g.forEach(it=>list.appendChild(itemCard(it)));
+    });
+  } else {
+    items.slice().sort((a,b)=>a._rand-b._rand).forEach(it=>list.appendChild(itemCard(it)));
+  }
+}
+
+function groupHeader(items){
+  const sec=items[0].sec;
+  const el=document.createElement('div'); el.className='revgroup'; el.id='grp-'+sec.key;
+  const stats=sec.stats;
+  const pctTxt = (stats&&stats.ans) ? Math.round(stats.cor/stats.ans*100)+'% overall on this section ('+stats.cor+'/'+stats.ans+' answered)' : 'no answered questions yet on this section';
+  const missedN=items.filter(i=>i.missed).length, flaggedN=items.filter(i=>i.flagged).length;
+  el.innerHTML='<h3>'+sec.name+'<span class="srctag">'+sec.source+'</span></h3>'
+    +'<div class="revgroupmeta">'+pctTxt+' &middot; '+missedN+' missed here, '+flaggedN+' flagged here in this list</div>';
+  return el;
+}
+
+function itemCard(it){
+  const q=it.q, sec=it.sec;
+  const c=document.createElement('div'); c.className='card'+(isReviewed(it)?' reviewed':'');
+  const badges=(it.missed?'<span class="badge no">Missed</span>':'')+(it.flagged?'<span class="badge flag">&#9733; Flagged</span>':'');
+  c.innerHTML='<div class="qhead"><span class="qnum">Q'+q.id+'</span>'
+    +'<span><span class="tag">'+sec.name+'</span><span class="srctag">'+sec.source+'</span>'+badges+'</span></div>'
+    +'<div class="stem">'+q.q+'</div>'+figHtml(q.images, sec.imgBase)+'<div class="opts"></div>'
+    +'<div class="rat show"><h4>Rationale</h4><div>'+q.rationale+'</div>'+figHtml(q.ratImages, sec.imgBase)+'<div class="ref">'+(q.ref||'')+'</div></div>'
+    +'<div class="itemactions"></div>';
+  const opts=c.querySelector('.opts');
+  ['a','b','c','d','e'].forEach(function(L){
+    if(!q.options[L]) return;
+    const o=document.createElement('div'); o.className='opt'; o.dataset.l=L;
+    let extra='';
+    if(L===q.answer){ o.classList.add('correct'); extra='<span class="badge ok">Correct</span>'; }
+    if(L===it.picked && it.picked!==q.answer){ o.classList.add('wrongpick'); extra='<span class="badge no">Your pick</span>'; }
+    o.innerHTML='<span class="ltr">'+L.toUpperCase()+'</span><div class="body"><span class="otext">'+q.options[L]+'</span>'+extra+'</div>';
+    opts.appendChild(o);
+  });
+  const actions=c.querySelector('.itemactions');
+  const starBtn=document.createElement('button');
+  starBtn.className='flagbtn'+(it.flagged?' flagged':''); starBtn.type='button';
+  starBtn.title='Flag this question for review';
+  starBtn.innerHTML=(it.flagged?'★ Flagged':'☆ Flag');
+  starBtn.onclick=function(){ toggleFlagFor(it); };
+  const revBtn=document.createElement('button');
+  const already=isReviewed(it);
+  revBtn.className='tbtn'+(already?' activeview':''); revBtn.type='button';
+  revBtn.textContent = already?'✓ Reviewed':'Mark reviewed';
+  revBtn.onclick=function(){ toggleReviewed(it); };
+  actions.appendChild(starBtn); actions.appendChild(revBtn);
+  return c;
+}
+
+function toggleFlagFor(it){
+  const f=readFlags(it.sec.key);
+  if(f[it.q.id]) delete f[it.q.id]; else f[it.q.id]=1;
+  try{ localStorage.setItem(it.sec.key+'_flags', JSON.stringify(f)); }catch(e){}
+  it.flagged=!!f[it.q.id];
+  if(!it.flagged && !it.missed){
+    ALL_ITEMS=ALL_ITEMS.filter(x=>x!==it);
+  }
+  renderAll();
+}
+
+function toggleReviewed(it){
+  const r=readReviewed();
+  const k=itemKey(it);
+  if(r[k]) delete r[k]; else r[k]=1;
+  saveReviewed(r);
+  renderAll();
+}
+</script>
+<script>
+(function(){
+var btns=document.querySelectorAll('.themebtn');
+function syncLinks(t){
+document.querySelectorAll('a[href]').forEach(function(a){
+var href=a.getAttribute('href');
+if(!href||href.charAt(0)==='#')return;
+try{
+var url=new URL(href,location.href);
+url.searchParams.set('theme',t);
+a.setAttribute('href',url.href);
+}catch(e){}
+});
+}
+function label(){var t=document.documentElement.getAttribute('data-theme')||'dark';var txt=t==='light'?'Dark mode':'Light mode';btns.forEach(function(b){b.textContent=txt;});syncLinks(t);}
+label();
+btns.forEach(function(btn){btn.addEventListener('click',function(){
+var cur=document.documentElement.getAttribute('data-theme');
+var next=cur==='light'?'dark':'light';
+document.documentElement.setAttribute('data-theme',next);
+try{localStorage.setItem('bcscTheme',next);}catch(e){}
+label();
+});});
+})();
+</script>
+<script data-goatcounter="https://lebers-learning.goatcounter.com/count" data-goatcounter-settings='{"no_onload": true}' async src="//gc.zgo.at/count.js"></script>
+<script>
+window.addEventListener('load', function(){
+  if(window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({path: location.pathname});
+  }
+});
+</script>
